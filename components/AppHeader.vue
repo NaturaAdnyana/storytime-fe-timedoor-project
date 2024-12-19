@@ -1,5 +1,5 @@
 <template>
-  <header class="bg-white fixed inset-x-0 top-0 z-20">
+  <header class="bg-white fixed inset-x-0 top-0 z-20 shadow-md">
     <nav
       class="mx-auto flex items-center justify-between p-4 lg:px-[110px]"
       aria-label="Global"
@@ -7,7 +7,7 @@
       <div class="flex lg:flex-1">
         <NuxtLink to="/" class="-m-1.5 p-1.5">
           <span class="sr-only">Your Company</span>
-          <img class="h-8 w-auto" src="/logos/logo.png" alt="" />
+          <img class="h-8 w-auto" src="/logos/logo.png" alt="Storytime Logo" />
         </NuxtLink>
       </div>
       <div class="flex lg:hidden">
@@ -23,12 +23,12 @@
       <div class="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-4">
         <BaseButton
           to="/register"
-          customClass="border border-gray-asparagus-tr text-gray-asparagus-tr hover:border-kombu-green hover:text-kombu-green"
+          class="border border-gray-asparagus-tr text-gray-asparagus-tr hover:border-kombu-green hover:text-kombu-green"
           >Register</BaseButton
         >
         <BaseButton
           to="/login"
-          customClass="bg-gray-asparagus-tr text-white transition hover:bg-kombu-green"
+          class="bg-gray-asparagus-tr text-white transition hover:bg-kombu-green"
           >Log in</BaseButton
         >
       </div>

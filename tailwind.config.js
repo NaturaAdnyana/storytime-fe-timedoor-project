@@ -6,6 +6,8 @@ export default {
       colors: {
         "gray-asparagus-tr": "#466543",
         "kombu-green": "#31472F",
+        "raisin-black": "#222222",
+        "isabelline-sc": "#F0F5ED",
         quartz: "#4B4B4B",
       },
     },

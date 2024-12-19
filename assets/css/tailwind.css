@@ -3,7 +3,23 @@
 @tailwind utilities;
 
 body {
-  @apply bg-white;
+  @apply bg-white text-quartz;
+}
+
+h1 {
+  @apply text-5xl text-black;
+}
+
+h2 {
+  @apply text-3xl text-black;
+}
+
+h3 {
+  @apply text-2xl font-bold text-quartz;
+}
+
+h4 {
+  @apply font-medium;
 }
 
 @layer components {

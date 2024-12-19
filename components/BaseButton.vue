@@ -1,15 +1,11 @@
 <template>
-  <NuxtLink :to="to" :class="['rounded-lg px-5 py-2', customClass]">
+  <NuxtLink :to="to" class="rounded-lg px-5 py-2">
     <slot />
   </NuxtLink>
 </template>
 
 <script setup>
-const { to, customClass } = defineProps({
+const { to } = defineProps({
   to: String,
-  customClass: {
-    type: String,
-    default: "",
-  },
 });
 </script>

@@ -1,9 +1,9 @@
 <template>
   <AppHeader />
-  <main class="mx-[100px]">
+  <main>
     <slot />
   </main>
-  <footer></footer>
+  <AppFooter />
 </template>
 
 <script setup>
