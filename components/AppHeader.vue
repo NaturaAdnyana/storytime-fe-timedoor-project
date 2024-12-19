@@ -1,5 +1,7 @@
 <template>
-  <header class="bg-white fixed inset-x-0 top-0 z-20 shadow-md">
+  <header
+    class="bg-white/80 backdrop-blur-lg fixed inset-x-0 top-0 z-20 shadow-md"
+  >
     <nav
       class="mx-auto flex items-center justify-between p-4 lg:px-[110px]"
       aria-label="Global"
