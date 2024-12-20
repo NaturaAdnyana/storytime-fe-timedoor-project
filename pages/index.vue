@@ -11,7 +11,7 @@
       </p>
     </div>
     <div
-      class="flex items-center rounded-md bg-white px-4 w-full lg:w-2/3 mx-auto outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600"
+      class="flex items-center rounded-md bg-white px-4 w-full lg:w-2/3 mx-auto outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-gray-asparagus-tr"
     >
       <input
         type="text"

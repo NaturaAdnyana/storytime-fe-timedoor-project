@@ -90,7 +90,7 @@ const mobileMenuOpen = ref(false);
 </script>
 
 <style scoped>
-.router-link-exact-active {
+/* .router-link-exact-active {
   color: red;
-}
+} */
 </style>

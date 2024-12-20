@@ -1,6 +1,6 @@
 <template>
   <AppHeader />
-  <main>
+  <main class="min-h-screen pt-[74px]">
     <slot />
   </main>
   <AppFooter />
