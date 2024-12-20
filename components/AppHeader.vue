@@ -23,16 +23,8 @@
         </button>
       </div>
       <div class="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-4">
-        <BaseButton
-          to="/register"
-          class="border border-gray-asparagus-tr text-gray-asparagus-tr hover:border-kombu-green hover:text-kombu-green"
-          >Register</BaseButton
-        >
-        <BaseButton
-          to="/login"
-          class="bg-gray-asparagus-tr text-white transition hover:bg-kombu-green"
-          >Log in</BaseButton
-        >
+        <BaseLink to="/register" class="btn-outline">Register</BaseLink>
+        <BaseLink to="/login" class="btn-solid">Log in</BaseLink>
       </div>
     </nav>
     <HeadlessDialog

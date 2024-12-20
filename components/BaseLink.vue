@@ -1,9 +1,9 @@
 <template>
-  <NuxtLink :to="to" class="inline-block rounded-lg px-5 py-2 cursor-pointer">
+  <NuxtLink :to="to" class="btn">
     <slot />
   </NuxtLink>
 </template>
-
+btn
 <script setup>
 const { to } = defineProps({
   to: String,

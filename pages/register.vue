@@ -53,12 +53,7 @@
           placeholder="Re-enter your chosen password"
           v-model="registerData.confirmPassword"
         />
-        <button
-          type="submit"
-          class="bg-gray-asparagus-tr text-white transition hover:bg-kombu-green inline-block rounded-lg px-5 py-2 cursor-pointer"
-        >
-          Create Account
-        </button>
+        <button type="submit" class="btn btn-solid">Create Account</button>
         <p class="text-sm">
           Already have an account?
           <NuxtLink

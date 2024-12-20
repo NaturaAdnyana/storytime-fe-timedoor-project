@@ -24,6 +24,14 @@ h4 {
 
 @layer components {
   .btn {
-    @apply bg-[#123122] text-white px-3 py-2 rounded-md text-sm;
+    @apply inline-block rounded-lg px-5 py-2 cursor-pointer;
+  }
+
+  .btn-solid {
+    @apply bg-gray-asparagus-tr text-white transition hover:bg-kombu-green;
+  }
+
+  .btn-outline {
+    @apply border border-gray-asparagus-tr text-gray-asparagus-tr hover:border-kombu-green hover:text-kombu-green;
   }
 }

@@ -19,12 +19,7 @@
           placeholder="Enter your password"
           v-model="registerData.password"
         />
-        <button
-          type="submit"
-          class="bg-gray-asparagus-tr text-white transition hover:bg-kombu-green inline-block rounded-lg px-5 py-2 cursor-pointer"
-        >
-          Login
-        </button>
+        <button type="submit" class="btn btn-solid">Login</button>
         <p class="text-sm">
           Don’t have an account?
           <NuxtLink
