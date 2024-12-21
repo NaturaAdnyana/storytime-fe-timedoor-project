@@ -5,11 +5,33 @@
         src="https://www.svgrepo.com/show/508699/landscape-placeholder.svg"
         class="w-full h-full rounded-lg border object-cover"
       />
-      <button
-        class="absolute bottom-4 right-4 rounded-full w-14 h-14 p-2 bg-gray-asparagus-tr"
+      <div
+        class="absolute bottom-4 right-4 space-x-2"
+        v-if="showAction && isUser"
       >
-        <img src="/icons/bookmark.svg" alt="bookmark" />
-      </button>
+        <button
+          class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green"
+        >
+          <img src="/icons/edit.svg" alt="edit" />
+        </button>
+        <button
+          class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green"
+        >
+          <img src="/icons/bookmark.svg" alt="bookmark" />
+        </button>
+        <button
+          class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green"
+        >
+          <img src="/icons/delete.svg" alt="delete" />
+        </button>
+      </div>
+      <div class="absolute bottom-4 right-4" v-else-if="showAction">
+        <button
+          class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green"
+        >
+          <img src="/icons/bookmark.svg" alt="bookmark" />
+        </button>
+      </div>
     </div>
     <div class="flex flex-col gap-3 mt-3">
       <h3>Gemma</h3>
@@ -20,15 +42,23 @@
         sinister red.
       </p>
       <div class="flex justify-between text-sm">
-        <div class="basis-1/2 flex items-center gap-2 overflow-hidden">
+        <div
+          class="basis-3/7 flex items-center gap-2 overflow-hidden"
+          v-show="!isUser"
+        >
           <NuxtImg
             src="https://avatar.iran.liara.run/public/35"
             class="w-8 h-8 rounded-full"
           />
-          <h4 class="text-nowrap">Khrisvana (updated) 1</h4>
+          <h4 class="text-nowrap truncate">Khrisvana (updated) 1</h4>
         </div>
-        <div class="basis-1/2 flex justify-end items-center gap-3">
-          12 March 2024
+        <div
+          :class="[
+            'basis-full flex items-center gap-3',
+            isUser ? 'justify-between' : 'justify-end',
+          ]"
+        >
+          <span :class="isUser && 'order-last'"> 12 March 2024 </span>
           <span
             class="px-2 py-1 bg-isabelline-sc rounded text-gray-asparagus-tr"
             >Comedy</span
@@ -38,6 +68,18 @@
     </div>
   </div>
 </template>
+
+<script setup>
+const { showAction, isUser } = defineProps({
+  showAction: {
+    type: Boolean,
+    default: true,
+  },
+  isUser: {
+    type: {},
+  },
+});
+</script>
 
 <style scoped>
 .custom-truncate {

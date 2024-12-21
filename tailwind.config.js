@@ -10,6 +10,10 @@ export default {
         "isabelline-sc": "#F0F5ED",
         quartz: "#4B4B4B",
       },
+      fontFamily: {
+        "dm-sans": ["DM Sans", "sans-serif"],
+        "playfair-display": ["Playfair Display", "serif"],
+      },
     },
   },
   plugins: [],
