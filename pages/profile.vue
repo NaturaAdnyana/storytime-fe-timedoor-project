@@ -5,7 +5,7 @@
         <NuxtImg
           class="mx-auto"
           src="https://avatar.iran.liara.run/public/35"
-          alt=""
+          alt="My Profile Picture"
         />
       </div>
       <div class="flex-1 basis-8/12 flex flex-col justify-center md:px-10">
@@ -18,7 +18,7 @@
         </p>
       </div>
       <div class="flex-1 basis-2/12 flex items-center">
-        <button class="btn btn-solid">Edit Profile</button>
+        <button @click="toggleModal" class="btn btn-solid">Edit Profile</button>
       </div>
     </div>
   </section>
@@ -43,9 +43,133 @@
       </main>
     </div>
   </section>
+  <HeadlessTransitionRoot appear :show="isOpen" as="template">
+    <HeadlessDialog as="div" @close="toggleModal" class="relative z-10">
+      <HeadlessTransitionChild
+        as="template"
+        enter="duration-300 ease-out"
+        enter-from="opacity-0"
+        enter-to="opacity-100"
+        leave="duration-200 ease-in"
+        leave-from="opacity-100"
+        leave-to="opacity-0"
+      >
+        <div class="fixed inset-0 bg-black/25" />
+      </HeadlessTransitionChild>
+
+      <div class="fixed inset-0 overflow-y-auto">
+        <div
+          class="flex min-h-full items-center justify-center p-10 md:p-[110px] text-center"
+        >
+          <HeadlessTransitionChild
+            as="template"
+            enter="duration-300 ease-out"
+            enter-from="opacity-0 scale-95"
+            enter-to="opacity-100 scale-100"
+            leave="duration-200 ease-in"
+            leave-from="opacity-100 scale-100"
+            leave-to="opacity-0 scale-95"
+          >
+            <HeadlessDialogPanel
+              class="w-full transform overflow-hidden mt-20 md:mt-0 rounded-2xl bg-white p-10 text-left align-middle shadow-xl transition-all"
+            >
+              <HeadlessDialogTitle
+                as="h3"
+                class="text-xl font-medium leading-6 text-gray-900"
+              >
+                Edit Profile
+              </HeadlessDialogTitle>
+              <div class="mt-10">
+                <form @submit.prevent="tes" class="flex flex-wrap">
+                  <div class="space-y-4 basis-full md:basis-1/2 px-5">
+                    <div class="flex items-center gap-5">
+                      <input
+                        id="file-upload"
+                        name="file-upload"
+                        type="file"
+                        class="sr-only"
+                      />
+                      <NuxtImg
+                        src="https://avatar.iran.liara.run/public/35"
+                        class="w-32 h-w-32"
+                      />
+                      <label for="file-upload" class="inline btn btn-outline"
+                        >Change Picture</label
+                      >
+                    </div>
+                    <BaseInput
+                      type="text"
+                      id="name"
+                      name="name"
+                      label="Name"
+                      placeholder="Your Name"
+                    />
+                    <BaseInput
+                      type="email"
+                      id="email"
+                      name="email"
+                      label="Email"
+                      disabled="true"
+                      placeholder="Your Email"
+                    />
+                    <BaseInput
+                      type="textarea"
+                      id="bio"
+                      name="bio"
+                      label="About Me"
+                      placeholder="Your Bio"
+                    />
+                  </div>
+                  <div class="space-y-4 basis-full md:basis-1/2 px-5">
+                    <h4>Change Password</h4>
+                    <BaseInput
+                      type="password"
+                      id="old-password"
+                      name="old-password"
+                      label="Old Password"
+                      placeholder="Enter your old password"
+                    />
+                    <BaseInput
+                      type="password"
+                      id="new-password"
+                      name="new-password"
+                      label="New Password"
+                      placeholder="Enter your new password"
+                    />
+                    <BaseInput
+                      type="password"
+                      id="confirm-password"
+                      name="confirm-password"
+                      label="Confirm New Password"
+                      placeholder="Re-enter your new password"
+                    />
+                  </div>
+                  <div class="basis-full px-5 pt-5 space-x-5">
+                    <button @click="toggleModal" class="btn btn-outline">
+                      Cancel
+                    </button>
+                    <button type="submit" class="btn btn-solid">
+                      Update Profile
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </HeadlessDialogPanel>
+          </HeadlessTransitionChild>
+        </div>
+      </div>
+    </HeadlessDialog>
+  </HeadlessTransitionRoot>
 </template>
 
-<script setup></script>
+<script setup>
+definePageMeta({ scrollToTop: false });
+const isOpen = ref(false);
+
+const toggleModal = () => {
+  isOpen.value = !isOpen.value;
+};
+</script>
 
 <style scoped>
 .router-link-exact-active {

@@ -113,8 +113,8 @@
 
 <script setup>
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/vue/20/solid";
-// const slides = ref(Array.from({ length: 10 }));
-const slides = [];
+const slides = ref(Array.from({ length: 10 }));
+// const slides = [];
 </script>
 
 <style lang="scss" scoped></style>

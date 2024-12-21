@@ -1,19 +1,31 @@
 <template>
   <div class="space-y-2">
-    <label :for="name" class="block text-sm font-medium text-gray-900">
+    <label :for="name" class="block text-sm font-medium">
       {{ label }}
     </label>
     <div
       class="flex items-center rounded-md overflow-hidden bg-white w-full mx-auto outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600"
     >
+      <textarea
+        :id="name"
+        :name="name"
+        :placeholder="placeholder"
+        :disabled="disabled"
+        :value="modelValue"
+        @input="$emit('update:modelValue', $event.target.value)"
+        class="block min-w-0 min-h-20 grow py-3 px-4 text-base placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm"
+        v-if="type === 'textarea'"
+      />
       <input
         :id="name"
         :type="computedType"
         :name="name"
         :placeholder="placeholder"
+        :disabled="disabled"
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
-        class="block min-w-0 grow py-3 px-4 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm"
+        class="block min-w-0 grow py-3 px-4 text-base placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm"
+        v-else
       />
       <button
         v-if="type === 'password'"
@@ -39,6 +51,10 @@ const { label, name, placeholder, modelValue, type } = defineProps({
     default: "text",
   },
   placeholder: String,
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
   modelValue: String,
 });
 
