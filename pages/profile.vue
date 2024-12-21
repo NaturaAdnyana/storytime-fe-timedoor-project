@@ -8,7 +8,7 @@
           alt="My Profile Picture"
         />
       </div>
-      <div class="flex-1 basis-8/12 flex flex-col justify-center md:px-10">
+      <div class="flex-1 md:basis-8/12 flex flex-col justify-center md:px-10">
         <h1 class="font-dm-sans text-2xl mb-1">Iswara</h1>
         <p class="mb-4">dewiratnaiswara99@gmail.com</p>
         <p>
@@ -17,7 +17,9 @@
           for new stories and adventures.
         </p>
       </div>
-      <div class="flex-1 basis-2/12 flex items-center">
+      <div
+        class="flex-1 basis-full md:basis-2/12 flex items-center justify-start md:justify-end"
+      >
         <button @click="toggleModal" class="btn btn-solid">Edit Profile</button>
       </div>
     </div>
@@ -59,7 +61,7 @@
 
       <div class="fixed inset-0 overflow-y-auto">
         <div
-          class="flex min-h-full items-center justify-center p-10 md:p-[110px] text-center"
+          class="flex min-h-full items-center justify-center p-5 md:p-[110px] text-center"
         >
           <HeadlessTransitionChild
             as="template"
@@ -81,7 +83,7 @@
               </HeadlessDialogTitle>
               <div class="mt-10">
                 <form @submit.prevent="tes" class="flex flex-wrap">
-                  <div class="space-y-4 basis-full md:basis-1/2 px-5">
+                  <div class="space-y-4 basis-full md:basis-1/2 md:px-5">
                     <div class="flex items-center gap-5">
                       <input
                         id="file-upload"
@@ -120,7 +122,9 @@
                       placeholder="Your Bio"
                     />
                   </div>
-                  <div class="space-y-4 basis-full md:basis-1/2 px-5">
+                  <div
+                    class="space-y-4 basis-full md:basis-1/2 md:px-5 mt-10 md:mt-0"
+                  >
                     <h4>Change Password</h4>
                     <BaseInput
                       type="password"
@@ -144,7 +148,7 @@
                       placeholder="Re-enter your new password"
                     />
                   </div>
-                  <div class="basis-full px-5 pt-5 space-x-5">
+                  <div class="basis-full px-0 md:px-5 pt-5 space-x-5">
                     <button @click="toggleModal" class="btn btn-outline">
                       Cancel
                     </button>
