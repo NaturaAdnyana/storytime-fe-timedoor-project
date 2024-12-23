@@ -8,7 +8,7 @@
         >Explore More <ArrowRightIcon class="size-3 inline" />
       </NuxtLink>
     </div>
-    <div class="mt-6 mx-6 lg:mx-0">
+    <div class="mt-6 mx-0">
       <ClientOnly>
         <swiper-container
           ref="containerRef"
@@ -18,10 +18,10 @@
           :slidesOffsetAfter="110"
           :breakpoints="{
             0: {
-              slidesPerView: 1,
+              slidesPerView: 1.2,
               spaceBetween: 10,
-              slidesOffsetBefore: 0,
-              slidesOffsetAfter: 0,
+              slidesOffsetBefore: 24,
+              slidesOffsetAfter: 24,
             },
             640: { slidesPerView: 2, spaceBetween: 20 },
             1024: { slidesPerView: 3.5, spaceBetween: 20 },
