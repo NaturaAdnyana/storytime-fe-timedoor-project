@@ -21,7 +21,7 @@
         leave-to-class="opacity-0"
       >
         <HeadlessListboxOptions
-          class="absolute mt-1 max-h-60 w-full overflow-auto bg-white text-xs md:text-base shadow-lg ring-1 ring-black/5 focus:outline-none"
+          class="absolute z-10 mt-1 max-h-60 w-full overflow-auto bg-white text-xs md:text-base shadow-lg ring-1 ring-black/5 focus:outline-none"
         >
           <HeadlessListboxOption
             v-slot="{ active, selected }"
