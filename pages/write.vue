@@ -13,7 +13,7 @@
   <section>
     <form
       @submit.prevent="handleSubmitStory"
-      class="space-y-4 basis-full md:basis-1/2 md:px-5 mx-10 lg:mx-[110px]"
+      class="py-10 space-y-4 basis-full md:basis-1/2 md:px-5 mx-10 lg:mx-[110px]"
     >
       <BaseInput
         label="Title"

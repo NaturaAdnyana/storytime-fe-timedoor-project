@@ -84,7 +84,7 @@
 </template>
 
 <script setup>
-import { ChevronUpDownIcon } from "@heroicons/vue/24/outline";
+import { ChevronUpDownIcon, CheckIcon } from "@heroicons/vue/24/outline";
 
 const props = defineProps({
   modelValue: Object,
