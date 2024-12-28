@@ -1,3 +1,5 @@
+<!-- NOT READY COMPONENT -->
+
 <template>
   <div
     class="flex items-center justify-between border-t border-gray-200 bg-white py-5"

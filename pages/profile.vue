@@ -102,14 +102,12 @@
                     <BaseInput
                       type="text"
                       id="name"
-                      name="name"
                       label="Name"
                       placeholder="Your Name"
                     />
                     <BaseInput
                       type="email"
                       id="email"
-                      name="email"
                       label="Email"
                       disabled="true"
                       placeholder="Your Email"
@@ -117,7 +115,6 @@
                     <BaseInput
                       type="textarea"
                       id="bio"
-                      name="bio"
                       label="About Me"
                       placeholder="Your Bio"
                     />
@@ -129,21 +126,18 @@
                     <BaseInput
                       type="password"
                       id="old-password"
-                      name="old-password"
                       label="Old Password"
                       placeholder="Enter your old password"
                     />
                     <BaseInput
                       type="password"
                       id="new-password"
-                      name="new-password"
                       label="New Password"
                       placeholder="Enter your new password"
                     />
                     <BaseInput
                       type="password"
                       id="confirm-password"
-                      name="confirm-password"
                       label="Confirm New Password"
                       placeholder="Re-enter your new password"
                     />

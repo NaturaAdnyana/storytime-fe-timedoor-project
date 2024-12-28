@@ -1,14 +1,13 @@
 <template>
   <div class="space-y-2">
-    <label :for="name" class="block text-sm font-medium">
+    <label :for="id" class="block text-sm font-medium">
       {{ label }}
     </label>
     <div
-      class="flex items-center rounded-md overflow-hidden bg-white w-full mx-auto outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600"
+      class="flex items-center rounded-md overflow-hidden bg-white w-full mx-auto outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-gray-asparagus-tr"
     >
       <textarea
-        :id="name"
-        :name="name"
+        :id="id"
         :placeholder="placeholder"
         :disabled="disabled"
         :value="modelValue"
@@ -17,9 +16,8 @@
         v-if="type === 'textarea'"
       />
       <input
-        :id="name"
+        :id="id"
         :type="computedType"
-        :name="name"
         :placeholder="placeholder"
         :disabled="disabled"
         :value="modelValue"
@@ -45,7 +43,7 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/vue/24/outline";
 
 const { label, name, placeholder, modelValue, type } = defineProps({
   label: String,
-  name: String,
+  id: String,
   type: {
     type: String,
     default: "text",
