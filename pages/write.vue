@@ -13,7 +13,7 @@
   <section>
     <form
       @submit.prevent="handleSubmitStory"
-      class="py-10 space-y-4 basis-full md:basis-1/2 md:px-5 mx-10 lg:mx-[110px]"
+      class="py-10 space-y-5 basis-full md:basis-1/2 md:px-5 mx-10 lg:mx-[110px]"
     >
       <BaseInput
         label="Title"
@@ -26,6 +26,11 @@
         v-model="storyData.category"
         :items="categories"
         label="Category"
+      />
+      <BaseTextEditor
+        v-model="storyData.content"
+        label="Content"
+        placeholder="Enter a content here"
       />
       <BaseCoverImgInput
         label="Cover Image"
