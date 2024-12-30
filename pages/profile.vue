@@ -9,7 +9,7 @@
         />
       </div>
       <div class="flex-1 md:basis-8/12 flex flex-col justify-center md:px-10">
-        <h1 class="font-dm-sans text-2xl mb-1">{{ name }}</h1>
+        <h1 class="font-dm-sans text-2xl mb-1">{{ username }}</h1>
         <p class="mb-4">{{ email }}</p>
         <p>
           {{ bio }}
@@ -80,28 +80,20 @@
                 Edit Profile
               </HeadlessDialogTitle>
               <div class="mt-10">
-                <form @submit.prevent="tes" class="flex flex-wrap">
+                <form @submit.prevent="handleSubmit" class="flex flex-wrap">
                   <div class="space-y-4 basis-full md:basis-1/2 md:px-5">
-                    <div class="flex items-center gap-5">
-                      <input
-                        id="file-upload"
-                        name="file-upload"
-                        type="file"
-                        class="sr-only"
-                      />
-                      <NuxtImg
-                        src="https://avatar.iran.liara.run/public/35"
-                        class="w-32 h-w-32"
-                      />
-                      <label for="file-upload" class="inline btn btn-outline"
-                        >Change Picture</label
-                      >
-                    </div>
+                    <BaseProfileImgInput
+                      id="profile-image"
+                      name="profile-image"
+                      :imageUrl="updateUserData.imageUrl"
+                      @update:file="handleFileUpdate"
+                    />
                     <BaseInput
                       type="text"
                       id="name"
                       label="Name"
                       placeholder="Your Name"
+                      v-model="updateUserData.username"
                     />
                     <BaseInput
                       type="email"
@@ -109,12 +101,14 @@
                       label="Email"
                       disabled="true"
                       placeholder="Your Email"
+                      v-model="updateUserData.email"
                     />
                     <BaseInput
                       type="textarea"
                       id="bio"
                       label="About Me"
                       placeholder="Your Bio"
+                      v-model="updateUserData.bio"
                     />
                   </div>
                   <div
@@ -126,18 +120,21 @@
                       id="old-password"
                       label="Old Password"
                       placeholder="Enter your old password"
+                      v-model="updateUserData.oldPassword"
                     />
                     <BaseInput
                       type="password"
                       id="new-password"
                       label="New Password"
                       placeholder="Enter your new password"
+                      v-model="updateUserData.newPassword"
                     />
                     <BaseInput
                       type="password"
                       id="confirm-password"
                       label="Confirm New Password"
                       placeholder="Re-enter your new password"
+                      v-model="updateUserData.confirmNewPassword"
                     />
                   </div>
                   <div class="basis-full px-0 md:px-5 pt-5 space-x-5">
@@ -168,9 +165,32 @@ const toggleModal = () => {
 
 const authStore = useAuthStore();
 
-const { name, email, imageUrl, bio } = storeToRefs(authStore);
+const { username, email, imageUrl, bio } = storeToRefs(authStore);
 
 authStore.fetch();
+
+const updateUserData = reactive({
+  imageUrl: imageUrl.value,
+  username: username.value,
+  email: email.value,
+  oldPassword: "",
+  newPassword: "",
+  confirmNewPassword: "",
+});
+
+function handleFileUpdate(file) {
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      updateUserData.imageUrl = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+}
+
+const handleSubmit = () => {
+  console.log("Profile updated", updateUserData);
+};
 </script>
 
 <style scoped>
