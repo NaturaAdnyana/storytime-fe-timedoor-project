@@ -1,6 +1,6 @@
 <template>
   <footer
-    class="border-t border-raisin-black px-0 lg:px-[110px] py-6 flex flex-wrap justify-between items-center gap-6"
+    class="border-t border-quartz px-0 lg:px-[110px] py-6 flex flex-wrap justify-between items-center gap-6"
   >
     <p class="w-full lg:w-auto text-center">
       © 2024 PT. Timedoor Indonesia. All rights reserved.

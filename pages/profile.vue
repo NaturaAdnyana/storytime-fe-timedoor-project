@@ -1,20 +1,18 @@
 <template>
   <section class="bg-isabelline-sc px-20 lg:px-[110px] py-10">
     <div class="flex justify-center flex-wrap gap-y-10">
-      <div class="flex-1 basis-full md:basis-2/12">
+      <div class="flex-1 basis-full md:basis-2/12 aspect-square">
         <NuxtImg
-          class="mx-auto"
-          src="https://avatar.iran.liara.run/public/35"
+          class="mx-auto w-full h-full object-cover rounded-full"
+          :src="imageUrl ? imageUrl : 'https://avatar.iran.liara.run/public/35'"
           alt="My Profile Picture"
         />
       </div>
       <div class="flex-1 md:basis-8/12 flex flex-col justify-center md:px-10">
-        <h1 class="font-dm-sans text-2xl mb-1">Iswara</h1>
-        <p class="mb-4">dewiratnaiswara99@gmail.com</p>
+        <h1 class="font-dm-sans text-2xl mb-1">{{ name }}</h1>
+        <p class="mb-4">{{ email }}</p>
         <p>
-          Avid reader and aspiring writer. Lover of mysteries, thrillers, and
-          sci-fi. Coffee enthusiast and nature explorer. Always on the lookout
-          for new stories and adventures.
+          {{ bio }}
         </p>
       </div>
       <div
@@ -167,6 +165,12 @@ const isOpen = ref(false);
 const toggleModal = () => {
   isOpen.value = !isOpen.value;
 };
+
+const authStore = useAuthStore();
+
+const { name, email, imageUrl, bio } = storeToRefs(authStore);
+
+authStore.fetch();
 </script>
 
 <style scoped>
