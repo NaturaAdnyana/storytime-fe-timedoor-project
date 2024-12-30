@@ -49,6 +49,7 @@
           <NuxtImg
             src="https://avatar.iran.liara.run/public/35"
             class="w-8 h-8 rounded-full"
+            format="webp"
           />
           <h4 class="text-nowrap truncate">Khrisvana (updated) 1</h4>
         </div>

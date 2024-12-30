@@ -13,7 +13,11 @@
     <form @submit.prevent="handleSearch">
       <BaseSearchBar v-model="searchQuery" class="lg:w-2/3" />
     </form>
-    <NuxtImg src="/images/hero.png" class="mx-auto w-full lg:w-1/2" />
+    <NuxtImg
+      src="/images/hero.png"
+      class="mx-auto w-full lg:w-1/2"
+      format="webp"
+    />
   </section>
   <SectionStoryRecomendation to="/stories" />
   <SectionSpecialRecomendation to="/stories" />

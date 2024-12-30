@@ -6,6 +6,7 @@
           class="mx-auto w-full h-full object-cover rounded-full"
           :src="imageUrl ? imageUrl : 'https://avatar.iran.liara.run/public/35'"
           alt="My Profile Picture"
+          format="webp"
         />
       </div>
       <div class="flex-1 md:basis-8/12 flex flex-col justify-center md:px-10">

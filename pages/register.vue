@@ -4,7 +4,7 @@
       class="basis-full md:basis-1/2 pt-6 px-10 md:px-12 bg-isabelline-sc rounded-md flex flex-col justify-between gap-10 flex-1"
     >
       <div class="space-y-5">
-        <NuxtImg src="/logos/logo.png" class="w-36" />
+        <NuxtImg src="/logos/logo.png" class="w-36" format="webp" />
         <h1>Join the World’s Most-Loved Social Storytelling Platform!</h1>
         <p>
           Create an account to explore interesting articles, connect with
