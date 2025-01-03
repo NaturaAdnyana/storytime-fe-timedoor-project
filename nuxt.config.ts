@@ -12,5 +12,11 @@ export default defineNuxtConfig({
   headlessui: {
     prefix: "Headless",
   },
-  css: ["~/assets/css/fonts.css"],
+  css: ["~/assets/css/fonts.css", "~/assets/css/main.css"],
+  runtimeConfig: {
+    apiSecret: "",
+    public: {
+      apiBase: "",
+    },
+  },
 });

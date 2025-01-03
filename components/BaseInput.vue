@@ -7,15 +7,17 @@
       class="flex items-center rounded-md overflow-hidden bg-white w-full mx-auto outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-gray-asparagus-tr"
     >
       <textarea
+        v-if="type === 'textarea'"
         :id="id"
         :placeholder="placeholder"
         :disabled="disabled"
         :value="modelValue"
+        :required="required"
         @input="$emit('update:modelValue', $event.target.value)"
         class="block min-w-0 min-h-20 grow py-3 px-4 text-base placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm"
-        v-if="type === 'textarea'"
       />
       <input
+        v-else
         :id="id"
         :type="computedType"
         :placeholder="placeholder"
@@ -23,7 +25,6 @@
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
         class="block min-w-0 grow py-3 px-4 text-base placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm"
-        v-else
       />
       <button
         v-if="type === 'password'"
@@ -35,13 +36,25 @@
         <EyeSlashIcon class="w-5 h-5" v-else />
       </button>
     </div>
+    <p class="text-red-500 text-xs" v-show="message">
+      {{ message }}
+    </p>
   </div>
 </template>
 
 <script setup>
 import { EyeIcon, EyeSlashIcon } from "@heroicons/vue/24/outline";
 
-const { label, name, placeholder, modelValue, type } = defineProps({
+const {
+  label,
+  id,
+  type,
+  placeholder,
+  disabled,
+  modelValue,
+  message,
+  required,
+} = defineProps({
   label: String,
   id: String,
   type: {
@@ -54,6 +67,8 @@ const { label, name, placeholder, modelValue, type } = defineProps({
     default: false,
   },
   modelValue: String,
+  message: Array,
+  required: false,
 });
 
 const isPasswordVisible = ref(false);

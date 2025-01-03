@@ -24,7 +24,7 @@ h4 {
 
 @layer components {
   .btn {
-    @apply inline-block rounded-lg px-5 py-2 cursor-pointer;
+    @apply inline-block rounded-lg px-5 py-2 cursor-pointer disabled:opacity-90 disabled:cursor-not-allowed;
   }
 
   .btn-solid {
