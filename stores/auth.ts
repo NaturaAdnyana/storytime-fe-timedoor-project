@@ -76,14 +76,14 @@ export const useAuthStore = defineStore("authStore", () => {
   async function fetchUser() {
     if (token.value) {
       try {
-        const response = await $fetch(config.public.apiBase + "/user", {
+        const response: any = await $fetch(config.public.apiBase + "/user", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token.value}`,
           },
         });
 
-        user.value = response;
+        user.value = response.data.user;
         return response;
       } catch (error) {
         token.value = "";

@@ -14,7 +14,7 @@
         :value="modelValue"
         :required="required"
         @input="$emit('update:modelValue', $event.target.value)"
-        class="block min-w-0 min-h-20 grow py-3 px-4 text-base placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm"
+        class="block min-w-0 min-h-20 grow py-3 px-4 text-base placeholder:text-gray-400 sm:text-sm"
       />
       <input
         v-else
@@ -29,11 +29,12 @@
       <button
         v-if="type === 'password'"
         type="button"
-        class="px-3 py-2 text-gray-500 hover:text-gray-700 focus:outline-none"
+        class="px-3 py-2 mr-1 rounded text-gray-500 hover:text-gray-700 focus:outline-gray-asparagus-tr"
         @click="togglePasswordVisibility"
       >
         <EyeIcon class="w-5 h-5" v-if="isPasswordVisible" />
         <EyeSlashIcon class="w-5 h-5" v-else />
+        <span class="sr-only">Toggle Password Visibility</span>
       </button>
     </div>
     <p class="text-red-500 text-xs h-1">

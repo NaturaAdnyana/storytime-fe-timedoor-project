@@ -4,16 +4,16 @@
       <div class="flex-1 basis-full md:basis-2/12 aspect-square">
         <NuxtImg
           class="mx-auto w-full h-full object-cover rounded-full"
-          :src="imageUrl ? imageUrl : 'https://avatar.iran.liara.run/public/35'"
+          :src="user.avatar || 'https://avatar.iran.liara.run/public/35'"
           alt="My Profile Picture"
           format="webp"
         />
       </div>
       <div class="flex-1 md:basis-8/12 flex flex-col justify-center md:px-10">
-        <h1 class="font-dm-sans text-2xl mb-1">{{ username }}</h1>
-        <p class="mb-4">{{ email }}</p>
+        <h1 class="font-dm-sans text-2xl mb-1">{{ user.username }}</h1>
+        <p class="mb-4">{{ user.email }}</p>
         <p>
-          {{ bio }}
+          {{ user.bio }}
         </p>
       </div>
       <div
@@ -86,7 +86,7 @@
                     <BaseProfileImgInput
                       id="profile-image"
                       name="profile-image"
-                      :imageUrl="updateUserData.imageUrl"
+                      :imageUrl="updateUserData.avatar"
                       @update:file="handleFileUpdate"
                     />
                     <BaseInput
@@ -94,6 +94,14 @@
                       id="name"
                       label="Name"
                       placeholder="Your Name"
+                      v-model="updateUserData.name"
+                    />
+                    <BaseInput
+                      type="text"
+                      id="username"
+                      label="Username"
+                      disabled="true"
+                      placeholder="Your Username"
                       v-model="updateUserData.username"
                     />
                     <BaseInput
@@ -166,14 +174,13 @@ const toggleModal = () => {
 
 const authStore = useAuthStore();
 
-const { username, email, imageUrl, bio } = storeToRefs(authStore);
-
-authStore.fetch();
+const { user } = storeToRefs(authStore);
 
 const updateUserData = reactive({
-  imageUrl: imageUrl.value,
-  username: username.value,
-  email: email.value,
+  name: user.value.name,
+  username: user.value.username,
+  email: user.value.email,
+  avatar: user.value.avatar,
   oldPassword: "",
   newPassword: "",
   confirmNewPassword: "",
@@ -183,7 +190,7 @@ function handleFileUpdate(file) {
   if (file) {
     const reader = new FileReader();
     reader.onload = (e) => {
-      updateUserData.imageUrl = e.target.result;
+      updateUserData.avatar = e.target.result;
     };
     reader.readAsDataURL(file);
   }

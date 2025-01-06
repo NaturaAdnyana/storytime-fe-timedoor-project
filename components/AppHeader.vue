@@ -22,10 +22,24 @@
           <Bars3Icon class="size-6" aria-hidden="true" />
         </button>
       </div>
-      <div class="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-4">
+      <div
+        class="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-4"
+        v-if="!user"
+      >
         <BaseLink to="/register" class="btn-outline">Register</BaseLink>
         <BaseLink to="/login" class="btn-solid">Log in</BaseLink>
       </div>
+      <NuxtLink
+        to="/profile"
+        class="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-4"
+        v-else
+      >
+        <NuxtImg
+          :src="user.avatar || 'https://avatar.iran.liara.run/public/35'"
+          class="w-8 h-8 aspect-square"
+        />
+        {{ user.username }}
+      </NuxtLink>
     </nav>
     <HeadlessDialog
       class="lg:hidden"
@@ -56,7 +70,7 @@
         </div>
         <div class="mt-6 flow-root">
           <div class="-my-6 divide-y divide-gray-500/10">
-            <div class="py-6">
+            <div class="py-6" v-if="!user.username">
               <NuxtLink
                 to="/register"
                 class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
@@ -67,6 +81,9 @@
                 class="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
                 >Log in</NuxtLink
               >
+            </div>
+            <div class="py-6" v-else>
+              {{ user.username }}
             </div>
           </div>
         </div>
@@ -79,6 +96,10 @@
 import { Bars3Icon, XMarkIcon } from "@heroicons/vue/24/outline";
 
 const mobileMenuOpen = ref(false);
+
+const authStore = useAuthStore();
+
+const { user } = storeToRefs(authStore);
 </script>
 
 <style scoped>
