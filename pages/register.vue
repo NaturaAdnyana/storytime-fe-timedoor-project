@@ -17,43 +17,84 @@
       class="basis-full md:basis-1/2 py-12 md:py-6 px-10 md:pl-20 md:pr-[110px] flex flex-col justify-center flex-1"
     >
       <h2 class="font-bold mb-5">Create Account</h2>
-      <form @submit.prevent="handleRegister" class="space-y-5">
+      <form @submit.prevent="handleRegister" class="space-y-6">
+        <HeadlessTransitionRoot
+          :show="showErrorMessage"
+          enter="transition-opacity duration-75"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="transition-opacity duration-150"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
+        >
+          <div
+            class="bg-red-200 w-full p-3 rounded-lg text-red-700 text-sm flex justify-between items-center"
+          >
+            <span>
+              {{ errorMessage.message }}
+            </span>
+            <button
+              class="bg-red-100 rounded-full p-1"
+              type="button"
+              @click="handleClearErrorMessages"
+            >
+              <XMarkIcon class="w-5 h-5" />
+            </button>
+          </div>
+        </HeadlessTransitionRoot>
         <BaseInput
           label="Name"
           type="text"
-          name="name"
           placeholder="Enter your name"
           v-model="registerData.name"
+          :message="errorMessage.name"
         />
         <BaseInput
           label="Username"
           type="text"
-          name="username"
           placeholder="Enter your username"
           v-model="registerData.username"
+          :message="errorMessage.username"
         />
         <BaseInput
           label="Email"
           type="email"
-          name="email"
           placeholder="Enter your email"
           v-model="registerData.email"
+          :message="errorMessage.email"
         />
         <BaseInput
           label="Password"
           type="password"
-          name="password"
           placeholder="Enter your chosen password"
           v-model="registerData.password"
+          :message="errorMessage.password"
         />
         <BaseInput
           label="Confirm Password"
           type="password"
-          name="confirm-password"
           placeholder="Re-enter your chosen password"
           v-model="registerData.confirmPassword"
+          :message="errorMessage.confirmPassword"
         />
-        <button type="submit" class="btn btn-solid">Create Account</button>
+        <button
+          type="submit"
+          class="btn btn-solid"
+          :disabled="
+            isLoading ||
+            !registerData.name ||
+            !registerData.username ||
+            !registerData.email ||
+            !registerData.password ||
+            !registerData.confirmPassword
+          "
+        >
+          <span v-if="isLoading" class="flex items-center gap-2">
+            <div class="loader animate-spin"></div>
+            Loading...
+          </span>
+          <span v-else>Create Account</span>
+        </button>
         <p class="text-sm">
           Already have an account?
           <NuxtLink
@@ -76,7 +117,10 @@ h2 {
 <script setup>
 definePageMeta({
   layout: "base",
+  middleware: ["auth"],
 });
+
+import { XMarkIcon } from "@heroicons/vue/24/outline";
 
 const registerData = reactive({
   name: "",
@@ -86,7 +130,58 @@ const registerData = reactive({
   confirmPassword: "",
 });
 
-const handleRegister = () => {
-  console.log(registerData);
+const router = useRouter();
+
+const isLoading = ref(false);
+
+const showErrorMessage = ref(false);
+
+const errorMessage = reactive({
+  message: "",
+  name: "",
+  username: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+});
+
+const handleClearErrorMessages = () => {
+  showErrorMessage.value = false;
+  errorMessage.message = "";
+  errorMessage.name = "";
+  errorMessage.username = "";
+  errorMessage.email = "";
+  errorMessage.password = "";
+  errorMessage.confirmPassword = "";
+  clearError();
+};
+
+const handleRegister = async () => {
+  isLoading.value = true;
+  handleClearErrorMessages();
+  const authStore = useAuthStore();
+  try {
+    await authStore.register({
+      name: registerData.name,
+      username: registerData.username,
+      email: registerData.email,
+      password: registerData.password,
+      confirmPassword: registerData.confirmPassword,
+    });
+    router.push({ path: "/" });
+  } catch (error) {
+    console.log(error.data);
+    showErrorMessage.value = true;
+    errorMessage.message = error.data.message || "";
+    errorMessage.name = error.data.errors?.name?.[0] || "";
+    errorMessage.username = error.data.errors?.username?.[0] || "";
+    errorMessage.email = error.data.errors?.email?.[0] || "";
+    errorMessage.password = error.data.errors?.password?.[0] || "";
+    errorMessage.confirmPassword =
+      error.data.errors?.confirmPassword?.[0] || "";
+    console.log(errorMessage);
+  } finally {
+    isLoading.value = false;
+  }
 };
 </script>

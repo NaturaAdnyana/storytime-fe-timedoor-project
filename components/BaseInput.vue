@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-2">
+  <div class="space-y-1">
     <label :for="id" class="block text-sm font-medium">
       {{ label }}
     </label>
@@ -36,8 +36,10 @@
         <EyeSlashIcon class="w-5 h-5" v-else />
       </button>
     </div>
-    <p class="text-red-500 text-xs" v-show="message">
-      {{ message }}
+    <p class="text-red-500 text-xs h-1">
+      <span v-show="message">
+        {{ message }}
+      </span>
     </p>
   </div>
 </template>

@@ -4,23 +4,34 @@
       class="order-2 md:order-1 basis-full md:basis-1/2 py-12 md:py-6 px-10 md:pr-20 md:pl-[110px] flex flex-col justify-center flex-1"
     >
       <h2 class="font-bold mb-5">Login</h2>
-      <form @submit.prevent="handleLogin" class="space-y-5">
-        <div
-          v-show="errorMessage.message"
-          class="bg-red-200 w-full p-3 rounded-lg text-red-700 text-sm flex justify-between items-center"
+      <form @submit.prevent="handleLogin" class="space-y-6">
+        <HeadlessTransitionRoot
+          :show="showErrorMessage"
+          enter="transition-opacity duration-75"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="transition-opacity duration-150"
+          leave-from="opacity-100"
+          leave-to="opacity-0"
         >
-          {{ errorMessage.message }}
-          <button
-            class="bg-red-100 rounded-full p-1"
-            type="button"
-            @click="handleErrorMessages"
+          <div
+            class="bg-red-200 w-full p-3 rounded-lg text-red-700 text-sm flex justify-between items-center"
           >
-            <XMarkIcon class="w-5 h-5" />
-          </button>
-        </div>
+            <span>
+              {{ errorMessage.message }}
+            </span>
+            <button
+              class="bg-red-100 rounded-full p-1"
+              type="button"
+              @click="handleClearErrorMessages"
+            >
+              <XMarkIcon class="w-5 h-5" />
+            </button>
+          </div>
+        </HeadlessTransitionRoot>
         <div>
           <BaseInput
-            label="Email"
+            label="Username/Email"
             type="text"
             placeholder="Enter your username or email"
             v-model="loginData.email"
@@ -90,19 +101,21 @@ const router = useRouter();
 
 const isLoading = ref(false);
 
+const showErrorMessage = ref(false);
+
 const loginData = reactive({
   email: "",
   password: "",
 });
 
 const errorMessage = reactive({
-  show: false,
   message: "",
   email: "",
   password: "",
 });
 
-const handleErrorMessages = () => {
+const handleClearErrorMessages = () => {
+  showErrorMessage.value = false;
   errorMessage.message = "";
   errorMessage.email = "";
   errorMessage.password = "";
@@ -119,6 +132,7 @@ const handleLogin = async () => {
     });
     router.push({ path: "/" });
   } catch (error) {
+    showErrorMessage.value = true;
     errorMessage.message = error.data.message || "";
     errorMessage.email = error.data.errors?.email[0] || "";
     errorMessage.password = error.data.errors?.password[0] || "";

@@ -19,18 +19,58 @@ export const useAuthStore = defineStore("authStore", () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email,
+        username_or_email: email,
         password,
       }),
+      onResponse({ response }) {
+        if (response.status === 200) {
+          token.value = response._data.data.token;
+          fetchUser();
+        }
+      },
+      onResponseError({ response }) {
+        console.error(response);
+      },
     });
-    if (response.status === "success") {
-      token.value = response.data.token;
-      await fetchUser();
-      return response;
-    } else {
-      console.error("Login failed:", response.message);
-      return response;
-    }
+    return response;
+  }
+
+  async function register({
+    name,
+    username,
+    email,
+    password,
+    confirmPassword,
+  }: {
+    name: string;
+    username: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  }) {
+    const response: any = await $fetch(config.public.apiBase + "/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        username,
+        email,
+        password,
+        password_confirmation: confirmPassword,
+      }),
+      onResponse({ response }) {
+        if (response.status === 201) {
+          token.value = response._data.data.token;
+          fetchUser();
+        }
+      },
+      onResponseError({ response }) {
+        console.error(response);
+      },
+    });
+    return response;
   }
 
   async function fetchUser() {
@@ -53,5 +93,5 @@ export const useAuthStore = defineStore("authStore", () => {
       return "No token";
     }
   }
-  return { user, token, login, fetchUser };
+  return { user, token, login, register, fetchUser };
 });
