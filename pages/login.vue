@@ -136,7 +136,6 @@ const handleLogin = async () => {
     errorMessage.message = error.data.message || "";
     errorMessage.email = error.data.errors?.email[0] || "";
     errorMessage.password = error.data.errors?.password[0] || "";
-    console.error(error.data);
   } finally {
     isLoading.value = false;
   }

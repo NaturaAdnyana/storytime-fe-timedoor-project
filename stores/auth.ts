@@ -25,7 +25,7 @@ export const useAuthStore = defineStore("authStore", () => {
       onResponse({ response }) {
         if (response.status === 200) {
           token.value = response._data.data.token;
-          fetchUser();
+          fetchData();
         }
       },
       onResponseError({ response }) {
@@ -63,7 +63,7 @@ export const useAuthStore = defineStore("authStore", () => {
       onResponse({ response }) {
         if (response.status === 201) {
           token.value = response._data.data.token;
-          fetchUser();
+          fetchData();
         }
       },
       onResponseError({ response }) {
@@ -73,7 +73,7 @@ export const useAuthStore = defineStore("authStore", () => {
     return response;
   }
 
-  async function fetchUser() {
+  async function fetchData() {
     if (token.value) {
       try {
         const response: any = await $fetch(config.public.apiBase + "/user", {
@@ -86,12 +86,35 @@ export const useAuthStore = defineStore("authStore", () => {
         user.value = response.data.user;
         return response;
       } catch (error) {
-        token.value = "";
+        token.value = null;
+        user.value = null;
         return "Failed to fetch user" + error;
       }
     } else {
       return "No token";
     }
   }
-  return { user, token, login, register, fetchUser };
+
+  async function logout() {
+    if (token.value) {
+      const response: any = await $fetch(config.public.apiBase + "/logout", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token.value}`,
+        },
+        onResponse({ response }) {
+          if (response.status === 200) {
+            token.value = null;
+            user.value = null;
+          }
+        },
+        onResponseError({ response }) {
+          console.error(response);
+        },
+      });
+      return response;
+    }
+  }
+
+  return { user, token, login, register, fetchData, logout };
 });
