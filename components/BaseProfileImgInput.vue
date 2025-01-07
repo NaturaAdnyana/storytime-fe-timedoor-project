@@ -8,10 +8,21 @@
       @change="handleFileChange"
     />
     <NuxtImg
-      :src="imageUrl ? imageUrl : 'https://avatar.iran.liara.run/public/35'"
-      class="w-32 h-w-32 aspect-square rounded-full object-cover"
+      :src="imageUrl ? imageUrl : '/images/avatar.png'"
+      class="w-32 h-w-32 aspect-square rounded-full object-cover ring-1 ring-gray-200"
+      :class="isLoading && 'image-loader'"
     />
-    <label :for="id" class="inline btn btn-outline">Change Picture</label>
+    <label
+      :for="id"
+      class="inline btn btn-outline"
+      :class="isLoading && 'opacity-80 cursor-not-allowed'"
+    >
+      <span v-if="isLoading" class="flex items-center gap-2">
+        <div class="loader animate-spin"></div>
+        Uploading...
+      </span>
+      <span v-else>Change Picture</span>
+    </label>
   </div>
 </template>
 
@@ -20,6 +31,7 @@ const props = defineProps({
   id: String,
   name: String,
   imageUrl: String,
+  isLoading: Boolean,
 });
 
 const emit = defineEmits(["update:file"]);

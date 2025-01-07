@@ -35,8 +35,8 @@
             class="group inline-flex items-center rounded-md text-base font-medium focus:outline-none hover:text-gray-asparagus-tr"
           >
             <NuxtImg
-              :src="user.avatar || 'https://avatar.iran.liara.run/public/35'"
-              class="w-8 h-8 aspect-square mr-2"
+              :src="user.avatar || '/images/avatar.png'"
+              class="w-8 h-8 aspect-square mr-2 ring-1 ring-gray-200 rounded-full bg-gray-100"
             />
 
             <span>{{ user.username }}</span>

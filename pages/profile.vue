@@ -1,10 +1,10 @@
 <template>
   <section class="bg-isabelline-sc px-20 lg:px-[110px] py-10">
     <div class="flex justify-center flex-wrap gap-y-10">
-      <div class="flex-1 basis-full md:basis-2/12 aspect-square">
+      <div class="flex-1 basis-full md:basis-2/12 aspect-square p-5">
         <NuxtImg
-          class="mx-auto w-full h-full object-cover rounded-full"
-          :src="user.avatar || 'https://avatar.iran.liara.run/public/35'"
+          class="mx-auto w-full h-full object-cover rounded-full bg-gray-100 ring-1 ring-gray-200"
+          :src="user.avatar || '/images/avatar.png'"
           alt="My Profile Picture"
           format="webp"
         />
@@ -88,6 +88,7 @@
                       name="profile-image"
                       :imageUrl="updateUserData.avatar"
                       @update:file="handleFileUpdate"
+                      :isLoading="isLoading"
                     />
                     <BaseInput
                       type="text"
@@ -167,6 +168,7 @@
 <script setup>
 definePageMeta({ scrollToTop: false });
 const isOpen = ref(false);
+const isLoading = ref(false);
 
 const toggleModal = () => {
   isOpen.value = !isOpen.value;
@@ -186,15 +188,19 @@ const updateUserData = reactive({
   confirmNewPassword: "",
 });
 
-function handleFileUpdate(file) {
+const handleFileUpdate = async (file) => {
   if (file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      updateUserData.avatar = e.target.result;
-    };
-    reader.readAsDataURL(file);
+    isLoading.value = true;
+    try {
+      const response = await authStore.uploadAvatar({ file: file });
+      updateUserData.avatar = response.url;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      isLoading.value = false;
+    }
   }
-}
+};
 
 const handleSubmit = () => {
   console.log("Profile updated", updateUserData);
