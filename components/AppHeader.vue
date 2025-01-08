@@ -29,22 +29,24 @@
         <BaseLink to="/register" class="btn-outline">Register</BaseLink>
         <BaseLink to="/login" class="btn-solid">Log in</BaseLink>
       </div>
-      <div class="hidden lg:flex btn-thin p-1 rounded-lg" v-else>
-        <HeadlessPopover class="relative flex">
-          <HeadlessPopoverButton
-            class="group inline-flex items-center rounded-md text-base font-medium focus:outline-none hover:text-gray-asparagus-tr"
-          >
-            <NuxtImg
-              :src="user.avatar || '/images/avatar.png'"
-              class="w-8 h-8 aspect-square mr-2 ring-1 ring-gray-200 rounded-full bg-gray-100"
-            />
+      <div class="hidden lg:flex p-1 rounded-lg" v-else>
+        <HeadlessMenu as="div" class="relative">
+          <div class="flex items-center">
+            <HeadlessMenuButton
+              class="group inline-flex items-center rounded-md text-base font-medium focus:outline-none hover:text-gray-asparagus-tr"
+            >
+              <NuxtImg
+                :src="user.avatar || '/images/avatar.png'"
+                class="w-8 h-8 aspect-square mr-2 ring-1 ring-gray-200 rounded-full bg-gray-100"
+              />
 
-            <span>{{ user.username }}</span>
-            <ChevronDownIcon
-              class="ml-2 h-5 w-5 transition duration-150 ease-in-out"
-              aria-hidden="true"
-            />
-          </HeadlessPopoverButton>
+              <span>{{ user.username }}</span>
+              <ChevronDownIcon
+                class="ml-2 h-5 w-5 transition duration-150 ease-in-out"
+                aria-hidden="true"
+              />
+            </HeadlessMenuButton>
+          </div>
 
           <transition
             enter-active-class="transition duration-200 ease-out"
@@ -54,22 +56,27 @@
             leave-from-class="translate-y-0 opacity-100"
             leave-to-class="translate-y-1 opacity-0"
           >
-            <HeadlessPopoverPanel
-              class="absolute w-40 top-8 right-0 z-10 mt-3 transform px-4 sm:px-0 lg:max-w-3xl"
+            <HeadlessMenuItems
+              class="absolute divide-y w-40 top-12 right-0 z-10 transform sm:px-0 lg:max-w-3xl bg-white text-normal font-medium text-quartz overflow-hidden rounded-lg shadow-lg ring-1 ring-black/5"
             >
-              <div
-                class="overflow-hidden rounded-lg shadow-lg ring-1 ring-black/5"
-              >
-                <div class="bg-white p-2 text-normal font-medium text-quartz">
-                  <NuxtLink
-                    to="/profile"
-                    class="block rounded-md p-2 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-gray-asparagus-tr"
-                  >
-                    <span class="flex items-center">
-                      <span> Profile </span>
-                    </span>
-                  </NuxtLink>
-                  <hr class="my-2" />
+              <div class="p-2">
+                <HeadlessMenuItem v-slot="{ close }">
+                  <button class="w-full">
+                    <NuxtLink
+                      @click="close"
+                      to="/profile"
+                      class="block rounded-md p-2 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-gray-asparagus-tr"
+                    >
+                      <span class="flex items-center">
+                        <span> Profile </span>
+                      </span>
+                    </NuxtLink>
+                  </button>
+                </HeadlessMenuItem>
+              </div>
+
+              <div class="p-2">
+                <HeadlessMenuItem v-slot="{ active }">
                   <button
                     @click="handleLogout"
                     :disabled="isLoading"
@@ -83,11 +90,11 @@
                       <span class=""> Logout </span>
                     </span>
                   </button>
-                </div>
+                </HeadlessMenuItem>
               </div>
-            </HeadlessPopoverPanel>
+            </HeadlessMenuItems>
           </transition>
-        </HeadlessPopover>
+        </HeadlessMenu>
       </div>
     </nav>
     <HeadlessDialog
