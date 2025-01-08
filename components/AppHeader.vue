@@ -36,7 +36,11 @@
               class="group inline-flex items-center rounded-md text-base font-medium focus:outline-none hover:text-gray-asparagus-tr"
             >
               <NuxtImg
-                :src="user.avatar || '/images/avatar.png'"
+                :src="
+                  user.avatar
+                    ? config.public.apiBase + user.avatar
+                    : '/images/avatar.png'
+                "
                 class="w-8 h-8 aspect-square mr-2 ring-1 ring-gray-200 rounded-full bg-gray-100"
               />
 
@@ -177,14 +181,13 @@ import {
 } from "@heroicons/vue/24/outline";
 
 const router = useRouter();
-
-const mobileMenuOpen = ref(false);
-
-const isLoading = ref(false);
-
+const config = useRuntimeConfig();
 const authStore = useAuthStore();
 
 const { user } = storeToRefs(authStore);
+
+const mobileMenuOpen = ref(false);
+const isLoading = ref(false);
 
 const handleLogout = async () => {
   isLoading.value = true;

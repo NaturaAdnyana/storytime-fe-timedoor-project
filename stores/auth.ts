@@ -120,7 +120,7 @@ export const useAuthStore = defineStore("authStore", () => {
         }
       );
       return {
-        url: `${config.public.apiBase + response.url}`,
+        path: response.url,
       };
     } else {
       return "No token";
