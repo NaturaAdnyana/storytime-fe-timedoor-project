@@ -14,7 +14,7 @@
         />
       </div>
       <div class="flex-1 md:basis-8/12 flex flex-col justify-center md:px-10">
-        <h1 class="font-dm-sans text-2xl mb-1">{{ user.username }}</h1>
+        <h1 class="font-dm-sans text-2xl mb-1">{{ user.name }}</h1>
         <p class="mb-4">{{ user.email }}</p>
         <p>
           {{ user.bio }}
@@ -87,6 +87,30 @@
               <div class="mt-10">
                 <form @submit.prevent="handleSubmit" class="flex flex-wrap">
                   <div class="space-y-4 basis-full md:basis-1/2 md:px-5">
+                    <HeadlessTransitionRoot
+                      :show="showErrorMessage"
+                      enter="transition-opacity duration-75"
+                      enter-from="opacity-0"
+                      enter-to="opacity-100"
+                      leave="transition-opacity duration-150"
+                      leave-from="opacity-100"
+                      leave-to="opacity-0"
+                    >
+                      <div
+                        class="bg-red-200 w-full p-3 rounded-lg text-red-700 text-sm flex justify-between items-center"
+                      >
+                        <span>
+                          {{ errorMessage.message }}
+                        </span>
+                        <button
+                          class="bg-red-100 rounded-full p-1"
+                          type="button"
+                          @click="handleClearErrorMessages"
+                        >
+                          <XMarkIcon class="w-5 h-5" />
+                        </button>
+                      </div>
+                    </HeadlessTransitionRoot>
                     <BaseProfileImgInput
                       id="profile-image"
                       name="profile-image"
@@ -95,7 +119,7 @@
                         config.public.apiBase + updateUserData.avatar
                       "
                       @update:file="handleFileUpdate"
-                      :isLoading="isLoading"
+                      :isLoading="isAvatarLoading"
                     />
                     <BaseInput
                       type="text"
@@ -103,6 +127,7 @@
                       label="Name"
                       placeholder="Your Name"
                       v-model="updateUserData.name"
+                      :messages="errorMessage.name"
                     />
                     <BaseInput
                       type="text"
@@ -126,6 +151,7 @@
                       label="About Me"
                       placeholder="Your Bio"
                       v-model="updateUserData.bio"
+                      :messages="errorMessage.bio"
                     />
                   </div>
                   <div
@@ -138,6 +164,7 @@
                       label="Old Password"
                       placeholder="Enter your old password"
                       v-model="updateUserData.oldPassword"
+                      :messages="errorMessage.oldPassword"
                     />
                     <BaseInput
                       type="password"
@@ -145,6 +172,7 @@
                       label="New Password"
                       placeholder="Enter your new password"
                       v-model="updateUserData.newPassword"
+                      :messages="errorMessage.newPassword"
                     />
                     <BaseInput
                       type="password"
@@ -152,14 +180,26 @@
                       label="Confirm New Password"
                       placeholder="Re-enter your new password"
                       v-model="updateUserData.confirmNewPassword"
+                      :messages="errorMessage.confirmNewPassword"
                     />
                   </div>
                   <div class="basis-full px-0 md:px-5 pt-5 space-x-5">
-                    <button @click="toggleModal" class="btn btn-outline">
+                    <button
+                      type="button"
+                      @click="toggleModal"
+                      class="btn btn-outline"
+                    >
                       Cancel
                     </button>
                     <button type="submit" class="btn btn-solid">
-                      Update Profile
+                      <span
+                        v-if="isUpdateLoading"
+                        class="flex items-center gap-2"
+                      >
+                        <div class="loader animate-spin"></div>
+                        Loading...
+                      </span>
+                      <span v-else>Update Profile</span>
                     </button>
                   </div>
                 </form>
@@ -173,9 +213,14 @@
 </template>
 
 <script setup>
+import { XMarkIcon } from "@heroicons/vue/24/outline";
+
 definePageMeta({ scrollToTop: false });
+
 const isOpen = ref(false);
-const isLoading = ref(false);
+const isUpdateLoading = ref(false);
+const isAvatarLoading = ref(false);
+const showErrorMessage = ref(false);
 
 const toggleModal = () => {
   isOpen.value = !isOpen.value;
@@ -191,27 +236,73 @@ const updateUserData = reactive({
   username: user.value.username,
   email: user.value.email,
   avatar: user.value.avatar,
+  bio: user.value.bio,
   oldPassword: "",
   newPassword: "",
   confirmNewPassword: "",
 });
 
+const errorMessage = reactive({
+  message: "",
+  name: "",
+  avatar: "",
+  bio: "",
+  oldPassword: "",
+  newPassword: "",
+  confirmNewPassword: "",
+});
+
+const handleClearErrorMessages = () => {
+  showErrorMessage.value = false;
+  errorMessage.message = "";
+  errorMessage.avatar = "";
+  errorMessage.name = "";
+  errorMessage.bio = "";
+  errorMessage.oldPassword = "";
+  errorMessage.newPassword = "";
+  errorMessage.confirmNewPassword = "";
+  clearError();
+};
+
 const handleFileUpdate = async (file) => {
   if (file) {
-    isLoading.value = true;
+    isAvatarLoading.value = true;
     try {
       const response = await authStore.uploadAvatar({ file: file });
       updateUserData.avatar = response.path;
     } catch (error) {
       console.error(error);
     } finally {
-      isLoading.value = false;
+      isAvatarLoading.value = false;
     }
   }
 };
 
-const handleSubmit = () => {
-  console.log("Profile updated", updateUserData);
+const handleSubmit = async () => {
+  isUpdateLoading.value = true;
+  handleClearErrorMessages();
+  try {
+    await authStore.update({
+      name: updateUserData.name,
+      avatar: updateUserData.avatar,
+      bio: updateUserData.bio,
+      oldPassword: updateUserData.oldPassword,
+      newPassword: updateUserData.newPassword,
+      confirmNewPassword: updateUserData.confirmNewPassword,
+    });
+  } catch (error) {
+    showErrorMessage.value = true;
+    errorMessage.message = error.data.message || "";
+    errorMessage.name = error.data.errors?.name || "";
+    errorMessage.avatar = error.data.errors?.avatar || "";
+    errorMessage.bio = error.data.errors?.bio || "";
+    errorMessage.oldPassword = error.data.errors?.old_password || "";
+    errorMessage.newPassword = error.data.errors?.new_password || "";
+    errorMessage.confirmNewPassword =
+      error.data.errors?.confirm_new_password || "";
+  } finally {
+    isUpdateLoading.value = false;
+  }
 };
 </script>
 

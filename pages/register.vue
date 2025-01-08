@@ -47,35 +47,35 @@
           type="text"
           placeholder="Enter your name"
           v-model="registerData.name"
-          :message="errorMessage.name"
+          :messages="errorMessage.name"
         />
         <BaseInput
           label="Username"
           type="text"
           placeholder="Enter your username"
           v-model="registerData.username"
-          :message="errorMessage.username"
+          :messages="errorMessage.username"
         />
         <BaseInput
           label="Email"
           type="email"
           placeholder="Enter your email"
           v-model="registerData.email"
-          :message="errorMessage.email"
+          :messages="errorMessage.email"
         />
         <BaseInput
           label="Password"
           type="password"
           placeholder="Enter your chosen password"
           v-model="registerData.password"
-          :message="errorMessage.password"
+          :messages="errorMessage.password"
         />
         <BaseInput
           label="Confirm Password"
           type="password"
           placeholder="Re-enter your chosen password"
           v-model="registerData.confirmPassword"
-          :message="errorMessage.confirmPassword"
+          :messages="errorMessage.confirmPassword"
         />
         <button
           type="submit"
@@ -170,16 +170,13 @@ const handleRegister = async () => {
     });
     router.push({ path: "/" });
   } catch (error) {
-    console.log(error.data);
     showErrorMessage.value = true;
     errorMessage.message = error.data.message || "";
-    errorMessage.name = error.data.errors?.name?.[0] || "";
-    errorMessage.username = error.data.errors?.username?.[0] || "";
-    errorMessage.email = error.data.errors?.email?.[0] || "";
-    errorMessage.password = error.data.errors?.password?.[0] || "";
-    errorMessage.confirmPassword =
-      error.data.errors?.confirmPassword?.[0] || "";
-    console.log(errorMessage);
+    errorMessage.name = error.data.errors?.name || "";
+    errorMessage.username = error.data.errors?.username || "";
+    errorMessage.email = error.data.errors?.email || "";
+    errorMessage.password = error.data.errors?.password || "";
+    errorMessage.confirmPassword = error.data.errors?.confirmPassword || "";
   } finally {
     isLoading.value = false;
   }

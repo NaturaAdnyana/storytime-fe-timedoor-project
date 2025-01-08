@@ -37,11 +37,11 @@
         <span class="sr-only">Toggle Password Visibility</span>
       </button>
     </div>
-    <p class="text-red-500 text-xs h-1">
-      <span v-show="message">
+    <div class="text-red-500 text-xs">
+      <p class="mb-1" v-show="messages" v-for="message in messages">
         {{ message }}
-      </span>
-    </p>
+      </p>
+    </div>
   </div>
 </template>
 
@@ -55,7 +55,7 @@ const {
   placeholder,
   disabled,
   modelValue,
-  message,
+  messages,
   required,
 } = defineProps({
   label: String,
@@ -70,7 +70,7 @@ const {
     default: false,
   },
   modelValue: String,
-  message: Array,
+  messages: Array,
   required: false,
 });
 

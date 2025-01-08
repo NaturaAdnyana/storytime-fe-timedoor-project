@@ -6,6 +6,7 @@
       type="file"
       class="sr-only"
       @change="handleFileChange"
+      :disabled="isLoading"
     />
     <NuxtImg
       :src="imageUrl ? imageUrl : '/images/avatar.png'"
@@ -24,6 +25,11 @@
       <span v-else>Change Picture</span>
     </label>
   </div>
+  <div class="text-red-500 text-xs">
+    <p class="mb-1" v-show="messages" v-for="message in messages">
+      {{ message }}
+    </p>
+  </div>
 </template>
 
 <script setup>
@@ -32,6 +38,7 @@ const props = defineProps({
   name: String,
   imageUrl: String,
   isLoading: Boolean,
+  messages: Array,
 });
 
 const emit = defineEmits(["update:file"]);

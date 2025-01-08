@@ -35,7 +35,7 @@
             type="text"
             placeholder="Enter your username or email"
             v-model="loginData.email"
-            :message="errorMessage.email"
+            :messages="errorMessage.email"
             required="true"
           />
         </div>
@@ -44,7 +44,7 @@
           type="password"
           placeholder="Enter your password"
           v-model="loginData.password"
-          :message="errorMessage.password"
+          :messages="errorMessage.password"
           required="true"
         />
         <button
@@ -134,8 +134,8 @@ const handleLogin = async () => {
   } catch (error) {
     showErrorMessage.value = true;
     errorMessage.message = error.data.message || "";
-    errorMessage.email = error.data.errors?.email[0] || "";
-    errorMessage.password = error.data.errors?.password[0] || "";
+    errorMessage.email = error.data.errors?.username_or_email || "";
+    errorMessage.password = error.data.errors?.password || "";
   } finally {
     isLoading.value = false;
   }

@@ -127,6 +127,54 @@ export const useAuthStore = defineStore("authStore", () => {
     }
   }
 
+  async function update({
+    avatar,
+    name,
+    // username,
+    // email,
+    bio,
+    oldPassword,
+    newPassword,
+    confirmNewPassword,
+  }: {
+    avatar?: string;
+    name?: string;
+    // username: string;
+    // email: string;
+    bio?: string;
+    oldPassword?: string;
+    newPassword?: string;
+    confirmNewPassword?: string;
+  }) {
+    const payload: Record<string, any> = {};
+    if (avatar) payload.avatar = avatar;
+    if (name) payload.name = name;
+    if (bio) payload.bio = bio;
+    if (oldPassword) payload.old_password = oldPassword;
+    if (newPassword) {
+      payload.new_password = newPassword;
+      payload.new_password_confirmation = confirmNewPassword;
+    }
+    console.log(payload);
+    const response: any = await $fetch(config.public.apiBase + "/api/user", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token.value}`,
+      },
+      body: JSON.stringify(payload),
+      onResponse({ response }) {
+        if (response.status === 200) {
+          fetchData();
+        }
+      },
+      onResponseError({ response }) {
+        console.error(response);
+      },
+    });
+    return response;
+  }
+
   async function logout() {
     if (token.value) {
       const response: any = await $fetch(
@@ -153,5 +201,14 @@ export const useAuthStore = defineStore("authStore", () => {
     }
   }
 
-  return { user, token, login, register, fetchData, uploadAvatar, logout };
+  return {
+    user,
+    token,
+    login,
+    register,
+    fetchData,
+    uploadAvatar,
+    update,
+    logout,
+  };
 });
