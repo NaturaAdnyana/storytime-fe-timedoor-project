@@ -16,7 +16,7 @@
         <button
           type="button"
           class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-quartz"
-          @click="mobileMenuOpen = true"
+          @click="isMobileMenuOpen = true"
         >
           <span class="sr-only">Open main menu</span>
           <Bars3Icon class="size-6" aria-hidden="true" />
@@ -103,26 +103,30 @@
     </nav>
     <HeadlessDialog
       class="lg:hidden"
-      @close="mobileMenuOpen = false"
-      :open="mobileMenuOpen"
+      @close="isMobileMenuOpen = false"
+      :open="isMobileMenuOpen"
     >
       <div class="fixed inset-0 z-50" />
       <HeadlessDialogPanel
         class="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-4 py-4 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10"
       >
         <div class="flex items-center justify-between">
-          <a href="#" class="-m-1.5 p-1.5">
+          <NuxtLink
+            to="/"
+            class="-m-1.5 p-1.5"
+            @click="isMobileMenuOpen = false"
+          >
             <span class="sr-only">Storytime</span>
             <img
               class="h-8 w-auto"
               src="/logos/logo.png"
               alt="Storytime logo"
             />
-          </a>
+          </NuxtLink>
           <button
             type="button"
             class="-m-2.5 rounded-md p-2.5 text-gray-700"
-            @click="mobileMenuOpen = false"
+            @click="isMobileMenuOpen = false"
           >
             <span class="sr-only">Close menu</span>
             <XMarkIcon class="size-6" aria-hidden="true" />
@@ -142,7 +146,7 @@
                 >Log in</NuxtLink
               >
             </div>
-            <div class="py-6" v-else>
+            <div class="py-6" v-else @click="isMobileMenuOpen = false">
               <NuxtLink
                 to="/profile"
                 class="block rounded-md p-2 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-gray-asparagus-tr"
@@ -186,7 +190,7 @@ const authStore = useAuthStore();
 
 const { user } = storeToRefs(authStore);
 
-const mobileMenuOpen = ref(false);
+const isMobileMenuOpen = ref(false);
 const isLoading = ref(false);
 
 const handleLogout = async () => {
