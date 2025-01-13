@@ -13,18 +13,17 @@
         <swiper-container
           ref="containerRef"
           :slides-per-view="3.5"
-          :spaceBetween="20"
+          :spaceBetween="24"
           :slidesOffsetBefore="110"
           :slidesOffsetAfter="110"
           :breakpoints="{
             0: {
-              slidesPerView: 1.2,
-              spaceBetween: 10,
+              slidesPerView: 1.15,
               slidesOffsetBefore: 24,
               slidesOffsetAfter: 24,
             },
-            640: { slidesPerView: 2, spaceBetween: 20 },
-            1024: { slidesPerView: 3.5, spaceBetween: 20 },
+            640: { slidesPerView: 2 },
+            1024: { slidesPerView: 3.5 },
           }"
         >
           <swiper-slide

@@ -26,13 +26,16 @@
           </HeadlessComboboxButton>
         </div>
         <HeadlessTransitionRoot
-          leave="transition ease-in duration-100"
+          enter="transition-opacity duration-150"
+          enter-from="opacity-0"
+          enter-to="opacity-100"
+          leave="transition ease-in duration-150"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
           @after-leave="query = ''"
         >
           <HeadlessComboboxOptions
-            class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
+            class="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm z-10"
           >
             <div
               v-if="filteredData.length === 0 && query !== ''"
@@ -80,6 +83,11 @@
         </HeadlessTransitionRoot>
       </div>
     </HeadlessCombobox>
+    <div class="text-red-500 text-xs">
+      <p class="mb-1" v-show="messages" v-for="message in messages">
+        {{ message }}
+      </p>
+    </div>
   </div>
 </template>
 
@@ -93,6 +101,7 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  messages: Array,
 });
 
 const emit = defineEmits(["update:modelValue"]);

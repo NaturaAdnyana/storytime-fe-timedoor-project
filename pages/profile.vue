@@ -5,7 +5,7 @@
         <NuxtImg
           class="mx-auto w-full h-full object-cover rounded-full bg-gray-100 ring-1 ring-gray-200"
           :src="
-            user.avatar
+            user?.avatar
               ? config.public.apiBase + user.avatar
               : '/images/avatar.png'
           "
@@ -14,10 +14,10 @@
         />
       </div>
       <div class="flex-1 md:basis-8/12 flex flex-col justify-center md:px-10">
-        <h1 class="font-dm-sans text-2xl mb-1">{{ user.name }}</h1>
-        <p class="mb-4">{{ user.email }}</p>
+        <h1 class="font-dm-sans text-2xl mb-1">{{ user?.name }}</h1>
+        <p class="mb-4">{{ user?.email }}</p>
         <p>
-          {{ user.bio }}
+          {{ user?.bio }}
         </p>
       </div>
       <div
@@ -40,7 +40,7 @@
             Share your unique voice with the world – start writing your story
             today!
           </p>
-          <button class="btn btn-solid">Write Story</button>
+          <NuxtLink to="/write" class="btn btn-solid">Write Story</NuxtLink>
         </div>
       </aside>
       <main class="basis-full md:basis-8/12">

@@ -155,7 +155,7 @@ export const useAuthStore = defineStore("authStore", () => {
       payload.new_password = newPassword;
       payload.new_password_confirmation = confirmNewPassword;
     }
-    console.log(payload);
+    // console.log(payload);
     const response: any = await $fetch(config.public.apiBase + "/api/user", {
       method: "PATCH",
       headers: {

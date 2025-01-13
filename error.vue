@@ -20,15 +20,13 @@ const handleError = () => clearError({ redirect: "/" });
       >
         <h1 class="text-9xl font-bold">{{ error.statusCode }}</h1>
         <h2 class="text-3xl font-bold">
-          {{
-            error.statusCode === 404 ? error.message : "Something went wrong."
-          }}
+          {{ error.message }}
         </h2>
         <p>
           {{
             error.statusCode === 404
               ? "Oops! It looks like this page doesn't exist. Please check the URL or return to the homepage."
-              : error.message
+              : ""
           }}
         </p>
         <div>

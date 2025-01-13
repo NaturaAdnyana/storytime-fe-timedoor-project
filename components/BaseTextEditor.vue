@@ -14,6 +14,11 @@
         />
       </ClientOnly>
     </div>
+    <div class="text-red-500 text-xs">
+      <p class="mb-1" v-show="messages" v-for="message in messages">
+        {{ message }}
+      </p>
+    </div>
   </div>
 </template>
 
@@ -28,6 +33,7 @@ const props = defineProps({
     type: String,
     default: "",
   },
+  messages: Array,
 });
 
 const emit = defineEmits(["update:modelValue"]);
