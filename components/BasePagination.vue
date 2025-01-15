@@ -54,7 +54,7 @@
               ]"
             >
               <div
-                v-if="isLoading === 'pending'"
+                v-if="isLoading === 'pending' || isLoading === false"
                 class="loader animate-spin"
               ></div>
               <span v-else>{{ page }}</span>

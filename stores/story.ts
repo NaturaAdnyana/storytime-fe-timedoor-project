@@ -54,7 +54,6 @@ export const useStoryStore = defineStore("storyStore", () => {
         onResponse({ response }) {
           if (response.status === 200) {
             stories[type][page] = response._data.data.stories;
-            console.log(stories[type][page]);
             currentPage[type] = page;
           }
         },

@@ -45,7 +45,7 @@
       :to="stories?.myStories[currentPage.myStories]?.to || 0"
       :totalResult="stories?.myStories[currentPage.myStories]?.total || 0"
       :totalPage="stories?.myStories[currentPage.myStories]?.last_page || 0"
-      :current-page="currentPage.myStories"
+      :currentPage="currentPage.myStories"
       :isLoading="status"
     />
   </div>
@@ -53,12 +53,15 @@
 
 <script setup>
 const storyStore = useStoryStore();
-
-const { status } = await useLazyAsyncData("stories", () =>
-  storyStore.fetchStories("myStories")
-);
+const route = useRoute();
 
 const { stories, currentPage } = storeToRefs(storyStore);
+
+currentPage.value.myStories = parseInt(route.query.page) || 1;
+
+const { status } = await useLazyAsyncData("stories", () =>
+  storyStore.fetchStories("myStories", currentPage.value.myStories)
+);
 
 onBeforeUnmount(() => {
   storyStore.clearStories();
