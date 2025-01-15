@@ -35,14 +35,23 @@
             <HeadlessMenuButton
               class="group inline-flex items-center rounded-md text-base font-medium focus:outline-none hover:text-gray-asparagus-tr"
             >
-              <NuxtImg
-                :src="
-                  user.avatar
-                    ? config.public.apiBase + user.avatar
-                    : '/images/avatar.png'
-                "
-                class="w-8 h-8 aspect-square mr-2 ring-1 ring-gray-200 rounded-full bg-gray-100"
-              />
+              <div class="relative mr-2">
+                <NuxtImg
+                  :src="
+                    user.avatar
+                      ? config.public.apiBase + user.avatar
+                      : '/images/avatar.png'
+                  "
+                  class="w-8 h-8 aspect-square ring-1 ring-gray-200 rounded-full bg-gray-100"
+                  :class="isLoading && 'opacity-70'"
+                />
+                <div
+                  v-show="isLoading"
+                  class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                >
+                  <div class="loader animate-spin"></div>
+                </div>
+              </div>
 
               <span>{{ user.username }}</span>
               <ChevronDownIcon

@@ -31,8 +31,13 @@
             ?.data"
           :key="idx"
         >
-          <!-- {{ story }} -->
-          <StoryCard :show-action="true" is-user="user" :data="story" />
+          <StoryCard
+            :show-action="true"
+            is-user="user"
+            :data="story"
+            @bookmarkClicked="handleBookmark"
+            @deleteClicked="handleDelete"
+          />
         </div>
       </div>
     </template>
@@ -74,7 +79,7 @@ watch(
   async (newPage) => {
     router.push({
       query: {
-        ...route.query, // Preserve other query params
+        ...route.query,
         page: newPage.myStories,
       },
     });
@@ -84,6 +89,14 @@ watch(
   },
   { deep: true }
 );
+
+const handleBookmark = (id) => {
+  console.log("its working", id);
+};
+
+const handleDelete = (id) => {
+  console.log("its working", id);
+};
 </script>
 
 <style lang="scss" scoped></style>
