@@ -1,8 +1,76 @@
 export const useStoryStore = defineStore("storyStore", () => {
-  const stories = ref();
+  const stories = reactive<{
+    all: Record<number, any[]>;
+    myStories: Record<number, any[]>;
+    bookmark: Record<number, any[]>;
+  }>({
+    all: {},
+    myStories: {},
+    bookmark: {},
+  });
+
+  const currentPage = reactive<{
+    all: number;
+    myStories: number;
+    bookmark: number;
+  }>({
+    all: 1,
+    myStories: 1,
+    bookmark: 1,
+  });
+
   const categories = ref();
   const token = useCookie("token");
   const config = useRuntimeConfig();
+
+  async function fetchStories(
+    type: "all" | "myStories" | "bookmark" = "all",
+    page: number = 1
+  ) {
+    if (stories[type][page]) {
+      currentPage[type] = page;
+      return;
+    }
+
+    const endpoint = {
+      all: "/api/stories",
+      myStories: "/api/stories/my",
+      bookmark: "/api/stories/bookmarks",
+    };
+
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+
+    if (type === "myStories") {
+      headers.Authorization = `Bearer ${token.value}`;
+    }
+
+    const response: any = await $fetch(
+      `${config.public.apiBase}${endpoint[type]}?page=${page}`,
+      {
+        method: "GET",
+        headers,
+        onResponse({ response }) {
+          if (response.status === 200) {
+            stories[type][page] = response._data.data.stories;
+            console.log(stories[type][page]);
+            currentPage[type] = page;
+          }
+        },
+        onResponseError({ response }) {
+          console.error(response);
+          showError({
+            fatal: true,
+            statusCode: response.status,
+            statusMessage:
+              "Something went wrong when fetching data. Please contact support.",
+          });
+        },
+      }
+    );
+    return response;
+  }
 
   async function create({
     title,
@@ -87,5 +155,24 @@ export const useStoryStore = defineStore("storyStore", () => {
     }
   }
 
-  return { stories, categories, create, fetchCategories, uploadImage };
+  function clearStories(type?: "all" | "myStories" | "bookmark") {
+    if (type) {
+      stories[type] = {};
+    } else {
+      stories.all = {};
+      stories.myStories = {};
+      stories.bookmark = {};
+    }
+  }
+
+  return {
+    stories,
+    currentPage,
+    categories,
+    create,
+    fetchStories,
+    fetchCategories,
+    uploadImage,
+    clearStories,
+  };
 });

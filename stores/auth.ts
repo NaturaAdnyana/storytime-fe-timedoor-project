@@ -25,7 +25,7 @@ export const useAuthStore = defineStore("authStore", () => {
       onResponse({ response }) {
         if (response.status === 200) {
           token.value = response._data.data.token;
-          fetchData();
+          useAsyncData("stories", () => fetchData());
         }
       },
       onResponseError({ response }) {
@@ -65,7 +65,7 @@ export const useAuthStore = defineStore("authStore", () => {
         onResponse({ response }) {
           if (response.status === 201) {
             token.value = response._data.data.token;
-            fetchData();
+            useAsyncData("stories", () => fetchData());
           }
         },
         onResponseError({ response }) {
@@ -165,7 +165,7 @@ export const useAuthStore = defineStore("authStore", () => {
       body: JSON.stringify(payload),
       onResponse({ response }) {
         if (response.status === 200) {
-          fetchData();
+          useAsyncData("stories", () => fetchData());
         }
       },
       onResponseError({ response }) {

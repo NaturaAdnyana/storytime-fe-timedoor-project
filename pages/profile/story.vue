@@ -1,32 +1,78 @@
 <template>
-  <div
-    v-if="slides.length === 0"
-    class="flex flex-col items-center gap-6 text-center"
-  >
-    <h3 class="font-playfair-display font-semibold">No Stories Yet</h3>
-    <p class="px-10">
-      You haven't shared any stories yet. Start your fitness journey today!
-    </p>
-    <img src="/images/empty-story.svg" alt="Empty Story" class="w-1/3" />
-  </div>
-  <div v-else class="px-0 md:pl-10">
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-10 pb-10">
-      <div v-for="(slide, idx) in slides" :key="idx">
-        <StoryCard :show-action="true" is-user="user" />
-      </div>
+  <div class="px-0 md:pl-10">
+    <div
+      v-if="status == 'pending'"
+      class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-10 pb-10"
+    >
+      <StoryCard :isLoading="true" is-user="user" />
+      <StoryCard :isLoading="true" />
     </div>
-    <BasePagination />
+    <template v-else>
+      <div
+        v-if="stories?.myStories[currentPage.myStories]?.data.length === 0"
+        class="flex flex-col items-center gap-6 text-center"
+      >
+        <h3 class="font-playfair-display font-semibold">No Stories Yet</h3>
+        <p class="px-10">
+          You haven't shared any stories yet. Start your fitness journey today!
+        </p>
+        <NuxtImg
+          src="/images/empty-story.svg"
+          alt="Not stories!"
+          class="w-1/3"
+        />
+      </div>
+      <div
+        v-else
+        class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-10 pb-10"
+      >
+        <div
+          v-for="(story, idx) in stories?.myStories[currentPage.myStories]
+            ?.data"
+          :key="idx"
+        >
+          <StoryCard :show-action="true" is-user="user" />
+        </div>
+      </div>
+    </template>
+    <BasePagination
+      v-model="currentPage.myStories"
+      v-show="
+        stories?.myStories &&
+        stories?.myStories[currentPage.myStories]?.data.length !== 0
+      "
+      :from="stories?.myStories[currentPage.myStories]?.from || 0"
+      :to="stories?.myStories[currentPage.myStories]?.to || 0"
+      :totalResult="stories?.myStories[currentPage.myStories]?.total || 0"
+      :totalPage="stories?.myStories[currentPage.myStories]?.last_page || 0"
+      :current-page="currentPage.myStories"
+      :isLoading="status"
+    />
   </div>
 </template>
 
 <script setup>
-const slides = ref(Array.from({ length: 10 }));
-// const slides = [];
+const storyStore = useStoryStore();
 
-const user = ref({
-  name: "Iswara",
-  email: "",
+const { status } = await useLazyAsyncData("stories", () =>
+  storyStore.fetchStories("myStories")
+);
+
+const { stories, currentPage } = storeToRefs(storyStore);
+
+onBeforeUnmount(() => {
+  storyStore.clearStories();
 });
+
+watch(
+  currentPage,
+  async (newPage) => {
+    await useLazyAsyncData("stories", () =>
+      storyStore.fetchStories("myStories", newPage.myStories)
+    );
+  },
+  { deep: true }
+);
 </script>
 
 <style lang="scss" scoped></style>

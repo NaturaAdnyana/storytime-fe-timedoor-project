@@ -118,12 +118,14 @@ const storyData = reactive({
   images: [],
 });
 
-try {
-  await storyStore.fetchCategories();
-  storyData.category = storyStore.categories[0];
-} catch (error) {
-  console.log(error);
+if (!storyStore.categories) {
+  try {
+    await useAsyncData("categories", () => storyStore.fetchCategories());
+  } catch (error) {
+    console.log(error);
+  }
 }
+storyData.category = storyStore.categories[0];
 
 const errorMessage = reactive({
   message: "",
