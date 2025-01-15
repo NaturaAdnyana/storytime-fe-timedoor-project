@@ -1,5 +1,5 @@
 <template>
-  <div class="h-full flex flex-col">
+  <NuxtLink :to="data?.slug || 0" class="h-full flex flex-col">
     <div class="relative w-full h-full flex-1 overflow-hidden">
       <div
         v-if="isLoading"
@@ -110,7 +110,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </NuxtLink>
 </template>
 
 <script setup>
@@ -123,6 +123,9 @@ const { showAction, isUser, isLoading } = defineProps({
     type: {},
   },
   isLoading: Boolean,
+  data: {
+    type: {},
+  },
 });
 </script>
 

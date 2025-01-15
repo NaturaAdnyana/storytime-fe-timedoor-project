@@ -31,7 +31,8 @@
             ?.data"
           :key="idx"
         >
-          <StoryCard :show-action="true" is-user="user" />
+          <!-- {{ story }} -->
+          <StoryCard :show-action="true" is-user="user" :data="story" />
         </div>
       </div>
     </template>
@@ -54,6 +55,7 @@
 <script setup>
 const storyStore = useStoryStore();
 const route = useRoute();
+const router = useRouter();
 
 const { stories, currentPage } = storeToRefs(storyStore);
 
@@ -70,6 +72,12 @@ onBeforeUnmount(() => {
 watch(
   currentPage,
   async (newPage) => {
+    router.push({
+      query: {
+        ...route.query, // Preserve other query params
+        page: newPage.myStories,
+      },
+    });
     await useLazyAsyncData("stories", () =>
       storyStore.fetchStories("myStories", newPage.myStories)
     );
