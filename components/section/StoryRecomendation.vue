@@ -31,7 +31,12 @@
             :key="idx"
             class="flex flex-col"
           >
-            <StoryCard :data="story" :getStory="getStory" :userId="user.id" />
+            <StoryCard
+              :data="story"
+              :getStory="getStory"
+              :userId="user?.id || 0"
+              showAction="bookmark-only"
+            />
           </swiper-slide>
         </swiper-container>
       </ClientOnly>

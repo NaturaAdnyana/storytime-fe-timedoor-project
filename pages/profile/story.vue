@@ -32,7 +32,7 @@
           :key="idx"
         >
           <StoryCard
-            :showAction="true"
+            showAction="all"
             :userId="user.id"
             :data="story"
             getStory="myStories"

@@ -13,7 +13,7 @@
   <div v-else class="px-0 md:pl-10">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-10 pb-10">
       <div v-for="(slide, idx) in slides" :key="idx">
-        <StoryCard :show-action="false" />
+        <StoryCard showAction="none" />
       </div>
     </div>
     <BasePagination />

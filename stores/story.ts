@@ -183,11 +183,9 @@ export const useStoryStore = defineStore("storyStore", () => {
           for (const story of storiesData) {
             if (story.id === id) {
               if (story.bookmarks[0]?.user_id === authStore.user?.id) {
-                console.log("BOOKMARKED");
                 story.bookmarks = [];
                 break;
               } else {
-                console.log("NOT BOOKMARKED");
                 story.bookmarks = [{ user_id: authStore.user?.id }];
                 break;
               }

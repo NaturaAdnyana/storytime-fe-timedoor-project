@@ -22,7 +22,7 @@
       />
       <div
         class="absolute bottom-4 right-4 flex space-x-2"
-        v-if="showAction && userId"
+        v-if="showAction === 'all'"
       >
         <div
           v-if="isLoading"
@@ -31,18 +31,20 @@
         <template v-else>
           <NuxtLink
             :to="data?.slug + '/edit'"
-            class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green shadow"
+            class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green"
           >
             <img src="/icons/edit.svg" alt="edit" />
           </NuxtLink>
           <button
+            :disabled="isActionLoading.bookmarkBtn"
             @click.prevent="handleBookmark(data?.id)"
-            class="rounded-full w-12 h-12 p-2 flex justify-center items-center transition shadow"
-            :class="
+            class="rounded-full w-12 h-12 p-2 flex justify-center items-center transition"
+            :class="[
               isBookmarked
-                ? 'bg-white hover:bg-isabelline-sc bookmarked'
-                : 'bg-gray-asparagus-tr hover:bg-kombu-green'
-            "
+                ? 'bg-white hover:bg-isabelline-sc bookmarked border'
+                : 'bg-gray-asparagus-tr hover:bg-kombu-green',
+              isActionLoading.bookmarkBtn && 'opacity-70 animate-pulse',
+            ]"
           >
             <BookmarkIcon
               v-if="isBookmarked"
@@ -53,26 +55,31 @@
           </button>
           <button
             @click.prevent="$emit('deleteClicked', data?.id)"
-            class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green shadow"
+            class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green"
           >
             <img src="/icons/delete.svg" alt="delete" />
           </button>
         </template>
       </div>
-      <div class="absolute bottom-4 right-4" v-else-if="showAction">
+      <div
+        class="absolute bottom-4 right-4"
+        v-else-if="showAction === 'bookmark-only'"
+      >
         <div
           v-if="isLoading"
           class="rounded-full w-12 h-12 bg-slate-300 animate-pulse"
         ></div>
         <button
           v-else
+          :disabled="isActionLoading.bookmarkBtn"
           @click.prevent="handleBookmark(data?.id)"
-          class="rounded-full w-12 h-12 p-2 flex justify-center items-center transition shadow"
-          :class="
+          class="rounded-full w-12 h-12 p-2 flex justify-center items-center transition"
+          :class="[
             isBookmarked
-              ? 'bg-white hover:bg-isabelline-sc bookmarked'
-              : 'bg-gray-asparagus-tr hover:bg-kombu-green'
-          "
+              ? 'bg-white hover:bg-isabelline-sc bookmarked border'
+              : 'bg-gray-asparagus-tr hover:bg-kombu-green',
+            isActionLoading.bookmarkBtn && 'opacity-70 animate-pulse',
+          ]"
         >
           <BookmarkIcon
             v-if="isBookmarked"
@@ -103,7 +110,7 @@
     <div class="absolute bottom-0 w-full flex justify-between text-sm">
       <div
         class="basis-3/7 flex items-center gap-2 overflow-hidden"
-        v-show="!userId"
+        v-show="showAction !== 'all'"
       >
         <div
           v-if="isLoading"
@@ -130,14 +137,14 @@
       <div
         :class="[
           'basis-full flex items-center gap-3',
-          userId ? 'justify-between' : 'justify-end',
+          showAction === 'all' ? 'justify-between' : 'justify-end',
         ]"
       >
         <div
           v-if="isLoading"
           class="w-16 h-4 bg-slate-200 animate-pulse rounded-lg"
         ></div>
-        <span v-else :class="userId && 'order-last'">
+        <span v-else :class="showAction === 'all' && 'order-last'">
           {{ dateFormatter(data?.updated_at) }}
         </span>
         <div
@@ -161,7 +168,8 @@ const config = useRuntimeConfig();
 
 const { showAction, userId, isLoading, data, getStory } = defineProps({
   showAction: {
-    type: Boolean,
+    type: String,
+    // bookmark-only || all || none
     default: true,
   },
   userId: Number,
@@ -178,12 +186,18 @@ const { showAction, userId, isLoading, data, getStory } = defineProps({
 const showErrorMessage = ref(false);
 const isBookmarked = ref(data?.bookmarks[0]?.user_id === userId || false);
 
+const isActionLoading = reactive({
+  bookmarkBtn: false,
+  deleteBtn: false,
+});
+
 const handleClearErrorMessages = () => {
   showErrorMessage.value = false;
   clearError();
 };
 
 const handleBookmark = async (id) => {
+  isActionLoading.bookmarkBtn = true;
   handleClearErrorMessages();
   const storyStore = useStoryStore();
   const { stories, currentPage } = storeToRefs(storyStore);
@@ -193,6 +207,7 @@ const handleBookmark = async (id) => {
   } catch (error) {
     console.log(error);
   } finally {
+    isActionLoading.bookmarkBtn = false;
   }
 };
 
