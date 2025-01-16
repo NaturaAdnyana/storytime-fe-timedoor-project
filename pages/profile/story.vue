@@ -32,8 +32,8 @@
           :key="idx"
         >
           <StoryCard
-            :show-action="true"
-            is-user="user"
+            :showAction="true"
+            :userId="user.id"
             :data="story"
             @bookmarkClicked="handleBookmark"
             @deleteClicked="handleDelete"
@@ -58,9 +58,12 @@
 </template>
 
 <script setup>
+const authStore = useAuthStore();
 const storyStore = useStoryStore();
 const route = useRoute();
 const router = useRouter();
+
+const { user } = storeToRefs(authStore);
 
 const { stories, currentPage } = storeToRefs(storyStore);
 
@@ -89,14 +92,6 @@ watch(
   },
   { deep: true }
 );
-
-const handleBookmark = (id) => {
-  console.log("its working", id);
-};
-
-const handleDelete = (id) => {
-  console.log("its working", id);
-};
 </script>
 
 <style lang="scss" scoped></style>

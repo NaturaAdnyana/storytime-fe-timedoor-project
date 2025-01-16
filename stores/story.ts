@@ -1,22 +1,22 @@
 export const useStoryStore = defineStore("storyStore", () => {
   const stories = reactive<{
-    all: Record<number, any[]>;
-    myStories: Record<number, any[]>;
-    bookmark: Record<number, any[]>;
+    all: any;
+    myStories: any;
+    bookmarks: any;
   }>({
     all: {},
     myStories: {},
-    bookmark: {},
+    bookmarks: {},
   });
 
   const currentPage = reactive<{
     all: number;
     myStories: number;
-    bookmark: number;
+    bookmarks: number;
   }>({
     all: 1,
     myStories: 1,
-    bookmark: 1,
+    bookmarks: 1,
   });
 
   const categories = ref();
@@ -24,7 +24,7 @@ export const useStoryStore = defineStore("storyStore", () => {
   const config = useRuntimeConfig();
 
   async function fetchStories(
-    type: "all" | "myStories" | "bookmark" = "all",
+    type: "all" | "myStories" | "bookmarks" = "all",
     page: number = 1
   ) {
     if (stories[type][page]) {
@@ -35,7 +35,7 @@ export const useStoryStore = defineStore("storyStore", () => {
     const endpoint = {
       all: "/api/stories",
       myStories: "/api/stories/my",
-      bookmark: "/api/stories/bookmarks",
+      bookmarks: "/api/stories/bookmarkss",
     };
 
     const headers: Record<string, string> = {
@@ -154,14 +154,44 @@ export const useStoryStore = defineStore("storyStore", () => {
     }
   }
 
-  function clearStories(type?: "all" | "myStories" | "bookmark") {
+  function clearStories(type?: "all" | "myStories" | "bookmarks") {
     if (type) {
       stories[type] = {};
     } else {
       stories.all = {};
       stories.myStories = {};
-      stories.bookmark = {};
+      stories.bookmarks = {};
     }
+  }
+
+  async function addBookmark(
+    id: number,
+    type: "all" | "myStories" | "bookmarks" = "all"
+  ) {
+    const authStore = useAuthStore();
+    const response: any = await $fetch(
+      config.public.apiBase + "/api/stories/bookmark/" + id,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token.value}`,
+        },
+        onResponse() {
+          stories.myStories[currentPage.myStories].data.forEach(
+            (story: any) => {
+              if (story.id === id) {
+                story.bookmarks = [{ user_id: authStore.user?.id }];
+              }
+            }
+          );
+        },
+        onResponseError({ response }) {
+          console.error(response);
+        },
+      }
+    );
+    return response;
   }
 
   return {
@@ -173,5 +203,6 @@ export const useStoryStore = defineStore("storyStore", () => {
     fetchCategories,
     uploadImage,
     clearStories,
+    addBookmark,
   };
 });

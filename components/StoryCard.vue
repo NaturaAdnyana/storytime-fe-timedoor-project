@@ -1,24 +1,28 @@
 <template>
-  <NuxtLink :to="data?.slug || 0" class="h-full flex flex-col group">
-    <div class="relative w-full h-full flex-1 overflow-hidden">
+  <NuxtLink
+    :to="data?.slug || 0"
+    class="relative w-full h-full flex flex-col group rounded-lg"
+  >
+    <div
+      class="relative w-full rounded-lg overflow-hidden aspect-square border"
+    >
       <div
         v-if="isLoading"
-        class="w-full h-full rounded-lg border animate-pulse bg-slate-200 aspect-square"
+        class="w-full h-full aspect-square border animate-pulse bg-slate-200"
       ></div>
-      <div v-else class="border rounded-lg overflow-hidden">
-        <NuxtImg
-          :src="
-            data?.images?.[0]?.path
-              ? config.public.apiBase + data?.images?.[0]?.path
-              : '/images/landscape-placeholder.svg'
-          "
-          class="w-full h-full object-cover aspect-square transition-opacity"
-          :class="!isLoading && 'group-hover:opacity-80'"
-        />
-      </div>
+      <NuxtImg
+        v-else
+        :src="
+          data?.images?.[0]?.path
+            ? config.public.apiBase + data?.images?.[0]?.path
+            : '/images/landscape-placeholder.svg'
+        "
+        class="w-full object-cover aspect-square transition-opacity"
+        :class="!isLoading && 'group-hover:opacity-80'"
+      />
       <div
         class="absolute bottom-4 right-4 flex space-x-2"
-        v-if="showAction && isUser"
+        v-if="showAction && userId"
       >
         <div
           v-if="isLoading"
@@ -32,10 +36,15 @@
             <img src="/icons/edit.svg" alt="edit" />
           </NuxtLink>
           <button
-            @click.prevent="$emit('bookmarkClicked', data?.id)"
+            @click.prevent="handleBookmark(data?.id)"
             class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green"
           >
-            <img src="/icons/bookmark.svg" alt="bookmark" />
+            <img
+              v-if="data?.bookmarks.user_id === userId"
+              src="/icons/bookmark.svg"
+              alt="bookmark"
+            />
+            <div v-else>?</div>
           </button>
           <button
             @click.prevent="$emit('deleteClicked', data?.id)"
@@ -58,7 +67,7 @@
         </button>
       </div>
     </div>
-    <div class="flex flex-col gap-3 mt-3">
+    <div class="flex flex-col gap-3 pb-10 mt-3">
       <div
         v-if="isLoading"
         class="w-2/3 h-8 bg-slate-200 animate-pulse rounded-lg"
@@ -72,76 +81,100 @@
         <div class="w-full h-4 bg-slate-200 animate-pulse rounded-lg"></div>
       </div>
       <p v-else class="text-justify custom-truncate">
+        <!-- {{ data?.bookmarks }} -->
+
         {{ data?.content.replace(regexRemoveTag, "") }}
       </p>
-      <div class="flex justify-between text-sm">
+    </div>
+    <div class="absolute bottom-0 w-full flex justify-between text-sm">
+      <div
+        class="basis-3/7 flex items-center gap-2 overflow-hidden"
+        v-show="!userId"
+      >
         <div
-          class="basis-3/7 flex items-center gap-2 overflow-hidden"
-          v-show="!isUser"
-        >
-          <div
-            v-if="isLoading"
-            class="w-8 h-8 aspect-square rounded-full bg-slate-200 animate-pulse"
-          ></div>
-          <NuxtImg
-            v-else
-            :src="data?.user?.avatar || '/images/avatar.png'"
-            class="w-8 h-8 rounded-full aspect-square"
-            format="webp"
-          />
-          <div
-            v-if="isLoading"
-            class="w-36 h-4 bg-slate-200 animate-pulse rounded-lg"
-          ></div>
-          <h4 v-else class="text-nowrap truncate">
-            {{ data?.user?.avatar || "Unknown" }}
-          </h4>
-        </div>
+          v-if="isLoading"
+          class="w-8 h-8 aspect-square rounded-full bg-slate-200 animate-pulse"
+        ></div>
+        <NuxtImg
+          v-else
+          :src="data?.user?.avatar || '/images/avatar.png'"
+          class="w-8 h-8 rounded-full aspect-square"
+          format="webp"
+        />
         <div
-          :class="[
-            'basis-full flex items-center gap-3',
-            isUser ? 'justify-between' : 'justify-end',
-          ]"
+          v-if="isLoading"
+          class="w-36 h-4 bg-slate-200 animate-pulse rounded-lg"
+        ></div>
+        <h4 v-else class="text-nowrap truncate">
+          {{ data?.user?.avatar || "Unknown" }}
+        </h4>
+      </div>
+      <div
+        :class="[
+          'basis-full flex items-center gap-3',
+          userId ? 'justify-between' : 'justify-end',
+        ]"
+      >
+        <div
+          v-if="isLoading"
+          class="w-16 h-4 bg-slate-200 animate-pulse rounded-lg"
+        ></div>
+        <span v-else :class="userId && 'order-last'">
+          {{ dateFormatter(data?.updated_at) }}
+        </span>
+        <div
+          v-if="isLoading"
+          class="w-20 h-8 bg-slate-200 animate-pulse rounded-lg"
+        ></div>
+        <span
+          v-else
+          class="px-2 py-1 bg-isabelline-sc rounded text-gray-asparagus-tr"
+          >{{ data?.category?.name }}</span
         >
-          <div
-            v-if="isLoading"
-            class="w-16 h-4 bg-slate-200 animate-pulse rounded-lg"
-          ></div>
-          <span v-else :class="isUser && 'order-last'">
-            {{ dateFormatter(data?.updated_at) }}
-          </span>
-          <div
-            v-if="isLoading"
-            class="w-20 h-8 bg-slate-200 animate-pulse rounded-lg"
-          ></div>
-          <span
-            v-else
-            class="px-2 py-1 bg-isabelline-sc rounded text-gray-asparagus-tr"
-            >{{ data?.category?.name }}</span
-          >
-        </div>
       </div>
     </div>
   </NuxtLink>
 </template>
 
 <script setup>
-const emit = defineEmits();
 const config = useRuntimeConfig();
 
-const { showAction, isUser, isLoading, data } = defineProps({
+const { showAction, userId, isLoading, data } = defineProps({
   showAction: {
     type: Boolean,
     default: true,
   },
-  isUser: {
-    type: {},
-  },
+  userId: Number,
   isLoading: Boolean,
   data: {
     type: {},
   },
 });
+
+const showErrorMessage = ref(false);
+const errorMessage = ref("");
+
+const handleClearErrorMessages = () => {
+  showErrorMessage.value = false;
+  errorMessage.value = "";
+  clearError();
+};
+
+const handleBookmark = async (id) => {
+  handleClearErrorMessages();
+  try {
+    await storyStore.addBookmark(id, "myStories");
+  } catch (error) {
+    console.log(error);
+    showErrorMessage.value = true;
+    errorMessage = error.data.message || "";
+  } finally {
+  }
+};
+
+const handleDelete = (id) => {
+  console.log("its working", id);
+};
 
 let regexRemoveTag = /(<([^>]+)>)/gi;
 
