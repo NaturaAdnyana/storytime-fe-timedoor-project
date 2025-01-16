@@ -27,11 +27,11 @@
           }"
         >
           <swiper-slide
-            v-for="(slide, idx) in slides"
+            v-for="(story, idx) in stories?.all[1]?.data"
             :key="idx"
             class="flex flex-col"
           >
-            <StoryCard />
+            <StoryCard :data="story" :getStory="getStory" :userId="user.id" />
           </swiper-slide>
         </swiper-container>
       </ClientOnly>
@@ -47,7 +47,25 @@ const { to } = defineProps({
 });
 
 const containerRef = ref(null);
-const slides = ref(Array.from({ length: 10 }));
+const getStory = ref("all");
+
+const authStore = useAuthStore();
+const storyStore = useStoryStore();
+
+const route = useRoute();
+const router = useRouter();
+
+const { user } = storeToRefs(authStore);
+
+const { stories, currentPage } = storeToRefs(storyStore);
+
+const { status } = await useLazyAsyncData("stories", () =>
+  storyStore.fetchStories(getStory.value)
+);
+
+onBeforeUnmount(() => {
+  storyStore.clearStories();
+});
 </script>
 
 <style scoped></style>

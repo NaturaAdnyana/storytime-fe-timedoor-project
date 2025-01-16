@@ -31,24 +31,29 @@
         <template v-else>
           <NuxtLink
             :to="data?.slug + '/edit'"
-            class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green"
+            class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green shadow"
           >
             <img src="/icons/edit.svg" alt="edit" />
           </NuxtLink>
           <button
             @click.prevent="handleBookmark(data?.id)"
-            class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green"
+            class="rounded-full w-12 h-12 p-2 flex justify-center items-center transition shadow"
+            :class="
+              isBookmarked
+                ? 'bg-white hover:bg-isabelline-sc bookmarked'
+                : 'bg-gray-asparagus-tr hover:bg-kombu-green'
+            "
           >
-            <img
-              v-if="data?.bookmarks.user_id === userId"
-              src="/icons/bookmark.svg"
-              alt="bookmark"
+            <BookmarkIcon
+              v-if="isBookmarked"
+              class="size-6 fill-gray-asparagus-tr"
+              aria-hidden="true"
             />
-            <div v-else>?</div>
+            <img v-else src="/icons/bookmark.svg" alt="bookmark" />
           </button>
           <button
             @click.prevent="$emit('deleteClicked', data?.id)"
-            class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green"
+            class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green shadow"
           >
             <img src="/icons/delete.svg" alt="delete" />
           </button>
@@ -61,9 +66,20 @@
         ></div>
         <button
           v-else
-          class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green"
+          @click.prevent="handleBookmark(data?.id)"
+          class="rounded-full w-12 h-12 p-2 flex justify-center items-center transition shadow"
+          :class="
+            isBookmarked
+              ? 'bg-white hover:bg-isabelline-sc bookmarked'
+              : 'bg-gray-asparagus-tr hover:bg-kombu-green'
+          "
         >
-          <img src="/icons/bookmark.svg" alt="bookmark" />
+          <BookmarkIcon
+            v-if="isBookmarked"
+            class="size-6 fill-gray-asparagus-tr"
+            aria-hidden="true"
+          />
+          <img v-else src="/icons/bookmark.svg" alt="bookmark" />
         </button>
       </div>
     </div>
@@ -81,8 +97,6 @@
         <div class="w-full h-4 bg-slate-200 animate-pulse rounded-lg"></div>
       </div>
       <p v-else class="text-justify custom-truncate">
-        <!-- {{ data?.bookmarks }} -->
-
         {{ data?.content.replace(regexRemoveTag, "") }}
       </p>
     </div>
@@ -97,7 +111,11 @@
         ></div>
         <NuxtImg
           v-else
-          :src="data?.user?.avatar || '/images/avatar.png'"
+          :src="
+            data?.user?.avatar
+              ? config.public.apiBase + data?.user?.avatar
+              : '/images/avatar.png'
+          "
           class="w-8 h-8 rounded-full aspect-square"
           format="webp"
         />
@@ -106,7 +124,7 @@
           class="w-36 h-4 bg-slate-200 animate-pulse rounded-lg"
         ></div>
         <h4 v-else class="text-nowrap truncate">
-          {{ data?.user?.avatar || "Unknown" }}
+          {{ data?.user?.name || "Unknown" }}
         </h4>
       </div>
       <div
@@ -137,9 +155,11 @@
 </template>
 
 <script setup>
+import { BookmarkIcon } from "@heroicons/vue/24/solid";
+
 const config = useRuntimeConfig();
 
-const { showAction, userId, isLoading, data } = defineProps({
+const { showAction, userId, isLoading, data, getStory } = defineProps({
   showAction: {
     type: Boolean,
     default: true,
@@ -149,25 +169,29 @@ const { showAction, userId, isLoading, data } = defineProps({
   data: {
     type: {},
   },
+  getStory: {
+    type: String,
+    default: "all",
+  },
 });
 
 const showErrorMessage = ref(false);
-const errorMessage = ref("");
+const isBookmarked = ref(data?.bookmarks[0]?.user_id === userId || false);
 
 const handleClearErrorMessages = () => {
   showErrorMessage.value = false;
-  errorMessage.value = "";
   clearError();
 };
 
 const handleBookmark = async (id) => {
   handleClearErrorMessages();
+  const storyStore = useStoryStore();
+  const { stories, currentPage } = storeToRefs(storyStore);
   try {
-    await storyStore.addBookmark(id, "myStories");
+    await storyStore.toggleBookmark(id, getStory);
+    isBookmarked.value = !isBookmarked.value;
   } catch (error) {
     console.log(error);
-    showErrorMessage.value = true;
-    errorMessage = error.data.message || "";
   } finally {
   }
 };

@@ -42,7 +42,7 @@ export const useStoryStore = defineStore("storyStore", () => {
       "Content-Type": "application/json",
     };
 
-    if (type === "myStories") {
+    if (type === "all" || type === "myStories") {
       headers.Authorization = `Bearer ${token.value}`;
     }
 
@@ -164,7 +164,7 @@ export const useStoryStore = defineStore("storyStore", () => {
     }
   }
 
-  async function addBookmark(
+  async function toggleBookmark(
     id: number,
     type: "all" | "myStories" | "bookmarks" = "all"
   ) {
@@ -178,13 +178,21 @@ export const useStoryStore = defineStore("storyStore", () => {
           Authorization: `Bearer ${token.value}`,
         },
         onResponse() {
-          stories.myStories[currentPage.myStories].data.forEach(
-            (story: any) => {
-              if (story.id === id) {
+          const storiesData = stories[type]?.[currentPage[type]]?.data;
+
+          for (const story of storiesData) {
+            if (story.id === id) {
+              if (story.bookmarks[0]?.user_id === authStore.user?.id) {
+                console.log("BOOKMARKED");
+                story.bookmarks = [];
+                break;
+              } else {
+                console.log("NOT BOOKMARKED");
                 story.bookmarks = [{ user_id: authStore.user?.id }];
+                break;
               }
             }
-          );
+          }
         },
         onResponseError({ response }) {
           console.error(response);
@@ -203,6 +211,6 @@ export const useStoryStore = defineStore("storyStore", () => {
     fetchCategories,
     uploadImage,
     clearStories,
-    addBookmark,
+    toggleBookmark,
   };
 });

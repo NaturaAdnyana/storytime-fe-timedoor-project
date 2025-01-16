@@ -11,6 +11,10 @@
   animation: image-loader 2s infinite;
 }
 
+.bookmarked {
+  animation: bookmarked 0.5s;
+}
+
 @keyframes image-loader {
   0% {
     opacity: 0.6;
@@ -20,5 +24,17 @@
   }
   100% {
     opacity: 0.6;
+  }
+}
+
+@keyframes bookmarked {
+  0% {
+    box-shadow: 0 0 0px 0px rgba(255, 255, 255, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 2px 2px rgba(255, 255, 255, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 0px 0px rgba(255, 255, 255, 0.5);
   }
 }

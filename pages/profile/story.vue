@@ -4,7 +4,7 @@
       v-if="status == 'pending'"
       class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-10 pb-10"
     >
-      <StoryCard :isLoading="true" is-user="user" />
+      <StoryCard :isLoading="true" />
       <StoryCard :isLoading="true" />
     </div>
     <template v-else>
@@ -35,8 +35,7 @@
             :showAction="true"
             :userId="user.id"
             :data="story"
-            @bookmarkClicked="handleBookmark"
-            @deleteClicked="handleDelete"
+            getStory="myStories"
           />
         </div>
       </div>
