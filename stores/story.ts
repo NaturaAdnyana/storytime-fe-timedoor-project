@@ -35,16 +35,17 @@ export const useStoryStore = defineStore("storyStore", () => {
     const endpoint = {
       all: "/api/stories",
       myStories: "/api/stories/my",
-      bookmarks: "/api/stories/bookmarkss",
+      bookmarks: "/api/stories/bookmarks",
     };
 
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${token.value}`,
     };
 
-    if (type === "all" || type === "myStories") {
-      headers.Authorization = `Bearer ${token.value}`;
-    }
+    // if (type === "all" || type === "myStories") {
+    //   headers.Authorization = `Bearer ${token.value}`;
+    // }
 
     const response: any = await $fetch(
       `${config.public.apiBase}${endpoint[type]}?page=${page}`,
@@ -59,12 +60,12 @@ export const useStoryStore = defineStore("storyStore", () => {
         },
         onResponseError({ response }) {
           console.error(response);
-          showError({
-            fatal: true,
-            statusCode: response.status,
-            statusMessage:
-              "Something went wrong when fetching data. Please contact support.",
-          });
+          // showError({
+          //   fatal: true,
+          //   statusCode: response.status,
+          //   statusMessage:
+          //     "Something went wrong when fetching data. Please contact support.",
+          // });
         },
       }
     );
@@ -170,7 +171,7 @@ export const useStoryStore = defineStore("storyStore", () => {
   ) {
     const authStore = useAuthStore();
     const response: any = await $fetch(
-      config.public.apiBase + "/api/stories/bookmark/" + id,
+      config.public.apiBase + "/api/stories/bookmarks/" + id,
       {
         method: "POST",
         headers: {
@@ -190,6 +191,10 @@ export const useStoryStore = defineStore("storyStore", () => {
                 break;
               }
             }
+          }
+          if (type === "bookmarks") {
+            clearStories();
+            fetchStories(type, currentPage[type]);
           }
         },
         onResponseError({ response }) {

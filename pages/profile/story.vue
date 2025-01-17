@@ -33,7 +33,7 @@
         >
           <StoryCard
             showAction="all"
-            :userId="user.id"
+            :userId="user?.id"
             :data="story"
             getStory="myStories"
           />
@@ -73,7 +73,7 @@ const { status } = await useLazyAsyncData("stories", () =>
 );
 
 onBeforeUnmount(() => {
-  storyStore.clearStories();
+  storyStore.clearStories("myStories");
 });
 
 watch(
