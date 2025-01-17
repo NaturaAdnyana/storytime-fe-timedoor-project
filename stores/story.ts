@@ -154,7 +154,7 @@ export const useStoryStore = defineStore("storyStore", () => {
     }
   }
 
-  function clearStories(type?: "all" | "myStories" | "bookmarks") {
+  async function clearStories(type?: "all" | "myStories" | "bookmarks") {
     if (type) {
       stories[type] = {};
     } else {
@@ -200,6 +200,36 @@ export const useStoryStore = defineStore("storyStore", () => {
     return response;
   }
 
+  async function destroy(
+    id: number,
+    type: "all" | "myStories" | "bookmarks" = "all"
+  ) {
+    const response: any = await $fetch(
+      config.public.apiBase + "/api/stories/" + id,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token.value}`,
+        },
+        onResponse() {
+          clearStories();
+          fetchStories(type, currentPage[type]);
+        },
+        onResponseError({ response }) {
+          console.error(response);
+          showError({
+            fatal: true,
+            statusCode: response.status,
+            statusMessage:
+              "Something went wrong when deleting data. Please contact support.",
+          });
+        },
+      }
+    );
+    return response;
+  }
+
   return {
     stories,
     currentPage,
@@ -210,5 +240,6 @@ export const useStoryStore = defineStore("storyStore", () => {
     uploadImage,
     clearStories,
     toggleBookmark,
+    destroy,
   };
 });

@@ -1,164 +1,192 @@
 <template>
-  <NuxtLink
-    :to="data?.slug || 0"
-    class="relative w-full h-full flex flex-col group rounded-lg"
-  >
-    <div
-      class="relative w-full rounded-lg overflow-hidden aspect-square border"
+  <div>
+    <NuxtLink
+      :to="data?.slug || 0"
+      class="relative w-full h-full flex flex-col group rounded-lg"
     >
       <div
-        v-if="isLoading"
-        class="w-full h-full aspect-square border animate-pulse bg-slate-200"
-      ></div>
-      <NuxtImg
-        v-else
-        :src="
-          data?.images?.[0]?.path
-            ? config.public.apiBase + data?.images?.[0]?.path
-            : '/images/landscape-placeholder.svg'
-        "
-        class="w-full object-cover aspect-square transition-opacity"
-        :class="!isLoading && 'group-hover:opacity-80'"
-      />
-      <div
-        class="absolute bottom-4 right-4 flex space-x-2"
-        v-if="showAction === 'all'"
+        class="relative w-full rounded-lg overflow-hidden aspect-square border"
       >
         <div
           v-if="isLoading"
-          class="rounded-full w-12 h-12 bg-slate-300 animate-pulse"
+          class="w-full h-full aspect-square border animate-pulse bg-slate-200"
         ></div>
-        <template v-else>
-          <NuxtLink
-            :to="data?.slug + '/edit'"
-            class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green"
-          >
-            <img src="/icons/edit.svg" alt="edit" />
-          </NuxtLink>
+        <NuxtImg
+          v-else
+          :src="
+            data?.images?.[0]?.path
+              ? config.public.apiBase + data?.images?.[0]?.path
+              : '/images/landscape-placeholder.svg'
+          "
+          class="w-full object-cover aspect-square transition-opacity"
+          :class="!isLoading && 'group-hover:opacity-80'"
+        />
+        <div
+          class="absolute bottom-4 right-4 flex space-x-2"
+          v-if="showAction === 'all'"
+        >
+          <div
+            v-if="isLoading"
+            class="rounded-full w-12 h-12 bg-slate-300 animate-pulse"
+          ></div>
+          <template v-else>
+            <NuxtLink
+              :to="data?.slug + '/edit'"
+              class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green"
+            >
+              <img src="/icons/edit.svg" alt="edit" />
+            </NuxtLink>
+            <button
+              :disabled="isActionLoading.bookmarkBtn"
+              @click.prevent="handleBookmark"
+              class="rounded-full w-12 h-12 p-2 flex justify-center items-center transition"
+              :class="[
+                isBookmarked
+                  ? 'bg-white hover:bg-isabelline-sc bookmarked border'
+                  : 'bg-gray-asparagus-tr hover:bg-kombu-green',
+              ]"
+            >
+              <div
+                v-if="isActionLoading.bookmarkBtn"
+                class="loader animate-spin"
+              ></div>
+              <div v-else>
+                <BookmarkIcon
+                  v-if="isBookmarked"
+                  class="size-6 fill-gray-asparagus-tr"
+                  aria-hidden="true"
+                />
+                <img v-else src="/icons/bookmark.svg" alt="bookmark" />
+              </div>
+            </button>
+            <button
+              :disabled="isActionLoading.deleteBtn"
+              @click.prevent="openModal"
+              class="rounded-full w-12 h-12 p-2 flex justify-center items-center bg-gray-asparagus-tr transition hover:bg-kombu-green"
+            >
+              <div
+                v-if="isActionLoading.deleteBtn"
+                class="loader animate-spin"
+              ></div>
+              <div v-else>
+                <img src="/icons/delete.svg" alt="delete" />
+              </div>
+            </button>
+          </template>
+        </div>
+        <div
+          class="absolute bottom-4 right-4"
+          v-else-if="showAction === 'bookmark-only'"
+        >
+          <div
+            v-if="isLoading"
+            class="rounded-full w-12 h-12 bg-slate-300 animate-pulse"
+          ></div>
           <button
+            v-else
             :disabled="isActionLoading.bookmarkBtn"
-            @click.prevent="handleBookmark(data?.id)"
+            @click.prevent="handleBookmark"
             class="rounded-full w-12 h-12 p-2 flex justify-center items-center transition"
             :class="[
               isBookmarked
                 ? 'bg-white hover:bg-isabelline-sc bookmarked border'
                 : 'bg-gray-asparagus-tr hover:bg-kombu-green',
-              isActionLoading.bookmarkBtn && 'opacity-70 animate-pulse',
             ]"
           >
-            <BookmarkIcon
-              v-if="isBookmarked"
-              class="size-6 fill-gray-asparagus-tr"
-              aria-hidden="true"
-            />
-            <img v-else src="/icons/bookmark.svg" alt="bookmark" />
+            <div
+              v-if="isActionLoading.bookmarkBtn"
+              class="loader animate-spin"
+            ></div>
+            <div v-else>
+              <BookmarkIcon
+                v-if="isBookmarked"
+                class="size-6 fill-gray-asparagus-tr"
+                aria-hidden="true"
+              />
+              <img v-else src="/icons/bookmark.svg" alt="bookmark" />
+            </div>
           </button>
-          <button
-            @click.prevent="$emit('deleteClicked', data?.id)"
-            class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green"
-          >
-            <img src="/icons/delete.svg" alt="delete" />
-          </button>
-        </template>
+        </div>
       </div>
-      <div
-        class="absolute bottom-4 right-4"
-        v-else-if="showAction === 'bookmark-only'"
-      >
+      <div class="flex flex-col gap-3 pb-10 mt-3">
         <div
           v-if="isLoading"
-          class="rounded-full w-12 h-12 bg-slate-300 animate-pulse"
+          class="w-2/3 h-8 bg-slate-200 animate-pulse rounded-lg"
         ></div>
-        <button
-          v-else
-          :disabled="isActionLoading.bookmarkBtn"
-          @click.prevent="handleBookmark(data?.id)"
-          class="rounded-full w-12 h-12 p-2 flex justify-center items-center transition"
+        <h3 class="transition-color group-hover:text-gray-asparagus-tr" v-else>
+          {{ data?.title || "Untitled" }}
+        </h3>
+        <div v-if="isLoading" class="space-y-2">
+          <div class="w-full h-4 bg-slate-200 animate-pulse rounded-lg"></div>
+          <div class="w-full h-4 bg-slate-200 animate-pulse rounded-lg"></div>
+          <div class="w-full h-4 bg-slate-200 animate-pulse rounded-lg"></div>
+        </div>
+        <p v-else class="text-justify custom-truncate">
+          {{ data?.content.replace(regexRemoveTag, "") }}
+        </p>
+      </div>
+      <div class="absolute bottom-0 w-full flex justify-between text-sm">
+        <div
+          class="basis-3/7 flex items-center gap-2 overflow-hidden"
+          v-show="showAction !== 'all'"
+        >
+          <div
+            v-if="isLoading"
+            class="w-8 h-8 aspect-square rounded-full bg-slate-200 animate-pulse"
+          ></div>
+          <NuxtImg
+            v-else
+            :src="
+              data?.user?.avatar
+                ? config.public.apiBase + data?.user?.avatar
+                : '/images/avatar.png'
+            "
+            class="w-8 h-8 rounded-full aspect-square"
+            format="webp"
+          />
+          <div
+            v-if="isLoading"
+            class="w-36 h-4 bg-slate-200 animate-pulse rounded-lg"
+          ></div>
+          <h4 v-else class="text-nowrap truncate">
+            {{ data?.user?.name || "Unknown" }}
+          </h4>
+        </div>
+        <div
           :class="[
-            isBookmarked
-              ? 'bg-white hover:bg-isabelline-sc bookmarked border'
-              : 'bg-gray-asparagus-tr hover:bg-kombu-green',
-            isActionLoading.bookmarkBtn && 'opacity-70 animate-pulse',
+            'basis-full flex items-center gap-3',
+            showAction === 'all' ? 'justify-between' : 'justify-end',
           ]"
         >
-          <BookmarkIcon
-            v-if="isBookmarked"
-            class="size-6 fill-gray-asparagus-tr"
-            aria-hidden="true"
-          />
-          <img v-else src="/icons/bookmark.svg" alt="bookmark" />
-        </button>
+          <div
+            v-if="isLoading"
+            class="w-16 h-4 bg-slate-200 animate-pulse rounded-lg"
+          ></div>
+          <span v-else :class="showAction === 'all' && 'order-last'">
+            {{ dateFormatter(data?.updated_at) }}
+          </span>
+          <div
+            v-if="isLoading"
+            class="w-20 h-8 bg-slate-200 animate-pulse rounded-lg"
+          ></div>
+          <span
+            v-else
+            class="px-2 py-1 bg-isabelline-sc rounded text-gray-asparagus-tr"
+            >{{ data?.category?.name }}</span
+          >
+        </div>
       </div>
-    </div>
-    <div class="flex flex-col gap-3 pb-10 mt-3">
-      <div
-        v-if="isLoading"
-        class="w-2/3 h-8 bg-slate-200 animate-pulse rounded-lg"
-      ></div>
-      <h3 class="transition-color group-hover:text-gray-asparagus-tr" v-else>
-        {{ data?.title || "Untitled" }}
-      </h3>
-      <div v-if="isLoading" class="space-y-2">
-        <div class="w-full h-4 bg-slate-200 animate-pulse rounded-lg"></div>
-        <div class="w-full h-4 bg-slate-200 animate-pulse rounded-lg"></div>
-        <div class="w-full h-4 bg-slate-200 animate-pulse rounded-lg"></div>
-      </div>
-      <p v-else class="text-justify custom-truncate">
-        {{ data?.content.replace(regexRemoveTag, "") }}
-      </p>
-    </div>
-    <div class="absolute bottom-0 w-full flex justify-between text-sm">
-      <div
-        class="basis-3/7 flex items-center gap-2 overflow-hidden"
-        v-show="showAction !== 'all'"
-      >
-        <div
-          v-if="isLoading"
-          class="w-8 h-8 aspect-square rounded-full bg-slate-200 animate-pulse"
-        ></div>
-        <NuxtImg
-          v-else
-          :src="
-            data?.user?.avatar
-              ? config.public.apiBase + data?.user?.avatar
-              : '/images/avatar.png'
-          "
-          class="w-8 h-8 rounded-full aspect-square"
-          format="webp"
-        />
-        <div
-          v-if="isLoading"
-          class="w-36 h-4 bg-slate-200 animate-pulse rounded-lg"
-        ></div>
-        <h4 v-else class="text-nowrap truncate">
-          {{ data?.user?.name || "Unknown" }}
-        </h4>
-      </div>
-      <div
-        :class="[
-          'basis-full flex items-center gap-3',
-          showAction === 'all' ? 'justify-between' : 'justify-end',
-        ]"
-      >
-        <div
-          v-if="isLoading"
-          class="w-16 h-4 bg-slate-200 animate-pulse rounded-lg"
-        ></div>
-        <span v-else :class="showAction === 'all' && 'order-last'">
-          {{ dateFormatter(data?.updated_at) }}
-        </span>
-        <div
-          v-if="isLoading"
-          class="w-20 h-8 bg-slate-200 animate-pulse rounded-lg"
-        ></div>
-        <span
-          v-else
-          class="px-2 py-1 bg-isabelline-sc rounded text-gray-asparagus-tr"
-          >{{ data?.category?.name }}</span
-        >
-      </div>
-    </div>
-  </NuxtLink>
+    </NuxtLink>
+    <BaseModal
+      :isModalOpen="isModalOpen"
+      @close="closeModal"
+      @confirm="handleDelete"
+      title="Delete Story"
+      text="Are you sure want to delete this story?"
+      cancelText="Cancel"
+      confirmText="Delete"
+    />
+  </div>
 </template>
 
 <script setup>
@@ -182,8 +210,6 @@ const { showAction, userId, isLoading, data, getStory } = defineProps({
     default: "all",
   },
 });
-
-const showErrorMessage = ref(false);
 const isBookmarked = ref(data?.bookmarks[0]?.user_id === userId || false);
 
 const isActionLoading = reactive({
@@ -191,18 +217,11 @@ const isActionLoading = reactive({
   deleteBtn: false,
 });
 
-const handleClearErrorMessages = () => {
-  showErrorMessage.value = false;
-  clearError();
-};
-
-const handleBookmark = async (id) => {
+const handleBookmark = async () => {
   isActionLoading.bookmarkBtn = true;
-  handleClearErrorMessages();
   const storyStore = useStoryStore();
-  const { stories, currentPage } = storeToRefs(storyStore);
   try {
-    await storyStore.toggleBookmark(id, getStory);
+    await storyStore.toggleBookmark(data?.id, getStory);
     isBookmarked.value = !isBookmarked.value;
   } catch (error) {
     console.log(error);
@@ -211,8 +230,28 @@ const handleBookmark = async (id) => {
   }
 };
 
-const handleDelete = (id) => {
-  console.log("its working", id);
+const isModalOpen = ref(false);
+
+function openModal() {
+  isActionLoading.deleteBtn = true;
+  isModalOpen.value = true;
+}
+
+function closeModal() {
+  isActionLoading.deleteBtn = false;
+  isModalOpen.value = false;
+}
+
+const handleDelete = async () => {
+  isActionLoading.deleteBtn = true;
+  const storyStore = useStoryStore();
+  try {
+    await storyStore.destroy(data?.id, getStory);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    isActionLoading.deleteBtn = false;
+  }
 };
 
 let regexRemoveTag = /(<([^>]+)>)/gi;
@@ -223,13 +262,3 @@ const dateFormatter = (rawDate) => {
   return date.toLocaleDateString("en-GB", options);
 };
 </script>
-
-<style scoped>
-.custom-truncate {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-</style>
