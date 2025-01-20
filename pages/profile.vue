@@ -4,11 +4,7 @@
       <div class="flex-1 basis-full md:basis-2/12 aspect-square p-5">
         <NuxtImg
           class="mx-auto w-full h-full object-cover rounded-full bg-gray-100 ring-1 ring-gray-200"
-          :src="
-            user?.avatar
-              ? config.public.apiBase + user.avatar
-              : '/images/avatar.png'
-          "
+          :src="user?.avatar || '/images/avatar.png'"
           alt="My Profile Picture"
           format="webp"
         />
@@ -114,10 +110,7 @@
                     <BaseProfileImgInput
                       id="profile-image"
                       name="profile-image"
-                      :imageUrl="
-                        updateUserData.avatar &&
-                        config.public.apiBase + updateUserData.avatar
-                      "
+                      :imageUrl="updateUserData.avatar"
                       @update:file="handleFileUpdate"
                       :isLoading="isAvatarLoading"
                     />

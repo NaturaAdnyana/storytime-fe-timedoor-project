@@ -37,11 +37,7 @@
             >
               <div class="relative mr-2">
                 <NuxtImg
-                  :src="
-                    user.avatar
-                      ? config.public.apiBase + user.avatar
-                      : '/images/avatar.png'
-                  "
+                  :src="user.avatar || '/images/avatar.png'"
                   class="w-8 h-8 aspect-square ring-1 ring-gray-200 rounded-full bg-gray-100"
                   :class="isLoading && 'opacity-70'"
                 />

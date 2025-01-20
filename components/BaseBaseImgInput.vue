@@ -24,9 +24,7 @@
         :disabled="isLoading"
       />
       <NuxtImg
-        :src="
-          imageUrl ? config.public.apiBase + imageUrl : '/icons/blank-img.svg'
-        "
+        :src="imageUrl || '/icons/blank-img.svg'"
         :class="imageUrl ? 'w-full h-full object-cover' : 'w-20 h-w-20'"
       />
       <div v-show="!imageUrl">

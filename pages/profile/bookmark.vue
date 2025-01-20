@@ -33,7 +33,7 @@
           :key="idx"
         >
           <StoryCard
-            showAction="all"
+            showAction="bookmark-only"
             :userId="user?.id"
             :data="story"
             getStory="bookmarks"

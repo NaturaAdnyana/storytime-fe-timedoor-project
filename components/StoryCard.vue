@@ -13,11 +13,7 @@
         ></div>
         <NuxtImg
           v-else
-          :src="
-            data?.images?.[0]?.path
-              ? config.public.apiBase + data?.images?.[0]?.path
-              : '/images/landscape-placeholder.svg'
-          "
+          :src="data?.images?.[0]?.path || '/images/landscape-placeholder.svg'"
           class="w-full object-cover aspect-square transition-opacity"
           :class="!isLoading && 'group-hover:opacity-80'"
         />
@@ -136,11 +132,7 @@
           ></div>
           <NuxtImg
             v-else
-            :src="
-              data?.user?.avatar
-                ? config.public.apiBase + data?.user?.avatar
-                : '/images/avatar.png'
-            "
+            :src="data?.user?.avatar || '/images/avatar.png'"
             class="w-8 h-8 rounded-full aspect-square"
             format="webp"
           />
