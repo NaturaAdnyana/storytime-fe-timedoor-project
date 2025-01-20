@@ -72,6 +72,22 @@ export const useStoryStore = defineStore("storyStore", () => {
     return response;
   }
 
+  async function getStoryBySlug(slug: string) {
+    const response: any = await $fetch(
+      config.public.apiBase + "/api/stories/" + slug,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        onResponseError({ response }) {
+          console.error(response);
+        },
+      }
+    );
+    return response;
+  }
+
   async function create({
     title,
     categoryId,
@@ -99,6 +115,41 @@ export const useStoryStore = defineStore("storyStore", () => {
         console.error(response);
       },
     });
+    return response;
+  }
+
+  async function update({
+    id,
+    title,
+    categoryId,
+    content,
+    images,
+  }: {
+    id: Number;
+    title: string;
+    categoryId: number;
+    content: string;
+    images: [string];
+  }) {
+    const response: any = await $fetch(
+      config.public.apiBase + "/api/stories/" + id,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token.value}`,
+        },
+        body: JSON.stringify({
+          title,
+          category_id: categoryId,
+          content,
+          images,
+        }),
+        onResponseError({ response }) {
+          console.error(response);
+        },
+      }
+    );
     return response;
   }
 
@@ -240,7 +291,9 @@ export const useStoryStore = defineStore("storyStore", () => {
     currentPage,
     categories,
     create,
+    update,
     fetchStories,
+    getStoryBySlug,
     fetchCategories,
     uploadImage,
     clearStories,

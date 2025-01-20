@@ -1,7 +1,7 @@
 <template>
   <div>
     <NuxtLink
-      :to="data?.slug || 0"
+      :to="data?.slug ? '/stories/' + data?.slug : '#'"
       class="relative w-full h-full flex flex-col group rounded-lg"
     >
       <div
@@ -27,7 +27,7 @@
           ></div>
           <template v-else>
             <NuxtLink
-              :to="data?.slug + '/edit'"
+              :to="data?.slug ? '/stories/' + data?.slug + '/edit' : '#'"
               class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green"
             >
               <img src="/icons/edit.svg" alt="edit" />

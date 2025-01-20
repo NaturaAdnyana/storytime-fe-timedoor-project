@@ -1,6 +1,7 @@
 <template>
   <div class="space-y-2 relative">
     <button
+      type="button"
       v-show="imageUrl"
       @click="handleRemoveImage"
       class="absolute right-3 top-5 p-2 rounded-full transition-colors shadow bg-gray-asparagus-tr/70 hover:bg-gray-asparagus-tr focus:outline-gray-asparagus-tr backdrop-blur"

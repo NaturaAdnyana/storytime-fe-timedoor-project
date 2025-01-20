@@ -5,7 +5,7 @@
     </label>
     <HeadlessCombobox
       :modelValue="modelValue"
-      @update:modelValue="(value) => emit('update:modelValue', value)"
+      @update:modelValue="(value) => emit('update:modelValue', value.id)"
     >
       <div class="relative mt-1">
         <div
@@ -13,7 +13,12 @@
         >
           <HeadlessComboboxInput
             class="w-full border-none py-3 pl-3 pr-10 text-sm leading-5 text-quartz focus:ring-0"
-            :displayValue="(item) => item.name"
+            :displayValue="
+              (id) => {
+                const selectedItem = props.items.find((item) => item.id === id);
+                return selectedItem ? selectedItem.name : items[0].name;
+              }
+            "
             @change="query = $event.target.value"
           />
           <HeadlessComboboxButton
@@ -95,7 +100,7 @@
 import { ChevronUpDownIcon, CheckIcon } from "@heroicons/vue/24/outline";
 
 const props = defineProps({
-  modelValue: Object,
+  modelValue: Number,
   label: String,
   items: {
     type: Object,
