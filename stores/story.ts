@@ -24,8 +24,9 @@ export const useStoryStore = defineStore("storyStore", () => {
   const config = useRuntimeConfig();
 
   async function fetchStories(
-    type: "all" | "myStories" | "bookmarks" = "all",
-    page: number = 1
+    type: "all" | "myStories" | "bookmarks",
+    page: number = 1,
+    params?: string
   ) {
     if (stories[type][page]) {
       currentPage[type] = page;
@@ -48,11 +49,16 @@ export const useStoryStore = defineStore("storyStore", () => {
     // }
 
     const response: any = await $fetch(
-      `${config.public.apiBase}${endpoint[type]}?page=${page}`,
+      `${config.public.apiBase}${endpoint[type]}?page=${page}${params || ""}`,
       {
         method: "GET",
         headers,
         onResponse({ response }) {
+          console.log(
+            `${config.public.apiBase}${endpoint[type]}?page=${page}${
+              params || ""
+            }`
+          );
           if (response.status === 200) {
             stories[type][page] = response._data.data.stories;
             currentPage[type] = page;

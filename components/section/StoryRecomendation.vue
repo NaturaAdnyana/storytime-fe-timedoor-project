@@ -3,7 +3,7 @@
     <div
       class="flex justify-between items-center mx-6 lg:mx-[110px] border-b py-8"
     >
-      <h2 class="heading-shadow">Latest Story</h2>
+      <h2 class="heading-shadow">{{ title || "Story" }}</h2>
       <NuxtLink :to="to"
         >Explore More <ArrowRightIcon class="size-3 inline" />
       </NuxtLink>
@@ -26,18 +26,29 @@
             1024: { slidesPerView: 3.5 },
           }"
         >
-          <swiper-slide
-            v-for="(story, idx) in stories?.all[1]?.data"
-            :key="idx"
-            class="flex flex-col"
-          >
-            <StoryCard
-              :data="story"
-              :getStory="getStory"
-              :userId="user?.id || 0"
-              showAction="bookmark-only"
-            />
-          </swiper-slide>
+          <template v-if="status == 'pending'">
+            <swiper-slide
+              v-for="idx in slides"
+              :key="idx"
+              class="flex flex-col"
+            >
+              <StoryCard :isLoading="true" />
+            </swiper-slide>
+          </template>
+          <template v-else-if="status == 'success'">
+            <swiper-slide
+              v-for="(story, idx) in data?.data?.stories?.data"
+              :key="idx"
+              class="flex flex-col"
+            >
+              <StoryCard
+                :data="story"
+                :getStory="getStory"
+                :userId="user?.id || 0"
+                showAction="bookmark-only"
+              />
+            </swiper-slide>
+          </template>
         </swiper-container>
       </ClientOnly>
     </div>
@@ -47,9 +58,13 @@
 <script setup>
 import { ArrowRightIcon } from "@heroicons/vue/24/outline";
 
-const { to } = defineProps({
+const { title, params, to } = defineProps({
+  title: String,
+  params: String,
   to: String,
 });
+
+const slides = ref(Array.from({ length: 10 }));
 
 const containerRef = ref(null);
 const getStory = ref("all");
@@ -57,15 +72,10 @@ const getStory = ref("all");
 const authStore = useAuthStore();
 const storyStore = useStoryStore();
 
-const route = useRoute();
-const router = useRouter();
-
 const { user } = storeToRefs(authStore);
 
-const { stories, currentPage } = storeToRefs(storyStore);
-
-const { status } = await useLazyAsyncData("stories", () =>
-  storyStore.fetchStories(getStory.value)
+const { data, status } = await useLazyAsyncData(`story-${params}`, () =>
+  storyStore.fetchStories(getStory.value, 1, params)
 );
 
 onBeforeUnmount(() => {

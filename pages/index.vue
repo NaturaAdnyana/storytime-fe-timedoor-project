@@ -19,10 +19,22 @@
       format="webp"
     />
   </section>
-  <SectionStoryRecomendation to="/stories" />
-  <SectionSpecialRecomendation to="/stories" />
-  <SectionStoryRecomendation to="/stories" />
-  <SectionSpecialRecomendation to="/stories" />
+  <SectionStoryRecomendation title="Latest Story" to="/stories" />
+  <SectionSpecialRecomendation
+    title="Comedy"
+    to="/stories?category=comedy"
+    params="&paginate=3&category=comedy"
+  />
+  <SectionStoryRecomendation
+    title="Romance"
+    to="/stories?category=romance"
+    params="&category=romance"
+  />
+  <SectionSpecialRecomendation
+    title="Horror"
+    to="/stories?category=horror"
+    params="&category=horror"
+  />
   <SectionMoreCategories />
 </template>
 

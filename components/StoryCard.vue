@@ -191,7 +191,7 @@ const { showAction, userId, isLoading, data, getStory } = defineProps({
   showAction: {
     type: String,
     // bookmark-only || all || none
-    default: true,
+    default: "none",
   },
   userId: Number,
   isLoading: Boolean,

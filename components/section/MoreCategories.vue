@@ -23,14 +23,25 @@
             1024: { slidesPerView: 6, spaceBetween: 20 },
           }"
         >
-          <swiper-slide v-for="(slide, idx) in slides" :key="idx">
-            <NuxtLink
-              to="/"
-              class="rounded text-center py-10 bg-isabelline-sc text-gray-asparagus-tr block"
-            >
-              {{ slide }}
-            </NuxtLink>
-          </swiper-slide>
+          <template v-if="status == 'pending'">
+            <swiper-slide v-for="(slide, idx) in slides" :key="idx">
+              <div
+                class="rounded text-center py-10 bg-isabelline-sc text-gray-asparagus-tr block animate-pulse"
+              >
+                <span class="opacity-50"> Please wait... </span>
+              </div>
+            </swiper-slide>
+          </template>
+          <template v-else-if="status == 'success'">
+            <swiper-slide v-for="(category, idx) in categories" :key="idx">
+              <NuxtLink
+                :to="'/stories/category/' + category.slug"
+                class="rounded text-center py-10 bg-isabelline-sc text-gray-asparagus-tr block"
+              >
+                {{ category.name }}
+              </NuxtLink>
+            </swiper-slide>
+          </template>
         </swiper-container>
       </ClientOnly>
     </div>
@@ -44,12 +55,14 @@ const { to } = defineProps({
 });
 
 const containerRef = ref(null);
-const slides = ref([
-  "Adventure",
-  "Fiction",
-  "Fantasy",
-  "Drama",
-  "Heartfelt",
-  "Mystery",
-]);
+
+const slides = ref(Array.from({ length: 10 }));
+
+const storyStore = useStoryStore();
+
+const { categories } = storeToRefs(storyStore);
+
+const { status } = await useAsyncData("categories", () =>
+  storyStore.fetchCategories()
+);
 </script>
