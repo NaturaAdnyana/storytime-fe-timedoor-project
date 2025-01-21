@@ -23,9 +23,16 @@
       <StoryCard
         class="lg:col-span-2 lg:row-span-2"
         :data="data?.data?.stories?.data[0]"
+        showAction="bookmark-only"
       />
-      <StoryCard :data="data?.data?.stories?.data[1]" />
-      <StoryCard :data="data?.data?.stories?.data[2]" />
+      <StoryCard
+        :data="data?.data?.stories?.data[1]"
+        showAction="bookmark-only"
+      />
+      <StoryCard
+        :data="data?.data?.stories?.data[2]"
+        showAction="bookmark-only"
+      />
     </div>
   </section>
 </template>
