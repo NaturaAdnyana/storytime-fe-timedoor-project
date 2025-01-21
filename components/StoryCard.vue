@@ -118,7 +118,7 @@
           <div class="w-full h-4 bg-slate-200 animate-pulse rounded-lg"></div>
         </div>
         <p v-else class="text-justify custom-truncate">
-          {{ data?.content.replace(regexRemoveTag, "") }}
+          {{ previewText || "" }}
         </p>
       </div>
       <div class="absolute bottom-0 w-full flex justify-between text-sm">
@@ -183,6 +183,7 @@
 
 <script setup>
 import { BookmarkIcon } from "@heroicons/vue/24/solid";
+import DOMPurify from "dompurify";
 
 const config = useRuntimeConfig();
 
@@ -203,6 +204,19 @@ const { showAction, userId, isLoading, data, getStory } = defineProps({
   },
 });
 const isBookmarked = ref(data?.bookmarks[0]?.user_id === userId || false);
+const previewText = ref("");
+
+const getFirstParagraphText = (html) => {
+  const cleanHtml = DOMPurify.sanitize(html);
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(cleanHtml, "text/html");
+  const firstParagraph = doc.querySelector("p");
+  return firstParagraph ? firstParagraph.textContent : "";
+};
+
+onMounted(() => {
+  previewText.value = getFirstParagraphText(data?.content);
+});
 
 const isActionLoading = reactive({
   bookmarkBtn: false,
@@ -245,8 +259,6 @@ const handleDelete = async () => {
     isActionLoading.deleteBtn = false;
   }
 };
-
-let regexRemoveTag = /(<([^>]+)>)/gi;
 
 const dateFormatter = (rawDate) => {
   const date = new Date(rawDate);
