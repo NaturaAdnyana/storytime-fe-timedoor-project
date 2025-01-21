@@ -35,7 +35,7 @@
     to="/stories?category=horror"
     params="&category=horror"
   />
-  <SectionMoreCategories />
+  <SectionMoreCategories title="More Categories" />
 </template>
 
 <script setup>

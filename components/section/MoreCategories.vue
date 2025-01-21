@@ -1,7 +1,7 @@
 <template>
   <section class="mb-24 mx-6 lg:mx-[110px]">
     <div class="flex justify-between items-center border-b py-8">
-      <h2 class="heading-shadow">Latest Story</h2>
+      <h2 class="heading-shadow">{{ title }}</h2>
       <NuxtLink :to="to">
         Explore More <ArrowRightIcon class="size-3 inline" />
       </NuxtLink>
@@ -50,7 +50,8 @@
 
 <script setup>
 import { ArrowRightIcon } from "@heroicons/vue/24/outline";
-const { to } = defineProps({
+const { title, to } = defineProps({
+  title: String,
   to: String,
 });
 
