@@ -69,7 +69,7 @@ const { title, params, to } = defineProps({
 const slides = ref(Array.from({ length: 10 }));
 
 const containerRef = ref(null);
-const getStory = ref("all");
+const getStory = ref("public");
 
 const authStore = useAuthStore();
 const storyStore = useStoryStore();
@@ -77,7 +77,7 @@ const storyStore = useStoryStore();
 const { user } = storeToRefs(authStore);
 
 const { data, status } = await useLazyAsyncData(`story-${params}`, () =>
-  storyStore.fetchStories(getStory.value, 1, params)
+  storyStore.getStories(getStory.value, 1, params)
 );
 
 // onBeforeUnmount(() => {

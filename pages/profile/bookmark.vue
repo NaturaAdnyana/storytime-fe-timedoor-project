@@ -9,7 +9,9 @@
     </div>
     <template v-else>
       <div
-        v-if="stories?.bookmarks[currentPage.bookmarks]?.data.length === 0"
+        v-if="
+          stories?.userBookmarks[currentPage.userBookmarks]?.data.length === 0
+        "
         class="flex flex-col items-center gap-6 text-center"
       >
         <h3 class="font-playfair-display font-semibold">No Bookmarks Yet</h3>
@@ -28,30 +30,35 @@
         class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-10 pb-10"
       >
         <div
-          v-for="(story, idx) in stories?.bookmarks[currentPage.bookmarks]
-            ?.data"
+          v-for="(story, idx) in stories?.userBookmarks[
+            currentPage.userBookmarks
+          ]?.data"
           :key="idx"
         >
           <StoryCard
             showAction="bookmark-only"
             :userId="user?.id"
             :data="story"
-            getStory="bookmarks"
+            getStory="userBookmarks"
           />
         </div>
       </div>
     </template>
     <BasePagination
-      v-model="currentPage.bookmarks"
+      v-model="currentPage.userBookmarks"
       v-show="
-        stories?.bookmarks &&
-        stories?.bookmarks[currentPage.bookmarks]?.data.length !== 0
+        stories?.userBookmarks &&
+        stories?.userBookmarks[currentPage.userBookmarks]?.data.length !== 0
       "
-      :from="stories?.bookmarks[currentPage.bookmarks]?.from || 0"
-      :to="stories?.bookmarks[currentPage.bookmarks]?.to || 0"
-      :totalResult="stories?.bookmarks[currentPage.bookmarks]?.total || 0"
-      :totalPage="stories?.bookmarks[currentPage.bookmarks]?.last_page || 0"
-      :currentPage="currentPage.bookmarks"
+      :from="stories?.userBookmarks[currentPage.userBookmarks]?.from || 0"
+      :to="stories?.userBookmarks[currentPage.userBookmarks]?.to || 0"
+      :totalResult="
+        stories?.userBookmarks[currentPage.userBookmarks]?.total || 0
+      "
+      :totalPage="
+        stories?.userBookmarks[currentPage.userBookmarks]?.last_page || 0
+      "
+      :currentPage="currentPage.userBookmarks"
       :isLoading="status"
     />
   </div>
@@ -67,14 +74,14 @@ const { user } = storeToRefs(authStore);
 
 const { stories, currentPage } = storeToRefs(storyStore);
 
-currentPage.value.myStories = parseInt(route.query.page) || 1;
+currentPage.value.userBookmarks = parseInt(route.query.page) || 1;
 
 const { status } = await useLazyAsyncData("stories", () =>
-  storyStore.fetchStories("bookmarks", currentPage.value.bookmarks)
+  storyStore.getStories("userBookmarks", currentPage.value.userBookmarks)
 );
 
 onBeforeUnmount(() => {
-  storyStore.clearStories("bookmarks");
+  storyStore.clearStories("userBookmarks");
 });
 
 watch(
@@ -83,11 +90,11 @@ watch(
     router.push({
       query: {
         ...route.query,
-        page: newPage.bookmarks,
+        page: newPage.userBookmarks,
       },
     });
     await useLazyAsyncData("stories", () =>
-      storyStore.fetchStories("bookmarks", newPage.bookmarks)
+      storyStore.getStories("userBookmarks", newPage.userBookmarks)
     );
   },
   { deep: true }

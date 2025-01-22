@@ -51,7 +51,7 @@ const { title, params, to } = defineProps({
 const storyStore = useStoryStore();
 
 const { data, status } = await useLazyAsyncData(`story-${params}`, () =>
-  storyStore.fetchStories("all", 1, params)
+  storyStore.getStories("public", 1, params)
 );
 
 // onBeforeUnmount(() => {

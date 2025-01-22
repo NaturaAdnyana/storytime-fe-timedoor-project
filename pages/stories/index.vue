@@ -42,13 +42,13 @@
         <template v-if="status === 'pending'"></template>
         <template v-else-if="status === 'success'">
           <div
-            v-for="(story, idx) in stories?.all[currentPage.all]?.data"
+            v-for="(story, idx) in stories?.public[currentPage.public]?.data"
             :key="idx"
           >
             <StoryCard
               showAction="bookmark-only"
               :data="story"
-              getStory="all"
+              getStory="public"
             />
           </div>
         </template>
@@ -81,7 +81,7 @@ const searchQuery = ref("");
 
 if (!storyStore.categories) {
   try {
-    await useAsyncData("categories", () => storyStore.fetchCategories());
+    await useAsyncData("categories", () => storyStore.getCategories());
   } catch (error) {
     console.log(error);
   }
@@ -96,10 +96,10 @@ const selectedCategory = ref(
     allCategories.value[0]
 );
 
-currentPage.value.all = parseInt(route.query.page) || 1;
+currentPage.value.public = parseInt(route.query.page) || 1;
 
 const { status } = await useLazyAsyncData("stories-all", () =>
-  storyStore.fetchStories("all", currentPage.value.all)
+  storyStore.getStories("public", currentPage.value.public)
 );
 
 // watch(selectedSortType, async (newValue, oldValue) => {
@@ -110,7 +110,7 @@ const { status } = await useLazyAsyncData("stories-all", () =>
 //     },
 //   });
 //   await useLazyAsyncData("stories-all", () =>
-//     storyStore.fetchStories("all", newPage.all)
+//     storyStore.getStories("all", newPage.all)
 //   );
 // });
 
@@ -122,7 +122,7 @@ const { status } = await useLazyAsyncData("stories-all", () =>
 //     },
 //   });
 //   await useLazyAsyncData("stories-all", () =>
-//     storyStore.fetchStories("all", newPage.all)
+//     storyStore.getStories("all", newPage.all)
 //   );
 // });
 
@@ -131,7 +131,7 @@ const handleSearch = () => {
 };
 
 onBeforeUnmount(() => {
-  storyStore.clearStories("all");
+  storyStore.clearStories("public");
 });
 </script>
 

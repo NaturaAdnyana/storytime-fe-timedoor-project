@@ -1,30 +1,30 @@
 export const useStoryStore = defineStore("storyStore", () => {
   const stories = reactive<{
-    all: any;
-    myStories: any;
-    bookmarks: any;
+    public: any;
+    userStories: any;
+    userBookmarks: any;
   }>({
-    all: {},
-    myStories: {},
-    bookmarks: {},
+    public: {},
+    userStories: {},
+    userBookmarks: {},
   });
 
   const currentPage = reactive<{
-    all: number;
-    myStories: number;
-    bookmarks: number;
+    public: number;
+    userStories: number;
+    userBookmarks: number;
   }>({
-    all: 1,
-    myStories: 1,
-    bookmarks: 1,
+    public: 1,
+    userStories: 1,
+    userBookmarks: 1,
   });
 
   const categories = ref();
   const token = useCookie("token");
   const config = useRuntimeConfig();
 
-  async function fetchStories(
-    type: "all" | "myStories" | "bookmarks",
+  async function getStories(
+    type: "public" | "userStories" | "userBookmarks",
     page: number = 1,
     params?: string
   ) {
@@ -35,9 +35,9 @@ export const useStoryStore = defineStore("storyStore", () => {
     }
 
     const endpoint = {
-      all: "/api/stories",
-      myStories: "/api/stories/my",
-      bookmarks: "/api/stories/bookmarks",
+      public: "/api/stories",
+      userStories: "/api/stories/my",
+      userBookmarks: "/api/stories/bookmarks",
     };
 
     const headers: Record<string, string> = {
@@ -156,7 +156,7 @@ export const useStoryStore = defineStore("storyStore", () => {
     return response;
   }
 
-  async function fetchCategories() {
+  async function getCategories() {
     const response: any = await $fetch(
       config.public.apiBase + "/api/categories",
       {
@@ -209,20 +209,22 @@ export const useStoryStore = defineStore("storyStore", () => {
     }
   }
 
-  async function clearStories(type?: "all" | "myStories" | "bookmarks") {
+  async function clearStories(
+    type?: "public" | "userStories" | "userBookmarks"
+  ) {
     console.log("CLEAR", type);
     if (type) {
       stories[type] = {};
     } else {
-      stories.all = {};
-      stories.myStories = {};
-      stories.bookmarks = {};
+      stories.public = {};
+      stories.userStories = {};
+      stories.userBookmarks = {};
     }
   }
 
   async function toggleBookmark(
     id: number,
-    type: "all" | "myStories" | "bookmarks" = "all"
+    type: "public" | "userStories" | "userBookmarks" = "public"
   ) {
     const authStore = useAuthStore();
     const response: any = await $fetch(
@@ -247,9 +249,9 @@ export const useStoryStore = defineStore("storyStore", () => {
               }
             }
           }
-          if (type === "bookmarks") {
+          if (type === "userBookmarks") {
             clearStories();
-            fetchStories(type, currentPage[type]);
+            getStories(type, currentPage[type]);
           }
         },
         onResponseError({ response }) {
@@ -262,7 +264,7 @@ export const useStoryStore = defineStore("storyStore", () => {
 
   async function destroy(
     id: number,
-    type: "all" | "myStories" | "bookmarks" = "all"
+    type: "public" | "userStories" | "userBookmarks" = "public"
   ) {
     const response: any = await $fetch(
       config.public.apiBase + "/api/stories/" + id,
@@ -274,7 +276,7 @@ export const useStoryStore = defineStore("storyStore", () => {
         },
         onResponse() {
           clearStories();
-          fetchStories(type, currentPage[type]);
+          getStories(type, currentPage[type]);
         },
         onResponseError({ response }) {
           console.error(response);
@@ -296,9 +298,9 @@ export const useStoryStore = defineStore("storyStore", () => {
     categories,
     create,
     update,
-    fetchStories,
+    getStories,
     getStoryBySlug,
-    fetchCategories,
+    getCategories,
     uploadImage,
     clearStories,
     toggleBookmark,

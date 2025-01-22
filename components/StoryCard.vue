@@ -200,7 +200,7 @@ const { showAction, userId, isLoading, data, getStory } = defineProps({
   },
   getStory: {
     type: String,
-    default: "all",
+    default: "public",
   },
 });
 const isBookmarked = ref(data?.bookmarks[0]?.user_id === userId || false);

@@ -126,7 +126,7 @@ const storyData = reactive({
 
 if (!storyStore.categories) {
   try {
-    await useAsyncData("categories", () => storyStore.fetchCategories());
+    await useAsyncData("categories", () => storyStore.getCategories());
   } catch (error) {
     console.log(error);
   }

@@ -60,6 +60,6 @@ const storyStore = useStoryStore();
 const { categories } = storeToRefs(storyStore);
 
 const { status } = await useAsyncData("categories", () =>
-  storyStore.fetchCategories()
+  storyStore.getCategories()
 );
 </script>
