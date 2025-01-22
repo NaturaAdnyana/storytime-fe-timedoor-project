@@ -1,19 +1,23 @@
+type Stories = {
+  public: any;
+  userStories: any;
+  userBookmarks: any;
+};
+
+type CurrentPage = {
+  public: number;
+  userStories: number;
+  userBookmarks: number;
+};
+
 export const useStoryStore = defineStore("storyStore", () => {
-  const stories = reactive<{
-    public: any;
-    userStories: any;
-    userBookmarks: any;
-  }>({
+  const stories = reactive<Stories>({
     public: {},
     userStories: {},
     userBookmarks: {},
   });
 
-  const currentPage = reactive<{
-    public: number;
-    userStories: number;
-    userBookmarks: number;
-  }>({
+  const currentPage = reactive<CurrentPage>({
     public: 1,
     userStories: 1,
     userBookmarks: 1,

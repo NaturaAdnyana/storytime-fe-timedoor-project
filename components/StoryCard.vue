@@ -26,12 +26,12 @@
             class="rounded-full w-12 h-12 bg-slate-300 animate-pulse"
           ></div>
           <template v-else>
-            <NuxtLink
-              :to="data?.slug ? '/stories/' + data?.slug + '/edit' : '#'"
+            <button
+              @click.prevent="handleEdit"
               class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green"
             >
               <img src="/icons/edit.svg" alt="edit" />
-            </NuxtLink>
+            </button>
             <button
               :disabled="isActionLoading.bookmarkBtn"
               @click.prevent="handleBookmark"
@@ -186,6 +186,7 @@ import { BookmarkIcon } from "@heroicons/vue/24/solid";
 import DOMPurify from "dompurify";
 
 const config = useRuntimeConfig();
+const router = useRouter();
 
 const { showAction, userId, isLoading, data, getStory } = defineProps({
   showAction: {
@@ -222,6 +223,10 @@ const isActionLoading = reactive({
   bookmarkBtn: false,
   deleteBtn: false,
 });
+
+const handleEdit = () => {
+  router.push(data?.slug ? "/stories/" + data?.slug + "/edit" : "#");
+};
 
 const handleBookmark = async () => {
   isActionLoading.bookmarkBtn = true;
