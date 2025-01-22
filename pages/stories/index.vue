@@ -29,7 +29,7 @@
           v-model="selectedSortType"
         />
         <h4 class="font-dm-sans font-normal">Category</h4>
-        <BaseSelectFilter :items="categories" v-model="selectedCategory" />
+        <BaseSelectFilter :items="allCategories" v-model="selectedCategory" />
       </div>
       <form class="basis-full md:basis-1/3" @submit.prevent="handleSearch">
         <BaseSearchBar v-model="searchQuery" />
@@ -39,9 +39,19 @@
       <div
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-10 pb-10"
       >
-        <div v-for="(slide, idx) in slides" :key="idx">
-          <StoryCard :show-action="true" />
-        </div>
+        <template v-if="status === 'pending'"></template>
+        <template v-else-if="status === 'success'">
+          <div
+            v-for="(story, idx) in stories?.all[currentPage.all]?.data"
+            :key="idx"
+          >
+            <StoryCard
+              showAction="bookmark-only"
+              :data="story"
+              getStory="all"
+            />
+          </div>
+        </template>
       </div>
       <BasePagination />
     </div>
@@ -49,41 +59,80 @@
 </template>
 
 <script setup>
-const sortType = [
-  { name: "Newest" },
-  { name: "Popular" },
-  { name: "A - Z" },
-  { name: "Z- A" },
-];
-
-const categories = [
-  { name: "Comedy" },
-  { name: "Romance" },
-  { name: "Horror" },
-  { name: "Adventure" },
-  { name: "Fiction" },
-  { name: "Fantasy" },
-  { name: "Drama" },
-  { name: "Heartfelt" },
-  { name: "Mystery" },
-];
-const selectedSortType = ref(sortType[0]);
-const selectedCategory = ref(categories[0]);
-const searchQuery = ref("");
-
-watch(selectedSortType, (newValue, oldValue) => {
-  console.log("Sort Type changed from", oldValue?.name, "to", newValue?.name);
-});
-
-watch(selectedCategory, (newValue, oldValue) => {
-  console.log("Category changed from", oldValue?.name, "to", newValue?.name);
-});
+const route = useRoute();
+const router = useRouter();
+const storyStore = useStoryStore();
 
 const slides = ref(Array.from({ length: 10 }));
+
+const sortType = [
+  { name: "Newest", slug: "newest" },
+  { name: "Popular", slug: "popular" },
+  { name: "A - Z", slug: "a-z" },
+  { name: "Z- A", slug: "z-a" },
+];
+
+const { stories, currentPage, categories } = storeToRefs(storyStore);
+
+const selectedSortType = ref(
+  sortType.find((item) => item.slug === route.query.sort) || sortType[0]
+);
+const searchQuery = ref("");
+
+if (!storyStore.categories) {
+  try {
+    await useAsyncData("categories", () => storyStore.fetchCategories());
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+const allCategories = computed(() => {
+  return [{ name: "All" }, ...categories?.value];
+});
+
+const selectedCategory = ref(
+  allCategories.value.find((item) => item.slug === route.query.category) ||
+    allCategories.value[0]
+);
+
+currentPage.value.all = parseInt(route.query.page) || 1;
+
+const { status } = await useLazyAsyncData("stories-all", () =>
+  storyStore.fetchStories("all", currentPage.value.all)
+);
+
+// watch(selectedSortType, async (newValue, oldValue) => {
+//   router.push({
+//     query: {
+//       ...route.query,
+//       sort: newValue?.slug,
+//     },
+//   });
+//   await useLazyAsyncData("stories-all", () =>
+//     storyStore.fetchStories("all", newPage.all)
+//   );
+// });
+
+// watch(selectedCategory, async (newValue, oldValue) => {
+//   router.push({
+//     query: {
+//       ...route.query,
+//       category: newValue?.slug,
+//     },
+//   });
+//   await useLazyAsyncData("stories-all", () =>
+//     storyStore.fetchStories("all", newPage.all)
+//   );
+// });
 
 const handleSearch = () => {
   console.log(searchQuery.value);
 };
+
+onBeforeUnmount(() => {
+  storyStore.clearStories("all");
+});
 </script>
 
 <style lang="scss" scoped></style>

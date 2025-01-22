@@ -7,7 +7,9 @@
       <HeadlessListboxButton
         class="relative w-full cursor-pointer rounded-lg bg-white py-2 pl-3 pr-10 text-left font-medium focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-asparagus-tr"
       >
-        <span class="block truncate">{{ modelValue.name }}</span>
+        <span class="block truncate min-w-14 md:min-w-20">{{
+          modelValue.name
+        }}</span>
         <span
           class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
         >
@@ -40,7 +42,7 @@
               <span
                 :class="[
                   selected ? 'font-medium' : 'font-normal',
-                  'block truncate transition group-hover:translate-x-2',
+                  'block truncate transition group-hover:translate-x-1',
                 ]"
                 >{{ item.name }}</span
               >
@@ -55,7 +57,7 @@
 <script setup>
 import { ChevronDownIcon } from "@heroicons/vue/24/outline";
 
-defineProps({
+const props = defineProps({
   modelValue: {
     type: Object,
     required: true,

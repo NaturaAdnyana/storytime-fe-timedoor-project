@@ -44,4 +44,6 @@ const searchQuery = ref("");
 const handleSearch = () => {
   console.log(searchQuery.value);
 };
+
+const storyStore = useStoryStore();
 </script>

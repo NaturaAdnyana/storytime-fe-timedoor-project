@@ -146,7 +146,6 @@ watch(
   },
   { immediate: true }
 );
-onMounted(() => {});
 
 const errorMessage = reactive({
   message: "",

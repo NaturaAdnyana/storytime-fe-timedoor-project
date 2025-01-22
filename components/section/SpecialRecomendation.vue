@@ -4,7 +4,10 @@
       class="flex justify-between items-center mx-6 lg:mx-[110px] border-b py-8"
     >
       <h2 class="heading-shadow">{{ title || "Story" }}</h2>
-      <NuxtLink :to="to">
+      <NuxtLink
+        :to="to"
+        class="hover:underline hover:text-gray-asparagus-tr underline-offset-8"
+      >
         Explore More <ArrowRightIcon class="size-3 inline" />
       </NuxtLink>
     </div>
@@ -51,7 +54,7 @@ const { data, status } = await useLazyAsyncData(`story-${params}`, () =>
   storyStore.fetchStories("all", 1, params)
 );
 
-onBeforeUnmount(() => {
-  storyStore.clearStories();
-});
+// onBeforeUnmount(() => {
+//   storyStore.clearStories();
+// });
 </script>

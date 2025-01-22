@@ -29,6 +29,7 @@ export const useStoryStore = defineStore("storyStore", () => {
     params?: string
   ) {
     if (stories[type][page]) {
+      console.log("ALREADY FETCHED", type, page);
       currentPage[type] = page;
       return;
     }
@@ -44,9 +45,10 @@ export const useStoryStore = defineStore("storyStore", () => {
       Authorization: `Bearer ${token.value}`,
     };
 
-    // if (type === "all" || type === "myStories") {
-    //   headers.Authorization = `Bearer ${token.value}`;
-    // }
+    console.log(
+      "FETCH",
+      `${config.public.apiBase}${endpoint[type]}?page=${page}${params || ""}`
+    );
 
     const response: any = await $fetch(
       `${config.public.apiBase}${endpoint[type]}?page=${page}${params || ""}`,
@@ -54,11 +56,6 @@ export const useStoryStore = defineStore("storyStore", () => {
         method: "GET",
         headers,
         onResponse({ response }) {
-          console.log(
-            `${config.public.apiBase}${endpoint[type]}?page=${page}${
-              params || ""
-            }`
-          );
           if (response.status === 200) {
             stories[type][page] = response._data.data.stories;
             currentPage[type] = page;
@@ -213,6 +210,7 @@ export const useStoryStore = defineStore("storyStore", () => {
   }
 
   async function clearStories(type?: "all" | "myStories" | "bookmarks") {
+    console.log("CLEAR", type);
     if (type) {
       stories[type] = {};
     } else {
