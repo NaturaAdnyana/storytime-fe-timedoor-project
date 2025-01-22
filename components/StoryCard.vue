@@ -155,7 +155,7 @@
             class="w-16 h-4 bg-slate-200 animate-pulse rounded-lg"
           ></div>
           <span v-else :class="showAction === 'all' && 'order-last'">
-            {{ dateFormatter(data?.updated_at) }}
+            {{ dateFormatter(data?.created_at) }}
           </span>
           <div
             v-if="isLoading"
