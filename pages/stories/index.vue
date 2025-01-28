@@ -39,21 +39,71 @@
       <div
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-10 pb-10"
       >
-        <template v-if="status === 'pending'"></template>
-        <template v-else-if="status === 'success'">
+        <template v-if="status === 'pending' || isLoading">
+          <div v-for="skeleton in skeletons" :key="skeleton">
+            <StoryCard :isLoading="true" />
+          </div>
+        </template>
+        <template v-else-if="status === 'success' || !isLoading">
           <div
-            v-for="(story, idx) in stories?.public[currentPage.public]?.data"
+            v-if="
+              stories?.public[currentParamsName]?.[currentPage.public]?.data
+                .length === 0
+            "
+            class="sm:col-span-2 lg:col-span-3 py-10"
+          >
+            <div class="flex flex-col items-center gap-6 text-center">
+              <h3 class="font-playfair-display font-semibold">
+                No Stories Found
+              </h3>
+              <p class="px-10">
+                There are no stories found with the current filter. Please try
+                again with different filter.
+              </p>
+              <NuxtImg
+                src="/images/empty-story.svg"
+                alt="Not stories!"
+                class="w-1/2 md:w-1/5"
+              />
+            </div>
+          </div>
+          <div
+            v-else
+            v-for="(story, idx) in stories?.public[currentParamsName]?.[
+              currentPage.public
+            ]?.data"
             :key="idx"
           >
             <StoryCard
               showAction="bookmark-only"
               :data="story"
+              :userId="user?.id || 0"
               getStory="public"
             />
           </div>
         </template>
       </div>
-      <BasePagination />
+      <BasePagination
+        v-model="currentPage.public"
+        v-show="
+          stories?.public[currentParamsName] &&
+          stories?.public[currentParamsName]?.[currentPage.public]?.data
+            .length !== 0
+        "
+        :from="
+          stories?.public[currentParamsName]?.[currentPage.public]?.from || 0
+        "
+        :to="stories?.public[currentParamsName]?.[currentPage.public]?.to || 0"
+        :totalResult="
+          stories?.public[currentParamsName]?.[currentPage.public]?.total || 0
+        "
+        :totalPage="
+          stories?.public[currentParamsName]?.[currentPage.public]?.last_page ||
+          0
+        "
+        :currentPage="currentPage.public"
+        :isLoading="status"
+      />
     </div>
   </section>
 </template>
@@ -61,9 +111,13 @@
 <script setup>
 const route = useRoute();
 const router = useRouter();
+const authStore = useAuthStore();
 const storyStore = useStoryStore();
 
-const slides = ref(Array.from({ length: 10 }));
+const { user } = storeToRefs(authStore);
+
+const isLoading = ref(false);
+const skeletons = ref(Array.from({ length: 10 }));
 
 const sortType = [
   { name: "Newest", slug: "newest" },
@@ -72,12 +126,13 @@ const sortType = [
   { name: "Z- A", slug: "z-a" },
 ];
 
-const { stories, currentPage, categories } = storeToRefs(storyStore);
+const { stories, currentPage, categories, currentParamsName } =
+  storeToRefs(storyStore);
 
 const selectedSortType = ref(
   sortType.find((item) => item.slug === route.query.sort) || sortType[0]
 );
-const searchQuery = ref("");
+const searchQuery = ref(route.query.keyword || "");
 
 if (!storyStore.categories) {
   try {
@@ -98,37 +153,95 @@ const selectedCategory = ref(
 
 currentPage.value.public = parseInt(route.query.page) || 1;
 
-const { status } = await useLazyAsyncData("stories-all", () =>
-  storyStore.getStories("public", currentPage.value.public)
+const { status } = await useLazyAsyncData(
+  "stories-" + currentParamsName.value,
+  () =>
+    storyStore.getStories("public", {
+      page: currentPage.value.public,
+      sort: selectedSortType.value.slug,
+      category: selectedCategory.value.slug,
+      keyword: searchQuery.value,
+    })
 );
 
-// watch(selectedSortType, async (newValue, oldValue) => {
-//   router.push({
-//     query: {
-//       ...route.query,
-//       sort: newValue?.slug,
-//     },
-//   });
-//   await useLazyAsyncData("stories-all", () =>
-//     storyStore.getStories("all", newPage.all)
-//   );
-// });
+watch(selectedSortType, async (newValue, oldValue) => {
+  isLoading.value = true;
+  currentPage.value.public = 1;
+  router.push({
+    query: {
+      ...route.query,
+      sort: newValue?.slug,
+      page: currentPage.value.public,
+    },
+  });
+  await storyStore.getStories("public", {
+    page: currentPage.value.public,
+    sort: newValue.slug,
+    category: selectedCategory.value.slug,
+    keyword: searchQuery.value,
+  });
+  isLoading.value = false;
+});
 
-// watch(selectedCategory, async (newValue, oldValue) => {
-//   router.push({
-//     query: {
-//       ...route.query,
-//       category: newValue?.slug,
-//     },
-//   });
-//   await useLazyAsyncData("stories-all", () =>
-//     storyStore.getStories("all", newPage.all)
-//   );
-// });
+watch(selectedCategory, async (newValue, oldValue) => {
+  isLoading.value = true;
+  currentPage.value.public = 1;
 
-const handleSearch = () => {
-  console.log(searchQuery.value);
+  router.push({
+    query: {
+      ...route.query,
+      category: newValue?.slug,
+      page: currentPage.value.public,
+    },
+  });
+  await storyStore.getStories("public", {
+    page: currentPage.value.public,
+    sort: selectedSortType.value.slug,
+    category: newValue.slug,
+    keyword: searchQuery.value,
+  });
+  isLoading.value = false;
+});
+
+const handleSearch = async () => {
+  isLoading.value = true;
+  currentPage.value.public = 1;
+  router.push({
+    query: {
+      ...route.query,
+      keyword: searchQuery.value,
+      page: currentPage.value.public,
+    },
+  });
+  await storyStore.getStories("public", {
+    page: currentPage.value.public,
+    sort: selectedSortType.value.slug,
+    category: selectedCategory.value.slug,
+    keyword: searchQuery.value,
+  });
+  isLoading.value = false;
 };
+
+watch(
+  currentPage,
+  async (newPage) => {
+    router.push({
+      query: {
+        ...route.query,
+        page: newPage.public,
+      },
+    });
+    await useLazyAsyncData("stories-" + currentParamsName.value, () =>
+      storyStore.getStories("public", {
+        page: currentPage.value.public,
+        sort: selectedSortType.value.slug,
+        category: selectedCategory.value.slug,
+        keyword: searchQuery.value,
+      })
+    );
+  },
+  { deep: true }
+);
 
 onBeforeUnmount(() => {
   storyStore.clearStories("public");

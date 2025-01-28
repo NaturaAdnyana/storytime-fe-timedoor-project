@@ -10,6 +10,13 @@ type CurrentPage = {
   userBookmarks: number;
 };
 
+type Params = {
+  page: number;
+  sort: string;
+  category?: string;
+  keyword?: string;
+};
+
 export const useStoryStore = defineStore("storyStore", () => {
   const stories = reactive<Stories>({
     public: {},
@@ -24,17 +31,20 @@ export const useStoryStore = defineStore("storyStore", () => {
   });
 
   const categories = ref();
+  const currentParamsName = ref("newest");
   const token = useCookie("token");
   const config = useRuntimeConfig();
 
   async function getStories(
     type: "public" | "userStories" | "userBookmarks",
-    page: number = 1,
-    params?: string
+    params: Params
   ) {
-    if (stories[type][page]) {
-      console.log("ALREADY FETCHED", type, page);
-      currentPage[type] = page;
+    currentPage[type] = params?.page || 1;
+    createParamsName(params.sort, params.category, params.keyword);
+
+    if (stories[type]?.[currentParamsName.value]?.[params.page]) {
+      // createParamsName(params.sort, params.category, params.keyword);
+      // currentPage[type] = params.page;
       return;
     }
 
@@ -49,20 +59,25 @@ export const useStoryStore = defineStore("storyStore", () => {
       Authorization: `Bearer ${token.value}`,
     };
 
-    console.log(
-      "FETCH",
-      `${config.public.apiBase}${endpoint[type]}?page=${page}${params || ""}`
-    );
-
     const response: any = await $fetch(
-      `${config.public.apiBase}${endpoint[type]}?page=${page}${params || ""}`,
+      `${config.public.apiBase}${endpoint[type]}`,
       {
         method: "GET",
         headers,
+        params: {
+          page: params?.page || 1,
+          sort: params?.sort || "newest",
+          category: params?.category || "",
+          keyword: params?.keyword || "",
+        },
         onResponse({ response }) {
           if (response.status === 200) {
-            stories[type][page] = response._data.data.stories;
-            currentPage[type] = page;
+            if (!stories[type][currentParamsName.value]) {
+              stories[type][currentParamsName.value] = {};
+            }
+
+            stories[type][currentParamsName.value][currentPage[type]] =
+              response._data.data.stories;
           }
         },
         onResponseError({ response }) {
@@ -216,7 +231,7 @@ export const useStoryStore = defineStore("storyStore", () => {
   async function clearStories(
     type?: "public" | "userStories" | "userBookmarks"
   ) {
-    console.log("CLEAR", type);
+    // console.log("CLEAR", type);
     if (type) {
       stories[type] = {};
     } else {
@@ -240,7 +255,8 @@ export const useStoryStore = defineStore("storyStore", () => {
           Authorization: `Bearer ${token.value}`,
         },
         onResponse() {
-          const storiesData = stories[type]?.[currentPage[type]]?.data;
+          const storiesData =
+            stories[type]?.[currentParamsName.value]?.[currentPage[type]]?.data;
 
           for (const story of storiesData) {
             if (story.id === id) {
@@ -255,7 +271,7 @@ export const useStoryStore = defineStore("storyStore", () => {
           }
           if (type === "userBookmarks") {
             clearStories();
-            getStories(type, currentPage[type]);
+            getStories(type, { page: currentPage[type], sort: "newest" });
           }
         },
         onResponseError({ response }) {
@@ -280,7 +296,7 @@ export const useStoryStore = defineStore("storyStore", () => {
         },
         onResponse() {
           clearStories();
-          getStories(type, currentPage[type]);
+          getStories(type, { page: currentPage[type], sort: "newest" });
         },
         onResponseError({ response }) {
           console.error(response);
@@ -296,10 +312,22 @@ export const useStoryStore = defineStore("storyStore", () => {
     return response;
   }
 
+  function createParamsName(
+    sortBy: string = "newest",
+    category?: string,
+    keyword?: string
+  ) {
+    currentParamsName.value =
+      sortBy +
+      (category ? "-" + category : "") +
+      (keyword ? "-" + keyword : "");
+  }
+
   return {
     stories,
     currentPage,
     categories,
+    currentParamsName,
     create,
     update,
     getStories,
@@ -309,5 +337,6 @@ export const useStoryStore = defineStore("storyStore", () => {
     clearStories,
     toggleBookmark,
     destroy,
+    createParamsName,
   };
 });

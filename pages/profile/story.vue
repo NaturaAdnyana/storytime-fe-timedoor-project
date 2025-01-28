@@ -9,7 +9,10 @@
     </div>
     <template v-else>
       <div
-        v-if="stories?.userStories[currentPage.userStories]?.data.length === 0"
+        v-if="
+          stories?.userStories['newest']?.[currentPage.userStories]?.data
+            .length === 0
+        "
         class="flex flex-col items-center gap-6 text-center"
       >
         <h3 class="font-playfair-display font-semibold">No Stories Yet</h3>
@@ -27,8 +30,9 @@
         class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-10 pb-10"
       >
         <div
-          v-for="(story, idx) in stories?.userStories[currentPage.userStories]
-            ?.data"
+          v-for="(story, idx) in stories?.userStories['newest']?.[
+            currentPage.userStories
+          ]?.data"
           :key="idx"
         >
           <StoryCard
@@ -43,13 +47,21 @@
     <BasePagination
       v-model="currentPage.userStories"
       v-show="
-        stories?.userStories &&
-        stories?.userStories[currentPage.userStories]?.data.length !== 0
+        stories?.userStories['newest'] &&
+        stories?.userStories['newest']?.[currentPage.userStories]?.data
+          .length !== 0
       "
-      :from="stories?.userStories[currentPage.userStories]?.from || 0"
-      :to="stories?.userStories[currentPage.userStories]?.to || 0"
-      :totalResult="stories?.userStories[currentPage.userStories]?.total || 0"
-      :totalPage="stories?.userStories[currentPage.userStories]?.last_page || 0"
+      :from="
+        stories?.userStories['newest']?.[currentPage.userStories]?.from || 0
+      "
+      :to="stories?.userStories['newest']?.[currentPage.userStories]?.to || 0"
+      :totalResult="
+        stories?.userStories['newest']?.[currentPage.userStories]?.total || 0
+      "
+      :totalPage="
+        stories?.userStories['newest']?.[currentPage.userStories]?.last_page ||
+        0
+      "
       :currentPage="currentPage.userStories"
       :isLoading="status"
     />
@@ -69,12 +81,40 @@ const { stories, currentPage } = storeToRefs(storyStore);
 currentPage.value.userStories = parseInt(route.query.page) || 1;
 
 const { status } = await useLazyAsyncData("stories", () =>
-  storyStore.getStories("userStories", currentPage.value.userStories)
+  storyStore.getStories("userStories", {
+    sort: "newest",
+    page: currentPage.value.userStories,
+  })
 );
 
 onBeforeUnmount(() => {
   storyStore.clearStories("userStories");
 });
+
+watch(
+  stories,
+  async () => {
+    if (
+      stories?.value?.userStories?.newest?.[currentPage.value.userStories]?.data
+        .length === 0 &&
+      route.query.page > 1
+    ) {
+      router.push({
+        query: {
+          ...route.query,
+          page: 1,
+        },
+      });
+      await useLazyAsyncData("stories", () =>
+        storyStore.getStories("userStories", {
+          sort: "newest",
+          page: 1,
+        })
+      );
+    }
+  },
+  { deep: true }
+);
 
 watch(
   currentPage,
@@ -86,7 +126,10 @@ watch(
       },
     });
     await useLazyAsyncData("stories", () =>
-      storyStore.getStories("userStories", newPage.userStories)
+      storyStore.getStories("userStories", {
+        sort: "newest",
+        page: newPage.userStories,
+      })
     );
   },
   { deep: true }

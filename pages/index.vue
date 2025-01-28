@@ -19,7 +19,11 @@
       format="webp"
     />
   </section>
-  <SectionStoryRecomendation title="Latest Story" to="/stories" />
+  <SectionStoryRecomendation
+    title="Latest Story"
+    to="/stories"
+    :params="{ sort: 'newest' }"
+  />
   <SectionSpecialRecomendation
     title="Comedy"
     to="/stories?category=comedy"

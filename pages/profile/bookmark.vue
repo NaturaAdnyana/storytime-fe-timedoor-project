@@ -10,7 +10,8 @@
     <template v-else>
       <div
         v-if="
-          stories?.userBookmarks[currentPage.userBookmarks]?.data.length === 0
+          stories?.userBookmarks['newest']?.[currentPage.userBookmarks]?.data
+            .length === 0
         "
         class="flex flex-col items-center gap-6 text-center"
       >
@@ -30,7 +31,7 @@
         class="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-10 pb-10"
       >
         <div
-          v-for="(story, idx) in stories?.userBookmarks[
+          v-for="(story, idx) in stories?.userBookmarks['newest']?.[
             currentPage.userBookmarks
           ]?.data"
           :key="idx"
@@ -47,16 +48,23 @@
     <BasePagination
       v-model="currentPage.userBookmarks"
       v-show="
-        stories?.userBookmarks &&
-        stories?.userBookmarks[currentPage.userBookmarks]?.data.length !== 0
+        stories?.userBookmarks['newest'] &&
+        stories?.userBookmarks['newest']?.[currentPage.userBookmarks]?.data
+          .length !== 0
       "
-      :from="stories?.userBookmarks[currentPage.userBookmarks]?.from || 0"
-      :to="stories?.userBookmarks[currentPage.userBookmarks]?.to || 0"
+      :from="
+        stories?.userBookmarks['newest']?.[currentPage.userBookmarks]?.from || 0
+      "
+      :to="
+        stories?.userBookmarks['newest']?.[currentPage.userBookmarks]?.to || 0
+      "
       :totalResult="
-        stories?.userBookmarks[currentPage.userBookmarks]?.total || 0
+        stories?.userBookmarks['newest']?.[currentPage.userBookmarks]?.total ||
+        0
       "
       :totalPage="
-        stories?.userBookmarks[currentPage.userBookmarks]?.last_page || 0
+        stories?.userBookmarks['newest']?.[currentPage.userBookmarks]
+          ?.last_page || 0
       "
       :currentPage="currentPage.userBookmarks"
       :isLoading="status"
@@ -77,12 +85,40 @@ const { stories, currentPage } = storeToRefs(storyStore);
 currentPage.value.userBookmarks = parseInt(route.query.page) || 1;
 
 const { status } = await useLazyAsyncData("stories", () =>
-  storyStore.getStories("userBookmarks", currentPage.value.userBookmarks)
+  storyStore.getStories("userBookmarks", {
+    sort: "newest",
+    page: currentPage.value.userBookmarks,
+  })
 );
 
 onBeforeUnmount(() => {
   storyStore.clearStories("userBookmarks");
 });
+
+watch(
+  stories,
+  async () => {
+    if (
+      stories?.value?.userBookmarks?.newest?.[currentPage.value.userBookmarks]
+        ?.data.length === 0 &&
+      route.query.page > 1
+    ) {
+      router.push({
+        query: {
+          ...route.query,
+          page: 1,
+        },
+      });
+      await useLazyAsyncData("stories", () =>
+        storyStore.getStories("userBookmarks", {
+          sort: "newest",
+          page: 1,
+        })
+      );
+    }
+  },
+  { deep: true }
+);
 
 watch(
   currentPage,
@@ -94,7 +130,10 @@ watch(
       },
     });
     await useLazyAsyncData("stories", () =>
-      storyStore.getStories("userBookmarks", newPage.userBookmarks)
+      storyStore.getStories("userBookmarks", {
+        sort: "newest",
+        page: newPage.userBookmarks,
+      })
     );
   },
   { deep: true }

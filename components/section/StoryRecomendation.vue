@@ -62,7 +62,7 @@ import { ArrowRightIcon } from "@heroicons/vue/24/outline";
 
 const { title, params, to } = defineProps({
   title: String,
-  params: String,
+  params: Object,
   to: String,
 });
 
