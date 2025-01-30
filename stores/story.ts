@@ -15,6 +15,7 @@ type Params = {
   sort: string;
   category?: string;
   keyword?: string;
+  paginate?: number;
 };
 
 export const useStoryStore = defineStore("storyStore", () => {
@@ -69,6 +70,7 @@ export const useStoryStore = defineStore("storyStore", () => {
           sort: params?.sort || "newest",
           category: params?.category || "",
           keyword: params?.keyword || "",
+          paginate: params?.paginate || 12,
         },
         onResponse({ response }) {
           if (response.status === 200) {
@@ -315,12 +317,14 @@ export const useStoryStore = defineStore("storyStore", () => {
   function createParamsName(
     sortBy: string = "newest",
     category?: string,
-    keyword?: string
+    keyword?: string,
+    paginate?: number
   ) {
     currentParamsName.value =
       sortBy +
       (category ? "-" + category : "") +
-      (keyword ? "-" + keyword : "");
+      (keyword ? "-" + keyword : "") +
+      (paginate ? "-" + paginate : "");
   }
 
   return {
