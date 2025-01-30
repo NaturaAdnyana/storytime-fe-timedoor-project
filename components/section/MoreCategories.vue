@@ -32,7 +32,7 @@
           <template v-else-if="status == 'success'">
             <swiper-slide v-for="(category, idx) in categories" :key="idx">
               <NuxtLink
-                :to="'/stories/category/' + category.slug"
+                :to="'/stories?category=' + category.slug"
                 class="rounded text-center py-10 bg-isabelline-sc text-gray-asparagus-tr block"
               >
                 {{ category.name }}

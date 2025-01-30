@@ -21,23 +21,23 @@
   </section>
   <SectionStoryRecomendation
     title="Latest Story"
-    to="/stories"
-    :params="{ sort: 'newest' }"
+    to="/stories?sort=newest"
+    :params="{ sort: 'newest', paginate: 6 }"
   />
   <SectionSpecialRecomendation
     title="Comedy"
     to="/stories?category=comedy"
-    params="&paginate=3&category=comedy"
+    :params="{ sort: 'newest', paginate: 3, category: 'comedy' }"
   />
   <SectionStoryRecomendation
     title="Romance"
     to="/stories?category=romance"
-    params="&category=romance"
+    :params="{ sort: 'newest', paginate: 3, category: 'romance' }"
   />
   <SectionSpecialRecomendation
     title="Horror"
     to="/stories?category=horror"
-    params="&category=horror"
+    :params="{ sort: 'newest', paginate: 6, category: 'horror' }"
   />
   <SectionMoreCategories title="More Categories" />
 </template>

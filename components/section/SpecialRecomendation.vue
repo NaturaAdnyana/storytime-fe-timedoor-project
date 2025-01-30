@@ -44,14 +44,32 @@
 import { ArrowRightIcon } from "@heroicons/vue/24/outline";
 const { title, params, to } = defineProps({
   title: String,
-  params: String,
+  params: Object,
   to: String,
 });
 
 const storyStore = useStoryStore();
 
-const { data, status } = await useLazyAsyncData(`story-${params}`, () =>
-  storyStore.getStories("public", 1, params)
+const { currentParamsName } = storeToRefs(storyStore);
+
+storyStore.createParamsName(
+  params.page,
+  params.sort,
+  params.category,
+  params.keyword,
+  params.paginate
+);
+
+const { data, status } = await useLazyAsyncData(
+  "stories-" + currentParamsName.value,
+  () =>
+    storyStore.getStories("public", {
+      page: params.page,
+      sort: params.sort,
+      category: params.category,
+      keyword: params.keyword,
+      paginate: params.paginate,
+    })
 );
 
 // onBeforeUnmount(() => {

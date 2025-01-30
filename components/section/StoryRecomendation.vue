@@ -11,7 +11,20 @@
       </NuxtLink>
     </div>
     <div class="mt-6 mx-0">
-      <ClientOnly>
+      <template v-if="data?.data?.stories?.data.length === 0">
+        <div class="py-10">
+          <div class="flex flex-col items-center gap-6 text-center">
+            <h3 class="font-playfair-display font-semibold">
+              No Stories Found
+            </h3>
+            <p class="px-10">
+              There are no stories found with the current filter. Please try
+              again with different filter.
+            </p>
+          </div>
+        </div>
+      </template>
+      <ClientOnly v-else>
         <swiper-container
           ref="containerRef"
           :slides-per-view="3.5"
@@ -76,8 +89,26 @@ const storyStore = useStoryStore();
 
 const { user } = storeToRefs(authStore);
 
-const { data, status } = await useLazyAsyncData(`story-${params}`, () =>
-  storyStore.getStories(getStory.value, 1, params)
+const { currentParamsName } = storeToRefs(storyStore);
+
+storyStore.createParamsName(
+  params.page,
+  params.sort,
+  params.category,
+  params.keyword,
+  params.paginate
+);
+
+const { data, status } = await useLazyAsyncData(
+  "stories-" + currentParamsName.value,
+  () =>
+    storyStore.getStories("public", {
+      page: params.page,
+      sort: params.sort,
+      category: params.category,
+      keyword: params.keyword,
+      paginate: params.paginate,
+    })
 );
 
 // onBeforeUnmount(() => {
