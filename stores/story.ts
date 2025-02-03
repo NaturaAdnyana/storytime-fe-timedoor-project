@@ -212,7 +212,7 @@ export const useStoryStore = defineStore("storyStore", () => {
     return response;
   }
 
-  async function getCategories() {
+  async function getCategories(exclude?: Array<string>) {
     const response: any = await $fetch(
       config.public.apiBase + "/api/categories",
       {
@@ -220,6 +220,7 @@ export const useStoryStore = defineStore("storyStore", () => {
         headers: {
           "Content-Type": "application/json",
         },
+        params: exclude,
         onResponse({ response }) {
           if (response.status === 200) {
             categories.value = response._data.data.categories;

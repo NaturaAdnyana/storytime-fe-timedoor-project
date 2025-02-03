@@ -9,6 +9,7 @@ export default {
         "raisin-black": "#222222",
         "isabelline-sc": "#F0F5ED",
         quartz: "#4B4B4B",
+        gainsboro: "#d5e6d4",
       },
       fontFamily: {
         "dm-sans": ["DM Sans", "sans-serif"],

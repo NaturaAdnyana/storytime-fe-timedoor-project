@@ -39,7 +39,10 @@
     to="/stories?category=horror"
     :params="{ sort: 'newest', paginate: 6, category: 'horror' }"
   />
-  <SectionMoreCategories title="More Categories" />
+  <SectionMoreCategories
+    title="More Categories"
+    :exclude="['comedy', 'romance', 'horror']"
+  />
 </template>
 
 <script setup>

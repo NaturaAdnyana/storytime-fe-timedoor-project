@@ -117,8 +117,6 @@ const { data, status } = await useLazyAsyncData(
           paginate: params.paginate,
         })
 );
-
-console.log(data);
 </script>
 
 <style scoped></style>
