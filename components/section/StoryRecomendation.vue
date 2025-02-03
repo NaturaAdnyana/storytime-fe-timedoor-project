@@ -38,7 +38,11 @@
               slidesOffsetBefore: 24,
               slidesOffsetAfter: 24,
             },
-            640: { slidesPerView: 2 },
+            640: {
+              slidesPerView: 2.5,
+              slidesOffsetBefore: 24,
+              slidesOffsetAfter: 24,
+            },
             1024: { slidesPerView: 3.5 },
           }"
         >
