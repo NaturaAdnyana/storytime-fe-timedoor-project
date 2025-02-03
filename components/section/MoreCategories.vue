@@ -28,7 +28,7 @@
             1024: {
               slidesPerView: 8.5,
               slidesOffsetBefore: 105,
-              slidesOffsetAfter: 105,
+              slidesOffsetAfter: 20,
             },
           }"
         >
