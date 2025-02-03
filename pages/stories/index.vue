@@ -117,7 +117,7 @@ const storyStore = useStoryStore();
 const { user } = storeToRefs(authStore);
 
 const isLoading = ref(false);
-const skeletons = ref(Array.from({ length: 10 }));
+const skeletons = ref(Array.from({ length: 12 }));
 
 const sortType = [
   { name: "Newest", slug: "newest" },
@@ -231,6 +231,7 @@ watch(
         page: newPage.public,
       },
     });
+    isLoading.value = true;
     await useLazyAsyncData("stories-" + currentParamsName.value, () =>
       storyStore.getStories("public", {
         page: currentPage.value.public,
@@ -239,6 +240,7 @@ watch(
         keyword: searchQuery.value,
       })
     );
+    isLoading.value = false;
   },
   { deep: true }
 );

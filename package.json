@@ -20,6 +20,7 @@
     "nuxt-swiper": "^2.0.0",
     "pinia": "^2.3.0",
     "vue": "latest",
+    "vue-dompurify-html": "^5.2.0",
     "vue-router": "latest"
   },
   "devDependencies": {

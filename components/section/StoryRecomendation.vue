@@ -5,6 +5,7 @@
     >
       <h2 class="heading-shadow">{{ title || "Story" }}</h2>
       <NuxtLink
+        v-show="to"
         :to="to"
         class="hover:underline hover:text-gray-asparagus-tr underline-offset-8"
         >Explore More <ArrowRightIcon class="size-3 inline" />
@@ -102,18 +103,18 @@ storyStore.createParamsName(
 const { data, status } = await useLazyAsyncData(
   "stories-" + currentParamsName.value,
   () =>
-    storyStore.getStories("public", {
-      page: params.page,
-      sort: params.sort,
-      category: params.category,
-      keyword: params.keyword,
-      paginate: params.paginate,
-    })
+    params.slug
+      ? storyStore.getSimilarStories(params.slug)
+      : storyStore.getStories("public", {
+          page: params.page,
+          sort: params.sort,
+          category: params.category,
+          keyword: params.keyword,
+          paginate: params.paginate,
+        })
 );
 
-// onBeforeUnmount(() => {
-//   storyStore.clearStories();
-// });
+console.log(data);
 </script>
 
 <style scoped></style>

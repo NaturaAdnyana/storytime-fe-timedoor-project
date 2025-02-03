@@ -71,8 +71,4 @@ const { data, status } = await useLazyAsyncData(
       paginate: params.paginate,
     })
 );
-
-// onBeforeUnmount(() => {
-//   storyStore.clearStories();
-// });
 </script>

@@ -1,11 +1,13 @@
 type Stories = {
   public: any;
+  similarStories: any;
   userStories: any;
   userBookmarks: any;
 };
 
 type CurrentPage = {
   public: number;
+  similarStories: number;
   userStories: number;
   userBookmarks: number;
 };
@@ -21,12 +23,14 @@ type Params = {
 export const useStoryStore = defineStore("storyStore", () => {
   const stories = reactive<Stories>({
     public: {},
+    similarStories: {},
     userStories: {},
     userBookmarks: {},
   });
 
   const currentPage = reactive<CurrentPage>({
     public: 1,
+    similarStories: 1,
     userStories: 1,
     userBookmarks: 1,
   });
@@ -103,6 +107,37 @@ export const useStoryStore = defineStore("storyStore", () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+        },
+        onResponseError({ response }) {
+          console.error(response);
+        },
+      }
+    );
+    return response;
+  }
+
+  async function getSimilarStories(id: number) {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token.value}`,
+    };
+
+    createParamsName("newest");
+    const response: any = await $fetch(
+      config.public.apiBase + "/api/stories/" + id + "/similar",
+      {
+        method: "GET",
+        headers,
+        onResponse({ response }) {
+          if (response.status === 200) {
+            if (!stories["similarStories"][currentParamsName.value]) {
+              stories["similarStories"][currentParamsName.value] = {};
+            }
+
+            stories["similarStories"][currentParamsName.value][
+              currentPage["similarStories"]
+            ] = { data: response._data.data.stories };
+          }
         },
         onResponseError({ response }) {
           console.error(response);
@@ -231,13 +266,14 @@ export const useStoryStore = defineStore("storyStore", () => {
   }
 
   async function clearStories(
-    type?: "public" | "userStories" | "userBookmarks"
+    type?: "public" | "similarStories" | "userStories" | "userBookmarks"
   ) {
     // console.log("CLEAR", type);
     if (type) {
       stories[type] = {};
     } else {
       stories.public = {};
+      stories.similarStories = {};
       stories.userStories = {};
       stories.userBookmarks = {};
     }
@@ -245,7 +281,11 @@ export const useStoryStore = defineStore("storyStore", () => {
 
   async function toggleBookmark(
     id: number,
-    type: "public" | "userStories" | "userBookmarks" = "public"
+    type:
+      | "public"
+      | "similarStories"
+      | "userStories"
+      | "userBookmarks" = "public"
   ) {
     const authStore = useAuthStore();
     const response: any = await $fetch(
@@ -259,7 +299,7 @@ export const useStoryStore = defineStore("storyStore", () => {
         onResponse() {
           const storiesData =
             stories[type]?.[currentParamsName.value]?.[currentPage[type]]?.data;
-
+          console.log(storiesData);
           for (const story of storiesData) {
             if (story.id === id) {
               if (story.bookmarks[0]?.user_id === authStore.user?.id) {
@@ -336,6 +376,7 @@ export const useStoryStore = defineStore("storyStore", () => {
     update,
     getStories,
     getStoryBySlug,
+    getSimilarStories,
     getCategories,
     uploadImage,
     clearStories,
