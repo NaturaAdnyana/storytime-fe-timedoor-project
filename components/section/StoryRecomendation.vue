@@ -30,8 +30,8 @@
           ref="containerRef"
           :slides-per-view="3.5"
           :spaceBetween="24"
-          :slidesOffsetBefore="110"
-          :slidesOffsetAfter="110"
+          :slidesOffsetBefore="105"
+          :slidesOffsetAfter="105"
           :breakpoints="{
             0: {
               slidesPerView: 1.15,
