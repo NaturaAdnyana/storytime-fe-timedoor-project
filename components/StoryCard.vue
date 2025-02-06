@@ -57,7 +57,7 @@
             </button>
             <button
               :disabled="isActionLoading.deleteBtn"
-              @click.prevent="openModal"
+              @click.prevent="openDeleteModal"
               class="rounded-full w-12 h-12 p-2 flex justify-center items-center bg-gray-asparagus-tr transition hover:bg-kombu-green"
             >
               <div
@@ -169,7 +169,7 @@
         </div>
       </div>
     </NuxtLink>
-    <BaseModal
+    <!-- <BaseModal
       :isModalOpen="isModalOpen"
       @close="closeModal"
       @confirm="handleDelete"
@@ -177,15 +177,16 @@
       text="Are you sure want to delete this story?"
       cancelText="Cancel"
       confirmText="Delete"
-    />
+    /> -->
   </div>
 </template>
 
 <script setup>
+const appStore = useAppStore();
+
 import { BookmarkIcon } from "@heroicons/vue/24/solid";
 import DOMPurify from "dompurify";
 
-const config = useRuntimeConfig();
 const router = useRouter();
 
 const { showAction, userId, isLoading, data, getStory } = defineProps({
@@ -244,16 +245,14 @@ const handleBookmark = async () => {
   }
 };
 
-const isModalOpen = ref(false);
-
-function openModal() {
-  isActionLoading.deleteBtn = true;
-  isModalOpen.value = true;
-}
-
-function closeModal() {
-  isActionLoading.deleteBtn = false;
-  isModalOpen.value = false;
+function openDeleteModal() {
+  appStore.openModal({
+    title: "Confirm Delete",
+    text: "Are you sure you want to delete this item?",
+    cancelText: "Cancel",
+    confirmText: "Delete",
+    onConfirm: handleDelete,
+  });
 }
 
 const handleDelete = async () => {

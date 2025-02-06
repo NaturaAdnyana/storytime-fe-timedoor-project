@@ -87,7 +87,7 @@
               <div class="p-2">
                 <HeadlessMenuItem v-slot="{ active }">
                   <button
-                    @click="handleLogout"
+                    @click="openLogoutModal"
                     :disabled="isLoading"
                     class="block w-full rounded-md p-2 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-gray-asparagus-tr disabled:opacity-90 disabled:cursor-not-allowed"
                   >
@@ -162,7 +162,7 @@
               </NuxtLink>
               <hr class="my-2" />
               <button
-                @click="handleLogout"
+                @click="openLogoutModal"
                 :disabled="isLoading"
                 class="block w-full rounded-md p-2 transition duration-150 ease-in-out hover:bg-gray-100 focus:outline-none focus-visible:ring focus-visible:ring-gray-asparagus-tr disabled:opacity-90 disabled:cursor-not-allowed"
               >
@@ -190,13 +190,24 @@ import {
 } from "@heroicons/vue/24/outline";
 
 const router = useRouter();
-const config = useRuntimeConfig();
+
+const appStore = useAppStore();
 const authStore = useAuthStore();
 
 const { user } = storeToRefs(authStore);
 
 const isMobileMenuOpen = ref(false);
 const isLoading = ref(false);
+
+function openLogoutModal() {
+  appStore.openModal({
+    title: "Logout",
+    text: "Are you sure you want to logout?",
+    cancelText: "Cancel",
+    confirmText: "Logout",
+    onConfirm: handleLogout,
+  });
+}
 
 const handleLogout = async () => {
   isLoading.value = true;

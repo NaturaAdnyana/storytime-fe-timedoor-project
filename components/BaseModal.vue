@@ -1,6 +1,7 @@
 <template>
-  <HeadlessTransitionRoot appear :show="isModalOpen" as="template">
-    <HeadlessDialog as="div" @close="close" class="relative z-10">
+  <HeadlessTransitionRoot appear :show="modal.isOpen" as="template">
+    <HeadlessDialog as="div" @close="closeModal" class="relative z-10">
+      <!-- Background -->
       <HeadlessTransitionChild
         as="template"
         enter="duration-300 ease-out"
@@ -33,11 +34,12 @@
                 as="h3"
                 class="text-2xl font-medium leading-6 text-gray-900"
               >
-                {{ title || "Hi!" }}
+                {{ modal.title || "Hi!" }}
               </HeadlessDialogTitle>
+
               <div class="mt-5">
                 <p class="text-sm text-gray-500">
-                  {{ text || "-" }}
+                  {{ modal.text || "-" }}
                 </p>
               </div>
 
@@ -45,16 +47,16 @@
                 <button
                   type="button"
                   class="w-1/2 btn btn-outline"
-                  @click="close"
+                  @click="closeModal"
                 >
-                  {{ cancelText || "No" }}
+                  {{ modal.cancelText || "No" }}
                 </button>
                 <button
                   type="button"
                   class="w-1/2 btn btn-solid"
-                  @click="confirm"
+                  @click="confirmAction"
                 >
-                  {{ confirmText || "Yes" }}
+                  {{ modal.confirmText || "Yes" }}
                 </button>
               </div>
             </HeadlessDialogPanel>
@@ -66,25 +68,20 @@
 </template>
 
 <script setup>
-const props = defineProps({
-  isModalOpen: {
-    type: Boolean,
-    required: true,
-  },
-  title: String,
-  text: String,
-  cancelText: String,
-  confirmText: String,
-});
+import { useAppStore } from "@/stores/app";
 
-const emit = defineEmits(["close", "confirm"]);
+const appStore = useAppStore();
 
-function close() {
-  emit("close");
+const { modal } = storeToRefs(appStore);
+
+function closeModal() {
+  appStore.closeModal();
 }
 
-function confirm() {
-  emit("confirm");
-  close();
+function confirmAction() {
+  if (modal.value.onConfirm) {
+    modal.value.onConfirm();
+  }
+  closeModal();
 }
 </script>
