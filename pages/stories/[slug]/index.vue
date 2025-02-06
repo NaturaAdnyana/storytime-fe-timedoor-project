@@ -1,4 +1,12 @@
 <template>
+  <SectionBreadCrumbs
+    :preffix="[
+      {
+        name: 'Home',
+        url: '/',
+      },
+    ]"
+  />
   <section class="mx-20 lg:mx-[110px] py-20">
     <div class="text-center space-y-5 mb-8">
       <p>{{ dateFormatter(data?.created_at) }}</p>

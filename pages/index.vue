@@ -41,14 +41,20 @@
   />
   <SectionMoreCategories
     title="More Categories"
-    :exclude="['comedy', 'romance', 'horror']"
+    :exclude="['all', 'comedy', 'romance', 'horror']"
   />
 </template>
 
 <script setup>
+const router = useRouter();
 const searchQuery = ref("");
 
 const handleSearch = () => {
-  console.log(searchQuery.value);
+  router.push({
+    path: "/stories",
+    query: {
+      keyword: searchQuery.value,
+    },
+  });
 };
 </script>

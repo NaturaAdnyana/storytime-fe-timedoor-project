@@ -124,12 +124,10 @@ const storyData = reactive({
   images: [],
 });
 
-if (!storyStore.categories) {
-  try {
-    await useAsyncData("categories", () => storyStore.getCategories());
-  } catch (error) {
-    console.log(error);
-  }
+try {
+  await useAsyncData("categories", () => storyStore.getCategories(["all"]));
+} catch (error) {
+  console.log(error);
 }
 
 watch(

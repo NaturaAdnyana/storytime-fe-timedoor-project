@@ -88,12 +88,12 @@ export const useStoryStore = defineStore("storyStore", () => {
         },
         onResponseError({ response }) {
           console.error(response);
-          // showError({
-          //   fatal: true,
-          //   statusCode: response.status,
-          //   statusMessage:
-          //     "Something went wrong when fetching data. Please contact support.",
-          // });
+          showError({
+            fatal: true,
+            statusCode: response.status,
+            statusMessage:
+              "Something went wrong when fetching data. Please contact support.",
+          });
         },
       }
     );
@@ -223,7 +223,14 @@ export const useStoryStore = defineStore("storyStore", () => {
         params: exclude,
         onResponse({ response }) {
           if (response.status === 200) {
-            categories.value = response._data.data.categories;
+            if (exclude?.includes("all")) {
+              categories.value = response._data.data.categories;
+            } else {
+              categories.value = [
+                { name: "All" },
+                ...response._data.data.categories,
+              ];
+            }
           }
         },
         onResponseError({ response }) {

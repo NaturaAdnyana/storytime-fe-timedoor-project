@@ -1,22 +1,17 @@
 <template>
-  <section>
-    <div class="py-10 mx-10 lg:mx-[110px]">
-      <h1 class="text-3xl font-semibold">All Stories</h1>
-    </div>
-    <div class="py-5 px-10 lg:px-[110px] bg-isabelline-sc">
-      <ul class="flex gap-x-5 text-gray-asparagus-tr">
-        <li>
-          <NuxtLink to="/"><span class="hover:underline">Home</span> </NuxtLink>
-        </li>
-        <li>
-          <NuxtLink to="/"
-            ><span class="mr-5">/</span
-            ><span class="hover:underline">All Stories</span></NuxtLink
-          >
-        </li>
-      </ul>
-    </div>
-  </section>
+  <div class="py-10 mx-10 lg:mx-[110px]">
+    <h1 class="text-3xl font-semibold">
+      {{ selectedCategory.name + " Stories" || "All Stories" }}
+    </h1>
+  </div>
+  <SectionBreadCrumbs
+    :preffix="[
+      {
+        name: 'Home',
+        url: '/',
+      },
+    ]"
+  />
   <section>
     <div
       class="py-10 px-10 lg:px-[110px] text-xs md:text-lg md:gap-10 flex justify-between flex-wrap"
@@ -29,7 +24,7 @@
           v-model="selectedSortType"
         />
         <h4 class="font-dm-sans font-normal">Category</h4>
-        <BaseSelectFilter :items="allCategories" v-model="selectedCategory" />
+        <BaseSelectFilter :items="categories" v-model="selectedCategory" />
       </div>
       <form class="basis-full md:basis-1/3" @submit.prevent="handleSearch">
         <BaseSearchBar v-model="searchQuery" />
@@ -109,16 +104,6 @@
 </template>
 
 <script setup>
-const route = useRoute();
-const router = useRouter();
-const authStore = useAuthStore();
-const storyStore = useStoryStore();
-
-const { user } = storeToRefs(authStore);
-
-const isLoading = ref(false);
-const skeletons = ref(Array.from({ length: 12 }));
-
 const sortType = [
   { name: "Newest", slug: "newest" },
   { name: "Popular", slug: "popular" },
@@ -126,46 +111,58 @@ const sortType = [
   { name: "Z- A", slug: "z-a" },
 ];
 
+const route = useRoute();
+const router = useRouter();
+const authStore = useAuthStore();
+const storyStore = useStoryStore();
+
+const { user } = storeToRefs(authStore);
 const { stories, currentPage, categories, currentParamsName } =
   storeToRefs(storyStore);
+
+const isLoading = ref(false);
+const skeletons = ref(Array.from({ length: 12 }));
+
+const { status: categoriesStatus } = useAsyncData(
+  "categories",
+  () => storyStore.getCategories(),
+  {
+    server: false,
+  }
+);
 
 const selectedSortType = ref(
   sortType.find((item) => item.slug === route.query.sort) || sortType[0]
 );
-const searchQuery = ref(route.query.keyword || "");
 
-if (!storyStore.categories) {
-  try {
-    await useAsyncData("categories", () => storyStore.getCategories());
-  } catch (error) {
-    console.log(error);
+const selectedCategory = ref({ name: "All" });
+
+watch(categoriesStatus, () => {
+  if (categoriesStatus.value === "success") {
+    selectedCategory.value = categories?.value?.find(
+      (item) => item.slug === route.query.category
+    ) || {
+      name: "Error",
+    };
   }
-}
-
-const allCategories = computed(() => {
-  return [{ name: "All" }, ...categories?.value];
 });
 
-const selectedCategory = ref(
-  allCategories.value.find((item) => item.slug === route.query.category) ||
-    allCategories.value[0]
-);
+const searchQuery = ref(route.query.keyword || "");
 
 currentPage.value.public = parseInt(route.query.page) || 1;
 
-const { status } = await useLazyAsyncData(
+const { refresh, status } = await useLazyAsyncData(
   "stories-" + currentParamsName.value,
   () =>
     storyStore.getStories("public", {
-      page: currentPage.value.public,
-      sort: selectedSortType.value.slug,
-      category: selectedCategory.value.slug,
-      keyword: searchQuery.value,
+      page: parseInt(route.query.page) || 1,
+      sort: route.query.sort || sortType[0],
+      category: route.query.category || "",
+      keyword: route.query.keyword || "",
     })
 );
 
-watch(selectedSortType, async (newValue, oldValue) => {
-  isLoading.value = true;
+watch(selectedSortType, async (newValue) => {
   currentPage.value.public = 1;
   router.push({
     query: {
@@ -174,19 +171,10 @@ watch(selectedSortType, async (newValue, oldValue) => {
       page: currentPage.value.public,
     },
   });
-  await storyStore.getStories("public", {
-    page: currentPage.value.public,
-    sort: newValue.slug,
-    category: selectedCategory.value.slug,
-    keyword: searchQuery.value,
-  });
-  isLoading.value = false;
 });
 
-watch(selectedCategory, async (newValue, oldValue) => {
-  isLoading.value = true;
+watch(selectedCategory, async (newValue) => {
   currentPage.value.public = 1;
-
   router.push({
     query: {
       ...route.query,
@@ -194,17 +182,9 @@ watch(selectedCategory, async (newValue, oldValue) => {
       page: currentPage.value.public,
     },
   });
-  await storyStore.getStories("public", {
-    page: currentPage.value.public,
-    sort: selectedSortType.value.slug,
-    category: newValue.slug,
-    keyword: searchQuery.value,
-  });
-  isLoading.value = false;
 });
 
 const handleSearch = async () => {
-  isLoading.value = true;
   currentPage.value.public = 1;
   router.push({
     query: {
@@ -213,13 +193,6 @@ const handleSearch = async () => {
       page: currentPage.value.public,
     },
   });
-  await storyStore.getStories("public", {
-    page: currentPage.value.public,
-    sort: selectedSortType.value.slug,
-    category: selectedCategory.value.slug,
-    keyword: searchQuery.value,
-  });
-  isLoading.value = false;
 };
 
 watch(
@@ -231,23 +204,33 @@ watch(
         page: newPage.public,
       },
     });
-    isLoading.value = true;
-    await useLazyAsyncData("stories-" + currentParamsName.value, () =>
-      storyStore.getStories("public", {
-        page: currentPage.value.public,
-        sort: selectedSortType.value.slug,
-        category: selectedCategory.value.slug,
-        keyword: searchQuery.value,
-      })
-    );
-    isLoading.value = false;
   },
   { deep: true }
 );
 
+watch(route, async () => {
+  isLoading.value = true;
+  refresh();
+  setReactives();
+  isLoading.value = false;
+});
+
 onBeforeUnmount(() => {
   storyStore.clearStories("public");
 });
+
+async function setReactives() {
+  selectedSortType.value =
+    sortType.find((item) => item.slug === route.query.sort) || sortType[0];
+
+  searchQuery.value = route.query.keyword || "";
+
+  selectedCategory.value =
+    categories.value.find((item) => item.slug === route.query.category) ||
+    categories.value[0];
+
+  currentPage.value.public = parseInt(route.query.page) || 1;
+}
 </script>
 
 <style lang="scss" scoped></style>

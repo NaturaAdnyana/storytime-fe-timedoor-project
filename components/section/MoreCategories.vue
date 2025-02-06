@@ -60,7 +60,7 @@
 <script setup>
 const { title, exclude } = defineProps({
   title: String,
-  exclude: [],
+  exclude: Array,
 });
 
 const containerRef = ref(null);

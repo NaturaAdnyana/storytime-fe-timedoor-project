@@ -19,8 +19,7 @@
               No Stories Found
             </h3>
             <p class="px-10">
-              There are no stories found with the current filter. Please try
-              again with different filter.
+              There are no stories found with the current filter.
             </p>
           </div>
         </div>
