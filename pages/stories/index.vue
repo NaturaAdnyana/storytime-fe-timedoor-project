@@ -163,34 +163,31 @@ const { refresh, status } = await useLazyAsyncData(
 );
 
 watch(selectedSortType, async (newValue) => {
-  currentPage.value.public = 1;
   router.push({
     query: {
       ...route.query,
       sort: newValue?.slug,
-      page: currentPage.value.public,
+      page: 1,
     },
   });
 });
 
 watch(selectedCategory, async (newValue) => {
-  currentPage.value.public = 1;
   router.push({
     query: {
       ...route.query,
       category: newValue?.slug,
-      page: currentPage.value.public,
+      page: 1,
     },
   });
 });
 
 const handleSearch = async () => {
-  currentPage.value.public = 1;
   router.push({
     query: {
       ...route.query,
       keyword: searchQuery.value,
-      page: currentPage.value.public,
+      page: 1,
     },
   });
 };
