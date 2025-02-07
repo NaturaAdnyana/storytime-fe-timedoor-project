@@ -107,6 +107,7 @@ export const useStoryStore = defineStore("storyStore", () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token.value}`,
         },
         onResponseError({ response }) {
           console.error(response);
@@ -289,11 +290,7 @@ export const useStoryStore = defineStore("storyStore", () => {
 
   async function toggleBookmark(
     id: number,
-    type:
-      | "public"
-      | "similarStories"
-      | "userStories"
-      | "userBookmarks" = "public"
+    type?: "public" | "similarStories" | "userStories" | "userBookmarks"
   ) {
     const authStore = useAuthStore();
     const response: any = await $fetch(
@@ -305,16 +302,19 @@ export const useStoryStore = defineStore("storyStore", () => {
           Authorization: `Bearer ${token.value}`,
         },
         onResponse() {
-          const storiesData =
-            stories[type]?.[currentParamsName.value]?.[currentPage[type]]?.data;
-          for (const story of storiesData) {
-            if (story.id === id) {
-              if (story.bookmarks[0]?.user_id === authStore.user?.id) {
-                story.bookmarks = [];
-                break;
-              } else {
-                story.bookmarks = [{ user_id: authStore.user?.id }];
-                break;
+          if (type) {
+            const storiesData =
+              stories[type]?.[currentParamsName.value]?.[currentPage[type]]
+                ?.data;
+            for (const story of storiesData) {
+              if (story.id === id) {
+                if (story.bookmarks[0]?.user_id === authStore.user?.id) {
+                  story.bookmarks = [];
+                  break;
+                } else {
+                  story.bookmarks = [{ user_id: authStore.user?.id }];
+                  break;
+                }
               }
             }
           }

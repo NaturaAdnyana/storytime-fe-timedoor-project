@@ -62,7 +62,6 @@
             >
               <StoryCard
                 :data="story"
-                :getStory="getStory"
                 :userId="user?.id || 0"
                 showAction="bookmark-only"
               />

@@ -26,14 +26,17 @@
       <StoryCard
         class="lg:col-span-2 lg:row-span-2"
         :data="data?.data?.stories?.data[0]"
+        :userId="user?.id || 0"
         showAction="bookmark-only"
       />
       <StoryCard
         :data="data?.data?.stories?.data[1]"
+        :userId="user?.id || 0"
         showAction="bookmark-only"
       />
       <StoryCard
         :data="data?.data?.stories?.data[2]"
+        :userId="user?.id || 0"
         showAction="bookmark-only"
       />
     </div>

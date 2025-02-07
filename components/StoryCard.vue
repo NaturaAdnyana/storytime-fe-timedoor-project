@@ -169,15 +169,6 @@
         </div>
       </div>
     </NuxtLink>
-    <!-- <BaseModal
-      :isModalOpen="isModalOpen"
-      @close="closeModal"
-      @confirm="handleDelete"
-      title="Delete Story"
-      text="Are you sure want to delete this story?"
-      cancelText="Cancel"
-      confirmText="Delete"
-    /> -->
   </div>
 </template>
 
@@ -206,7 +197,6 @@ const { showAction, userId, isLoading, data, getStory } = defineProps({
   },
   getStory: {
     type: String,
-    default: "public",
   },
 });
 const isBookmarked = ref(data?.bookmarks[0]?.user_id === userId || false);
