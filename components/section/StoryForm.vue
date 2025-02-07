@@ -96,6 +96,7 @@
 </template>
 
 <script setup>
+const { addToast } = useAppStore();
 import { XMarkIcon } from "@heroicons/vue/20/solid";
 
 const { data, isEdit } = defineProps({
@@ -175,6 +176,7 @@ const handleSubmitStory = async () => {
         categoryId: storyData.category,
         content: storyData.content,
       });
+      addToast("Successfully edit a story", "success");
     } else {
       await storyStore.create({
         title: storyData.title,
@@ -182,6 +184,7 @@ const handleSubmitStory = async () => {
         categoryId: storyData.category,
         content: storyData.content,
       });
+      addToast("Successfully post a story", "success");
     }
     router.push({ path: "/profile" });
   } catch (error) {
@@ -192,6 +195,7 @@ const handleSubmitStory = async () => {
     errorMessage.category = error.data.errors?.category || "";
     errorMessage.content = error.data.errors?.content || "";
     errorMessage.images = error.data.errors?.images || "";
+    addToast("Something went wrong!", "error");
   } finally {
     isSubmitLoading.value = false;
   }

@@ -90,6 +90,8 @@ h2 {
 </style>
 
 <script setup>
+const { addToast } = useAppStore();
+
 import { XMarkIcon } from "@heroicons/vue/24/outline";
 
 definePageMeta({
@@ -130,12 +132,14 @@ const handleLogin = async () => {
       email: loginData.email,
       password: loginData.password,
     });
+    addToast("You have successfully logged in", "success");
     router.push({ path: "/" });
   } catch (error) {
     showErrorMessage.value = true;
     errorMessage.message = error.data.message || "";
     errorMessage.email = error.data.errors?.username_or_email || "";
     errorMessage.password = error.data.errors?.password || "";
+    addToast("Something went wrong!", "error");
   } finally {
     isLoading.value = false;
   }

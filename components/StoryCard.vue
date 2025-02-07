@@ -183,6 +183,7 @@
 
 <script setup>
 const appStore = useAppStore();
+const { addToast } = useAppStore();
 
 import { BookmarkIcon } from "@heroicons/vue/24/solid";
 import DOMPurify from "dompurify";
@@ -238,6 +239,11 @@ const handleBookmark = async () => {
   try {
     await storyStore.toggleBookmark(data?.id, getStory);
     isBookmarked.value = !isBookmarked.value;
+    if (isBookmarked.value) {
+      addToast("Successfully added story to bookmarks", "success");
+    } else {
+      addToast("Successfully remove story to bookmarks", "success");
+    }
   } catch (error) {
     console.log(error);
   } finally {
@@ -260,7 +266,9 @@ const handleDelete = async () => {
   const storyStore = useStoryStore();
   try {
     await storyStore.destroy(data?.id, getStory);
+    addToast("Successfully delete a story", "success");
   } catch (error) {
+    addToast("Something went wrong!", "error");
     console.log(error);
   } finally {
     isActionLoading.deleteBtn = false;

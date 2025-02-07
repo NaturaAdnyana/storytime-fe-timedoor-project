@@ -23,6 +23,22 @@
   animation: bookmarked 0.5s;
 }
 
+.loadbar {
+  width: 0;
+  animation: loadbar 3s linear;
+  animation-iteration-count: 1;
+}
+
+.toaster {
+  width: calc(100vw - 30px);
+}
+
+@media only screen and (min-width: 720px) {
+  .toaster {
+    width: 30vw;
+  }
+}
+
 @keyframes image-loader {
   0% {
     opacity: 0.6;
@@ -45,5 +61,14 @@
   }
   100% {
     box-shadow: 0 0 0px 0px rgba(255, 255, 255, 0.5);
+  }
+}
+
+@keyframes loadbar {
+  0% {
+    width: 100%;
+  }
+  100% {
+    width: 0%;
   }
 }

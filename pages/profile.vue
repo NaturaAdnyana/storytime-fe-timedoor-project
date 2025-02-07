@@ -220,7 +220,7 @@ const toggleModal = () => {
 };
 
 const authStore = useAuthStore();
-const config = useRuntimeConfig();
+const { addToast } = useAppStore();
 
 const { user } = storeToRefs(authStore);
 
@@ -283,6 +283,7 @@ const handleSubmit = async () => {
       newPassword: updateUserData.newPassword,
       confirmNewPassword: updateUserData.confirmNewPassword,
     });
+    addToast("Successfully edit your profile", "success");
   } catch (error) {
     showErrorMessage.value = true;
     errorMessage.message = error.data.message || "";
@@ -293,6 +294,7 @@ const handleSubmit = async () => {
     errorMessage.newPassword = error.data.errors?.new_password || "";
     errorMessage.confirmNewPassword =
       error.data.errors?.confirm_new_password || "";
+    addToast("Something went wrong!", "error");
   } finally {
     isUpdateLoading.value = false;
   }

@@ -307,7 +307,6 @@ export const useStoryStore = defineStore("storyStore", () => {
         onResponse() {
           const storiesData =
             stories[type]?.[currentParamsName.value]?.[currentPage[type]]?.data;
-          console.log(storiesData);
           for (const story of storiesData) {
             if (story.id === id) {
               if (story.bookmarks[0]?.user_id === authStore.user?.id) {

@@ -119,6 +119,7 @@ definePageMeta({
   layout: "base",
   middleware: ["auth"],
 });
+const { addToast } = useAppStore();
 
 import { XMarkIcon } from "@heroicons/vue/24/outline";
 
@@ -168,6 +169,7 @@ const handleRegister = async () => {
       password: registerData.password,
       confirmPassword: registerData.confirmPassword,
     });
+    addToast("You have successfully registered", "success");
     router.push({ path: "/" });
   } catch (error) {
     showErrorMessage.value = true;
@@ -177,6 +179,7 @@ const handleRegister = async () => {
     errorMessage.email = error.data.errors?.email || "";
     errorMessage.password = error.data.errors?.password || "";
     errorMessage.confirmPassword = error.data.errors?.confirmPassword || "";
+    addToast("Something went wrong!", "error");
   } finally {
     isLoading.value = false;
   }

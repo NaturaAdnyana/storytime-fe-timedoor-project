@@ -1,3 +1,10 @@
+type Toasts = {
+  id?: number;
+  message?: string;
+  type?: string;
+  // 'success' || 'error'
+}[];
+
 export const useAppStore = defineStore("app", () => {
   const modal = reactive({
     isOpen: false,
@@ -7,6 +14,8 @@ export const useAppStore = defineStore("app", () => {
     confirmText: "Confirm",
     onConfirm: null,
   });
+
+  const toasts = ref<Toasts>([]);
 
   const openModal = (config: any) => {
     Object.assign(modal, {
@@ -19,5 +28,19 @@ export const useAppStore = defineStore("app", () => {
     modal.isOpen = false;
   };
 
-  return { modal, openModal, closeModal };
+  const addToast = (message: string, type = "info", duration = 3100) => {
+    const id = Date.now();
+    toasts.value.push({ id, message, type });
+
+    setTimeout(() => {
+      removeToast(id);
+    }, duration);
+  };
+
+  const removeToast = (id: number) => {
+    const index = toasts.value.findIndex((toast) => toast.id === id);
+    if (index !== -1) toasts.value.splice(index, 1);
+  };
+
+  return { modal, openModal, closeModal, toasts, addToast, removeToast };
 });

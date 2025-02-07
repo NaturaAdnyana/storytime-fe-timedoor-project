@@ -4,4 +4,7 @@
     <NuxtPage />
   </NuxtLayout>
   <BaseModal />
+  <BaseToaster />
 </template>
+
+<script setup></script>
