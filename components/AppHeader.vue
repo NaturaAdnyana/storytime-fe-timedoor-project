@@ -1,6 +1,9 @@
 <template>
   <header
-    class="bg-white/80 backdrop-blur-lg fixed inset-x-0 top-0 z-20 shadow-md"
+    :class="[
+      'bg-white/80 backdrop-blur-lg fixed inset-x-0 top-0 z-20',
+      scroll !== 0 && 'shadow-md',
+    ]"
   >
     <nav
       class="mx-auto flex items-center justify-between p-4 lg:px-[110px]"
@@ -198,6 +201,7 @@ const { user } = storeToRefs(authStore);
 
 const isMobileMenuOpen = ref(false);
 const isLoading = ref(false);
+const scroll = ref(0);
 
 function openLogoutModal() {
   appStore.openModal({
@@ -219,6 +223,14 @@ const handleLogout = async () => {
     isLoading.value = false;
   }
 };
+
+const onScroll = () => {
+  scroll.value = window.scrollY || document.documentElement.scrollTop;
+};
+
+onMounted(() => {
+  window.addEventListener("scroll", onScroll);
+});
 </script>
 
 <style scoped>
