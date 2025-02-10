@@ -43,23 +43,34 @@
       <aside class="w-full md:w-[30%] basis-4/12 mb-10">
         <div class="sticky top-28">
           <ClientOnly>
-            <swiper-container
-              :style="{
-                '--swiper-navigation-color': '#fff',
-                '--swiper-pagination-color': '#fff',
-              }"
-              :spaceBetween="10"
-              :navigation="true"
-              :draggable="true"
-              thumbs-swiper=".my-thumbs"
-            >
-              <swiper-slide v-for="(image, id) in data?.data.images" :key="id">
-                <NuxtImg
-                  :src="image?.path"
-                  class="w-full aspect-square object-cover rounded border"
-                />
-              </swiper-slide>
-            </swiper-container>
+            <div class="relative">
+              <swiper-container
+                :style="{
+                  '--swiper-navigation-color': '#fff',
+                  '--swiper-pagination-color': '#fff',
+                }"
+                :spaceBetween="10"
+                :navigation="true"
+                :draggable="true"
+                thumbs-swiper=".my-thumbs"
+              >
+                <swiper-slide
+                  v-for="(image, id) in data?.data.images"
+                  :key="id"
+                >
+                  <NuxtImg
+                    :src="image?.path"
+                    class="w-full aspect-square object-cover rounded border"
+                  />
+                </swiper-slide>
+              </swiper-container>
+              <button
+                @click="toggleModal"
+                class="absolute z-10 bottom-2 right-2 transition rounded-full hover:bg-quartz/50 hover:scale-105 active:bg-kombu-green p-2"
+              >
+                <MagnifyingGlassPlusIcon class="size-6 stroke-white" />
+              </button>
+            </div>
 
             <swiper-container
               :spaceBetween="10"
@@ -90,9 +101,101 @@
     title="Similar Stories"
     :params="{ slug: route.params.slug }"
   />
+  <HeadlessTransitionRoot appear :show="isPicsOpen" as="template">
+    <HeadlessDialog as="div" @close="toggleModal" class="relative z-10">
+      <HeadlessTransitionChild
+        as="template"
+        enter="duration-300 ease-out"
+        enter-from="opacity-0"
+        enter-to="opacity-100"
+        leave="duration-200 ease-in"
+        leave-from="opacity-100"
+        leave-to="opacity-0"
+      >
+        <div class="fixed inset-0 bg-black/25" />
+      </HeadlessTransitionChild>
+
+      <div class="fixed inset-0 overflow-y-auto">
+        <div
+          class="flex min-h-full items-center justify-center p-5 md:p-[110px] text-center"
+        >
+          <HeadlessTransitionChild
+            as="template"
+            enter="duration-300 ease-out"
+            enter-from="opacity-0 scale-95"
+            enter-to="opacity-100 scale-100"
+            leave="duration-200 ease-in"
+            leave-from="opacity-100 scale-100"
+            leave-to="opacity-0 scale-95"
+          >
+            <HeadlessDialogPanel
+              class="w-full h-[80vh] md:h-[85vh] transform overflow-hidden mt-20 md:mt-0 rounded-2xl bg-white py-14 px-5 md:p-10 text-left align-middle shadow-xl transition-all"
+            >
+              <div class="relative">
+                <button
+                  @click="toggleModal"
+                  class="absolute z-10 -top-11 md:-top-7 -right-2 md:-right-7 transition rounded-full hover:bg-quartz/50 hover:scale-105 active:bg-kombu-green p-2 group"
+                >
+                  <XMarkIcon class="size-5 group-active:stroke-white" />
+                </button>
+                <ClientOnly>
+                  <div>
+                    <swiper-container
+                      :style="{
+                        '--swiper-navigation-color': 'rgba(90,90,90,.8)',
+                        '--swiper-pagination-color': 'rgba(90,90,90,.8)',
+                      }"
+                      :spaceBetween="10"
+                      :navigation="true"
+                      :draggable="true"
+                      thumbs-swiper=".my-bigger-thumbs"
+                      :class="[
+                        data?.data.images?.length > 1
+                          ? 'h-[60vh] md:h-[48vh]'
+                          : 'h-[70vh]',
+                      ]"
+                    >
+                      <swiper-slide
+                        v-for="(image, id) in data?.data.images"
+                        :key="id"
+                      >
+                        <NuxtImg
+                          :src="image?.path"
+                          class="h-full rounded object-contain mx-auto"
+                        />
+                      </swiper-slide>
+                    </swiper-container>
+                  </div>
+
+                  <swiper-container
+                    :spaceBetween="10"
+                    :slidesPerView="5"
+                    class="my-bigger-thumbs mt-[10px]"
+                    v-show="data?.data.images?.length > 1"
+                  >
+                    <swiper-slide
+                      v-for="(image, id) in data?.data.images"
+                      :key="id"
+                      class="thumb transition-opacity"
+                    >
+                      <NuxtImg
+                        :src="image?.path"
+                        class="w-full aspect-square object-cover rounded border"
+                      />
+                    </swiper-slide>
+                  </swiper-container>
+                </ClientOnly>
+              </div>
+            </HeadlessDialogPanel>
+          </HeadlessTransitionChild>
+        </div>
+      </div>
+    </HeadlessDialog>
+  </HeadlessTransitionRoot>
 </template>
 
 <script setup>
+import { MagnifyingGlassPlusIcon, XMarkIcon } from "@heroicons/vue/24/outline";
 import { BookmarkIcon } from "@heroicons/vue/24/solid";
 
 const authStore = useAuthStore();
@@ -101,6 +204,7 @@ const { addToast } = useAppStore();
 const route = useRoute();
 const { user } = storeToRefs(authStore);
 
+const isPicsOpen = ref(false);
 const isBookmarkLoading = ref(false);
 
 const { data } = await useAsyncData("story-" + route.params.slug, () =>
@@ -129,6 +233,10 @@ const handleBookmark = async () => {
   }
 };
 
+const toggleModal = () => {
+  isPicsOpen.value = !isPicsOpen.value;
+};
+
 const dateFormatter = (rawDate) => {
   const date = new Date(rawDate);
   const options = { year: "numeric", month: "long", day: "numeric" };
@@ -141,14 +249,16 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.my-thumbs .thumb {
+.my-thumbs .thumb,
+.my-bigger-thumbs .thumb {
   width: 25%;
   height: 100%;
   opacity: 0.5;
   cursor: pointer;
 }
 
-.my-thumbs .swiper-slide-thumb-active {
+.my-thumbs .swiper-slide-thumb-active,
+.my-bigger-thumbs .swiper-slide-thumb-active {
   opacity: 1;
 }
 </style>
