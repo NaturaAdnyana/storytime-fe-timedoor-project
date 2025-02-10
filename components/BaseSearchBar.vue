@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex items-center rounded-md bg-white pl-4 pr-2 py-2 h-12 w-full mx-auto outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-gray-asparagus-tr"
+    class="relative flex items-center rounded-md bg-white pl-4 pr-2 py-2 h-12 w-full mx-auto outline outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-gray-asparagus-tr"
   >
     <input
       type="text"
@@ -17,11 +17,22 @@
     >
       <MagnifyingGlassIcon class="size-4 mx-auto" aria-hidden="true" />
     </button>
+    <div
+      class="absolute right-16 flex items-center gap-2 text-xs text-quartz/50"
+    >
+      <div class="border p-1 rounded-lg">
+        <ArrowTurnDownLeftIcon class="size-3" />
+      </div>
+      to Search
+    </div>
   </div>
 </template>
 
 <script setup>
-import { MagnifyingGlassIcon } from "@heroicons/vue/24/outline";
+import {
+  ArrowTurnDownLeftIcon,
+  MagnifyingGlassIcon,
+} from "@heroicons/vue/24/outline";
 
 const { modelValue } = defineProps({
   modelValue: String,
