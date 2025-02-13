@@ -133,7 +133,7 @@
           <NuxtImg
             v-else
             :src="data?.user?.avatar || '/images/avatar.png'"
-            class="w-8 h-8 rounded-full aspect-square"
+            class="w-8 h-8 rounded-full aspect-square border"
             format="webp"
           />
           <div

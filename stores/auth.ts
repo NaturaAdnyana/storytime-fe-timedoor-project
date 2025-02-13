@@ -83,10 +83,9 @@ export const useAuthStore = defineStore("authStore", () => {
       },
       credentials: "include",
       onResponse({ response }) {
-        user.value = response._data.data.user;
+        user.value = response?._data?.data?.user || "";
       },
       onRequestError({ response }) {
-        console.log(response);
         user.value = null;
       },
     });

@@ -15,4 +15,8 @@
 
 <script setup>
 import { ArrowLeftIcon } from "@heroicons/vue/20/solid";
+
+definePageMeta({
+  middleware: ["auth"],
+});
 </script>

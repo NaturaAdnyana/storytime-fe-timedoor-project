@@ -1,8 +1,7 @@
 export default defineNuxtPlugin((nuxtApp) => {
+  const authExpiration = useCookie("auth_expiration");
   const authStore = useAuthStore();
-  if (!authStore.user) {
-    useLazyAsyncData("fetch-user", () => authStore.fetchData(), {
-      server: false,
-    });
+  if (authExpiration.value) {
+    useLazyAsyncData(() => authStore.fetchData(), { server: false });
   }
 });

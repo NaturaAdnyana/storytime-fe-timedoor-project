@@ -208,7 +208,10 @@
 <script setup>
 import { XMarkIcon } from "@heroicons/vue/24/outline";
 
-definePageMeta({ scrollToTop: false });
+definePageMeta({
+  scrollToTop: false,
+  middleware: ["auth"],
+});
 
 const isOpen = ref(false);
 const isUpdateLoading = ref(false);
@@ -225,11 +228,11 @@ const { addToast } = useAppStore();
 const { user } = storeToRefs(authStore);
 
 const updateUserData = reactive({
-  name: user.value?.name,
-  username: user.value?.username,
-  email: user.value?.email,
-  avatar: user.value?.avatar,
-  bio: user.value?.bio,
+  name: user?.value?.name || "",
+  username: user?.value?.username || "",
+  email: user?.value?.email || "",
+  avatar: user?.value?.avatar || "",
+  bio: user?.value?.bio || "",
   oldPassword: "",
   newPassword: "",
   confirmNewPassword: "",

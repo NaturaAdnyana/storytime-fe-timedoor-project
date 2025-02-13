@@ -40,7 +40,7 @@
             >
               <div class="relative mr-2">
                 <NuxtImg
-                  :src="user.avatar || '/images/avatar.png'"
+                  :src="user?.avatar || '/images/avatar.png'"
                   class="w-8 h-8 aspect-square ring-1 ring-gray-200 rounded-full bg-gray-100"
                   :class="isLoading && 'opacity-70'"
                 />
@@ -52,7 +52,7 @@
                 </div>
               </div>
 
-              <span>{{ user.username }}</span>
+              <span>{{ user?.username || "Unknown" }}</span>
               <ChevronDownIcon
                 class="ml-2 h-5 w-5 transition duration-150 ease-in-out"
                 aria-hidden="true"
