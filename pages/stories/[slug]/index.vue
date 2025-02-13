@@ -29,7 +29,7 @@
       </div>
     </button>
     <div class="text-center space-y-10 mb-8">
-      <p>{{ dateFormatter(data?.data.created_at) }}</p>
+      <p>{{ dateFormatter(data?.data?.created_at) }}</p>
       <h1>{{ data?.data.title }}</h1>
       <div class="flex items-center gap-3 justify-center">
         <NuxtImg
@@ -205,15 +205,23 @@ const route = useRoute();
 const { user } = storeToRefs(authStore);
 
 const isPicsOpen = ref(false);
+const isBookmarked = ref(false);
 const isBookmarkLoading = ref(false);
 
-const { data } = await useAsyncData("story-" + route.params.slug, () =>
-  storyStore.getStoryBySlug(route.params.slug)
+const { data, status } = await useLazyAsyncData(
+  "story-" + route.params.slug,
+  () => storyStore.getStoryBySlug(route.params.slug),
+  { server: false }
 );
 
-const isBookmarked = ref(
-  data?.value?.data?.bookmarks[0]?.user_id === user?.id || false
-);
+watch(status, (newValue, oldValue) => {
+  if (newValue === "success") {
+    if (data?.value?.data?.bookmarks.length > 0) {
+      isBookmarked.value =
+        data?.value?.data?.bookmarks[0]?.user_id === user.value.id;
+    }
+  }
+});
 
 const handleBookmark = async () => {
   isBookmarkLoading.value = true;

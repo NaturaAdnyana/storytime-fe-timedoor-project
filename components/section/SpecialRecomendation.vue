@@ -75,6 +75,9 @@ const { data, status } = await useLazyAsyncData(
       category: params.category,
       keyword: params.keyword,
       paginate: params.paginate,
-    })
+    }),
+  {
+    server: false,
+  }
 );
 </script>

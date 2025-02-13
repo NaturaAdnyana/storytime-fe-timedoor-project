@@ -159,7 +159,10 @@ const { refresh, status } = await useLazyAsyncData(
       sort: route.query.sort || sortType[0],
       category: route.query.category || "",
       keyword: route.query.keyword || "",
-    })
+    }),
+  {
+    server: false,
+  }
 );
 
 watch(selectedSortType, async (newValue) => {
