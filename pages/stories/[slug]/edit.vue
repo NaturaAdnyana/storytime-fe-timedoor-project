@@ -10,7 +10,7 @@
       <h1 class="text-3xl font-semibold">Edit Story</h1>
     </div>
   </section>
-  <SectionStoryForm :data="data" :isEdit="true" />
+  <SectionStoryForm :data="data.data" :isEdit="true" />
 </template>
 
 <script setup>
@@ -20,7 +20,11 @@ const storyStore = useStoryStore();
 
 const route = useRoute();
 
-const { data } = await useLazyAsyncData("story", () =>
-  storyStore.getStoryBySlug(route.params.slug)
+const { data } = await useAsyncData(
+  "story",
+  () => storyStore.getStoryBySlug(route.params.slug),
+  {
+    server: false,
+  }
 );
 </script>
