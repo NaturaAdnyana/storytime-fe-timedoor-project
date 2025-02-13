@@ -1,7 +1,8 @@
 export default defineNuxtPlugin((nuxtApp) => {
   const authStore = useAuthStore();
-
-  if (!authStore.user && authStore.token) {
-    useAsyncData(() => authStore.fetchData());
+  if (!authStore.user) {
+    useLazyAsyncData("fetch-user", () => authStore.fetchData(), {
+      server: false,
+    });
   }
 });

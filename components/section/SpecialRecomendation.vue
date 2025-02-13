@@ -51,7 +51,10 @@ const { title, params, to } = defineProps({
   to: String,
 });
 
+const authStore = useAuthStore();
 const storyStore = useStoryStore();
+
+const { user } = storeToRefs(authStore);
 
 const { currentParamsName } = storeToRefs(storyStore);
 

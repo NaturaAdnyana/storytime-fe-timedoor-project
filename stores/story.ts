@@ -37,7 +37,11 @@ export const useStoryStore = defineStore("storyStore", () => {
 
   const categories = ref();
   const currentParamsName = ref("newest");
-  const token = useCookie("token");
+
+  // const authStore = useAuthStore();
+  // const { token } = storeToRefs(authStore);
+
+  // const { token } = useAuthStore();
   const config = useRuntimeConfig();
 
   async function getStories(
@@ -61,7 +65,6 @@ export const useStoryStore = defineStore("storyStore", () => {
 
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token.value}`,
     };
 
     const response: any = await $fetch(
@@ -76,6 +79,7 @@ export const useStoryStore = defineStore("storyStore", () => {
           keyword: params?.keyword || "",
           paginate: params?.paginate || 12,
         },
+        credentials: "include",
         onResponse({ response }) {
           if (response.status === 200) {
             if (!stories[type][currentParamsName.value]) {
@@ -107,8 +111,8 @@ export const useStoryStore = defineStore("storyStore", () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token.value}`,
         },
+        credentials: "include",
         onResponseError({ response }) {
           console.error(response);
         },
@@ -120,7 +124,6 @@ export const useStoryStore = defineStore("storyStore", () => {
   async function getSimilarStories(id: number) {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token.value}`,
     };
 
     createParamsName("newest");
@@ -129,6 +132,7 @@ export const useStoryStore = defineStore("storyStore", () => {
       {
         method: "GET",
         headers,
+        credentials: "include",
         onResponse({ response }) {
           if (response.status === 200) {
             if (!stories["similarStories"][currentParamsName.value]) {
@@ -163,7 +167,7 @@ export const useStoryStore = defineStore("storyStore", () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token.value}`,
+        "X-XSRF-TOKEN": useCookie("XSRF-TOKEN").value || "",
       },
       body: JSON.stringify({
         title,
@@ -171,6 +175,7 @@ export const useStoryStore = defineStore("storyStore", () => {
         content,
         images,
       }),
+      credentials: "include",
       onResponseError({ response }) {
         console.error(response);
       },
@@ -197,7 +202,7 @@ export const useStoryStore = defineStore("storyStore", () => {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token.value}`,
+          "X-XSRF-TOKEN": useCookie("XSRF-TOKEN").value || "",
         },
         body: JSON.stringify({
           title,
@@ -205,6 +210,7 @@ export const useStoryStore = defineStore("storyStore", () => {
           content,
           images,
         }),
+        credentials: "include",
         onResponseError({ response }) {
           console.error(response);
         },
@@ -249,29 +255,23 @@ export const useStoryStore = defineStore("storyStore", () => {
   }
 
   async function uploadImage({ file }: { file: File }) {
-    if (token.value) {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("type", "story");
-      const response: any = await $fetch(
-        config.public.apiBase + "/api/upload",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token.value}`,
-          },
-          body: formData,
-          onResponseError({ response }) {
-            console.error(response);
-          },
-        }
-      );
-      return {
-        path: response.url,
-      };
-    } else {
-      return "No token";
-    }
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("type", "story");
+    const response: any = await $fetch(config.public.apiBase + "/api/upload", {
+      method: "POST",
+      headers: {
+        "X-XSRF-TOKEN": useCookie("XSRF-TOKEN").value || "",
+      },
+      body: formData,
+      credentials: "include",
+      onResponseError({ response }) {
+        console.error(response);
+      },
+    });
+    return {
+      path: response.url,
+    };
   }
 
   async function clearStories(
@@ -299,8 +299,9 @@ export const useStoryStore = defineStore("storyStore", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token.value}`,
+          "X-XSRF-TOKEN": useCookie("XSRF-TOKEN").value || "",
         },
+        credentials: "include",
         onResponse() {
           if (type) {
             const storiesData =
@@ -341,8 +342,9 @@ export const useStoryStore = defineStore("storyStore", () => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token.value}`,
+          "X-XSRF-TOKEN": useCookie("XSRF-TOKEN").value || "",
         },
+        credentials: "include",
         onResponse() {
           clearStories();
           getStories(type, { page: currentPage[type], sort: "newest" });

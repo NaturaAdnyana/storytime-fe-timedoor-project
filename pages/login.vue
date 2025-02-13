@@ -126,6 +126,8 @@ const handleClearErrorMessages = () => {
 
 const handleLogin = async () => {
   isLoading.value = true;
+  const appStore = useAppStore();
+  await appStore.csrfToken();
   const authStore = useAuthStore();
   try {
     await authStore.login({

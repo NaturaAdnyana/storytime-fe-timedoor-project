@@ -216,6 +216,7 @@ function openLogoutModal() {
 const handleLogout = async () => {
   isLoading.value = true;
   try {
+    await appStore.csrfToken();
     await authStore.logout();
     router.push({ path: "/login" });
   } catch (error) {

@@ -85,7 +85,6 @@ const { title, params, to } = defineProps({
 const slides = ref(Array.from({ length: 10 }));
 
 const containerRef = ref(null);
-const getStory = ref("public");
 
 const authStore = useAuthStore();
 const storyStore = useStoryStore();

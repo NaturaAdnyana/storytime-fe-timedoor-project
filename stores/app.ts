@@ -17,6 +17,8 @@ export const useAppStore = defineStore("app", () => {
 
   const toasts = ref<Toasts>([]);
 
+  const config = useRuntimeConfig();
+
   const openModal = (config: any) => {
     Object.assign(modal, {
       ...config,
@@ -42,5 +44,23 @@ export const useAppStore = defineStore("app", () => {
     if (index !== -1) toasts.value.splice(index, 1);
   };
 
-  return { modal, openModal, closeModal, toasts, addToast, removeToast };
+  const csrfToken = async () => {
+    await $fetch(config.public.apiBase + "/sanctum/csrf-cookie", {
+      method: "GET",
+      credentials: "include",
+      onResponseError({ response }) {
+        console.error(response);
+      },
+    });
+  };
+
+  return {
+    modal,
+    openModal,
+    closeModal,
+    toasts,
+    addToast,
+    removeToast,
+    csrfToken,
+  };
 });

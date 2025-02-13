@@ -1,9 +1,5 @@
 export const useAuthStore = defineStore("authStore", () => {
   const user = ref();
-  const token = useCookie("token", {
-    maxAge: 60 * 60 * 24 * 7,
-    sameSite: "lax",
-  });
   const config = useRuntimeConfig();
 
   async function login({
@@ -17,15 +13,16 @@ export const useAuthStore = defineStore("authStore", () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "X-XSRF-TOKEN": useCookie("XSRF-TOKEN").value || "",
       },
       body: JSON.stringify({
         username_or_email: email,
         password,
       }),
+      credentials: "include",
       onResponse({ response }) {
         if (response.status === 200) {
-          token.value = response._data.data.token;
-          useAsyncData("user", () => fetchData());
+          fetchData();
         }
       },
       onResponseError({ response }) {
@@ -54,6 +51,7 @@ export const useAuthStore = defineStore("authStore", () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-XSRF-TOKEN": useCookie("XSRF-TOKEN").value || "",
         },
         body: JSON.stringify({
           name,
@@ -62,10 +60,10 @@ export const useAuthStore = defineStore("authStore", () => {
           password,
           password_confirmation: confirmPassword,
         }),
+        credentials: "include",
         onResponse({ response }) {
           if (response.status === 201) {
-            token.value = response._data.data.token;
-            useAsyncData("user", () => fetchData());
+            fetchData();
           }
         },
         onResponseError({ response }) {
@@ -77,54 +75,43 @@ export const useAuthStore = defineStore("authStore", () => {
   }
 
   async function fetchData() {
-    if (token.value) {
-      try {
-        const response: any = await $fetch(
-          config.public.apiBase + "/api/user",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token.value}`,
-            },
-          }
-        );
-
-        user.value = response.data.user;
-        return response;
-      } catch (error) {
-        token.value = null;
+    const response: any = await $fetch(config.public.apiBase + "/api/user", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "X-XSRF-TOKEN": useCookie("XSRF-TOKEN").value || "",
+      },
+      credentials: "include",
+      onResponse({ response }) {
+        user.value = response._data.data.user;
+      },
+      onRequestError({ response }) {
+        console.log(response);
         user.value = null;
-        return "Failed to fetch user" + error;
-      }
-    } else {
-      return "No token";
-    }
+      },
+    });
+
+    return response;
   }
 
   async function uploadAvatar({ file }: { file: File }) {
-    if (token.value) {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("type", "profile");
-      const response: any = await $fetch(
-        config.public.apiBase + "/api/upload",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token.value}`,
-          },
-          body: formData,
-          onResponseError({ response }) {
-            console.error(response);
-          },
-        }
-      );
-      return {
-        path: response.url,
-      };
-    } else {
-      return "No token";
-    }
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("type", "profile");
+    const response: any = await $fetch(config.public.apiBase + "/api/upload", {
+      method: "POST",
+      headers: {
+        "X-XSRF-TOKEN": useCookie("XSRF-TOKEN").value || "",
+      },
+      body: formData,
+      credentials: "include",
+      onResponseError({ response }) {
+        console.error(response);
+      },
+    });
+    return {
+      path: response.url,
+    };
   }
 
   async function update({
@@ -160,9 +147,10 @@ export const useAuthStore = defineStore("authStore", () => {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token.value}`,
+        "X-XSRF-TOKEN": useCookie("XSRF-TOKEN").value || "",
       },
       body: JSON.stringify(payload),
+      credentials: "include",
       onResponse({ response }) {
         if (response.status === 200) {
           useAsyncData("user", () => fetchData());
@@ -176,34 +164,27 @@ export const useAuthStore = defineStore("authStore", () => {
   }
 
   async function logout() {
-    if (token.value) {
-      const response: any = await $fetch(
-        config.public.apiBase + "/api/logout",
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token.value}`,
-          },
-          onResponse({ response }) {
-            if (response.status === 200) {
-              token.value = null;
-              user.value = null;
-            }
-          },
-          onResponseError({ response }) {
-            console.error(response);
-          },
+    const response: any = await $fetch(config.public.apiBase + "/api/logout", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-XSRF-TOKEN": useCookie("XSRF-TOKEN").value || "",
+      },
+      credentials: "include",
+      onResponse({ response }) {
+        if (response.status === 200) {
+          user.value = null;
         }
-      );
-      return response;
-    } else {
-      return "No token";
-    }
+      },
+      onResponseError({ response }) {
+        console.error(response);
+      },
+    });
+    return response;
   }
 
   return {
     user,
-    token,
     login,
     register,
     fetchData,

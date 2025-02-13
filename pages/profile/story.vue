@@ -80,11 +80,16 @@ const { stories, currentPage } = storeToRefs(storyStore);
 
 currentPage.value.userStories = parseInt(route.query.page) || 1;
 
-const { status } = await useLazyAsyncData("stories", () =>
-  storyStore.getStories("userStories", {
-    sort: "newest",
-    page: currentPage.value.userStories,
-  })
+const { status } = await useLazyAsyncData(
+  "my-stories",
+  () =>
+    storyStore.getStories("userStories", {
+      sort: "newest",
+      page: currentPage.value.userStories,
+    }),
+  {
+    server: false,
+  }
 );
 
 onBeforeUnmount(() => {
@@ -105,12 +110,10 @@ watch(
           page: 1,
         },
       });
-      await useLazyAsyncData("stories", () =>
-        storyStore.getStories("userStories", {
-          sort: "newest",
-          page: 1,
-        })
-      );
+      storyStore.getStories("userStories", {
+        sort: "newest",
+        page: 1,
+      });
     }
   },
   { deep: true }
@@ -125,12 +128,10 @@ watch(
         page: newPage.userStories,
       },
     });
-    await useLazyAsyncData("stories", () =>
-      storyStore.getStories("userStories", {
-        sort: "newest",
-        page: newPage.userStories,
-      })
-    );
+    storyStore.getStories("userStories", {
+      sort: "newest",
+      page: newPage.userStories,
+    });
   },
   { deep: true }
 );

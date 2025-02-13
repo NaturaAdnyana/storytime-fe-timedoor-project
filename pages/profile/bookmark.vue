@@ -84,11 +84,16 @@ const { stories, currentPage } = storeToRefs(storyStore);
 
 currentPage.value.userBookmarks = parseInt(route.query.page) || 1;
 
-const { status } = await useLazyAsyncData("stories", () =>
-  storyStore.getStories("userBookmarks", {
-    sort: "newest",
-    page: currentPage.value.userBookmarks,
-  })
+const { status } = await useLazyAsyncData(
+  "bookmark-stories",
+  () =>
+    storyStore.getStories("userBookmarks", {
+      sort: "newest",
+      page: currentPage.value.userBookmarks,
+    }),
+  {
+    server: false,
+  }
 );
 
 onBeforeUnmount(() => {

@@ -225,11 +225,11 @@ const { addToast } = useAppStore();
 const { user } = storeToRefs(authStore);
 
 const updateUserData = reactive({
-  name: user.value.name,
-  username: user.value.username,
-  email: user.value.email,
-  avatar: user.value.avatar,
-  bio: user.value.bio,
+  name: user.value?.name,
+  username: user.value?.username,
+  email: user.value?.email,
+  avatar: user.value?.avatar,
+  bio: user.value?.bio,
   oldPassword: "",
   newPassword: "",
   confirmNewPassword: "",
