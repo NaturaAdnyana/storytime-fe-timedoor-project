@@ -4,7 +4,7 @@
       class="order-2 md:order-1 basis-full md:basis-1/2 py-12 md:py-6 px-10 md:pr-20 md:pl-[110px] flex flex-col justify-center flex-1"
     >
       <h2 class="font-bold mb-5">Login</h2>
-      <form @submit.prevent="handleLogin" class="space-y-6">
+      <form @submit.prevent="handleLogin" class="space-y-6 mb-6">
         <HeadlessTransitionRoot
           :show="showErrorMessage"
           enter="transition-opacity duration-75"
@@ -58,15 +58,15 @@
           </span>
           <span v-else>Login</span>
         </button>
-        <p class="text-sm">
-          Don’t have an account?
-          <NuxtLink
-            to="/register"
-            class="text-gray-asparagus-tr font-bold hover:underline"
-            >Register</NuxtLink
-          >
-        </p>
       </form>
+      <p class="text-sm">
+        Don’t have an account?
+        <NuxtLink
+          to="/register"
+          class="text-gray-asparagus-tr font-bold hover:underline"
+          >Register</NuxtLink
+        >
+      </p>
     </div>
     <div
       class="order-1 md:order-2 basis-full md:basis-1/2 pt-20 px-10 md:px-12 bg-isabelline-sc rounded-md flex flex-col justify-between gap-10 flex-1"

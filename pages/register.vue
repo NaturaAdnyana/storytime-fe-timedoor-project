@@ -17,7 +17,7 @@
       class="basis-full md:basis-1/2 py-12 md:py-6 px-10 md:pl-20 md:pr-[110px] flex flex-col justify-center flex-1"
     >
       <h2 class="font-bold mb-5">Create Account</h2>
-      <form @submit.prevent="handleRegister" class="space-y-6">
+      <form @submit.prevent="handleRegister" class="space-y-6 mb-6">
         <HeadlessTransitionRoot
           :show="showErrorMessage"
           enter="transition-opacity duration-75"
@@ -95,15 +95,15 @@
           </span>
           <span v-else>Create Account</span>
         </button>
-        <p class="text-sm">
-          Already have an account?
-          <NuxtLink
-            to="/login"
-            class="text-gray-asparagus-tr font-bold hover:underline"
-            >Login</NuxtLink
-          >
-        </p>
       </form>
+      <p class="text-sm">
+        Already have an account?
+        <NuxtLink
+          to="/login"
+          class="text-gray-asparagus-tr font-bold hover:underline"
+          >Login</NuxtLink
+        >
+      </p>
     </div>
   </section>
 </template>
