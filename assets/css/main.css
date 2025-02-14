@@ -31,6 +31,8 @@
 
 .toaster {
   width: calc(100vw - 30px);
+  opacity: 0;
+  animation: toast-fade 3100ms linear;
 }
 
 @media only screen and (min-width: 720px) {
@@ -70,5 +72,26 @@
   }
   100% {
     width: 0%;
+  }
+}
+
+@keyframes toast-fade {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  5% {
+    opacity: 100%;
+    transform: translateY(0px);
+  }
+  95% {
+    opacity: 100%;
+    transform: translateY(0px);
+    max-height: 100px;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px);
+    max-height: 0px;
   }
 }

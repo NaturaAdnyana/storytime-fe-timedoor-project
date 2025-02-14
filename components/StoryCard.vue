@@ -129,7 +129,6 @@
 const appStore = useAppStore();
 const { addToast } = useAppStore();
 
-import { BookmarkIcon } from "@heroicons/vue/24/solid";
 import DOMPurify from "dompurify";
 
 const router = useRouter();
@@ -176,7 +175,22 @@ const handleEdit = () => {
   router.push(data?.slug ? "/stories/" + data?.slug + "/edit" : "#");
 };
 
+let countUnknownUserClickedTheBookmarkBtn = 0;
+
 const handleBookmark = async () => {
+  if (!userId) {
+    if (countUnknownUserClickedTheBookmarkBtn >= 3) {
+      router.push("/login");
+      addToast(
+        "I like your taste in articles! Why not create an account first? 😊",
+        "warning"
+      );
+      return;
+    }
+    addToast("Create an account to save this story.", "warning");
+    countUnknownUserClickedTheBookmarkBtn++;
+    return;
+  }
   isActionLoading.bookmarkBtn = true;
   const storyStore = useStoryStore();
   try {

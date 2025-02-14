@@ -31,6 +31,7 @@ export const useAppStore = defineStore("app", () => {
   };
 
   const addToast = (message: string, type = "info", duration = 3100) => {
+    // durasi harus diatur pada main.css juga
     const id = Date.now();
     toasts.value.push({ id, message, type });
 

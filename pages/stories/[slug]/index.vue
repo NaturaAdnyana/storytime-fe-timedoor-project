@@ -216,7 +216,23 @@ watch(status, (newValue, oldValue) => {
   }
 });
 
+const router = useRouter();
+let countUnknownUserClickedTheBookmarkBtn = 0;
+
 const handleBookmark = async () => {
+  if (!user.value) {
+    if (countUnknownUserClickedTheBookmarkBtn >= 3) {
+      router.push("/login");
+      addToast(
+        "I like your taste in articles! Why not create an account first? 😊",
+        "warning"
+      );
+      return;
+    }
+    addToast("Create an account to save this story.", "warning");
+    countUnknownUserClickedTheBookmarkBtn++;
+    return;
+  }
   isBookmarkLoading.value = true;
   const storyStore = useStoryStore();
   try {
