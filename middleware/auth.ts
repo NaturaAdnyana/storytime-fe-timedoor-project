@@ -18,4 +18,10 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
       return navigateTo("/login");
     }
   }
+
+  if (to.name === "stories-slug-edit") {
+    if (!authExpiration.value) {
+      return navigateTo("/login");
+    }
+  }
 });
