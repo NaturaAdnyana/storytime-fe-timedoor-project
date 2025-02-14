@@ -24,37 +24,36 @@
           </div>
         </div>
       </template>
-      <ClientOnly v-else>
-        <swiper-container
-          ref="containerRef"
-          :slides-per-view="3.5"
-          :spaceBetween="24"
-          :slidesOffsetBefore="105"
-          :slidesOffsetAfter="105"
-          :breakpoints="{
-            0: {
-              slidesPerView: 1.15,
-              slidesOffsetBefore: 24,
-              slidesOffsetAfter: 24,
-            },
-            640: {
-              slidesPerView: 2.5,
-              slidesOffsetBefore: 24,
-              slidesOffsetAfter: 24,
-            },
-            1024: { slidesPerView: 3.5 },
-          }"
+      <div v-else>
+        <div
+          v-if="status == 'pending' || status == 'idle'"
+          class="mx-6 lg:mx-[110px] grid grid-cols-3 gap-[24px]"
         >
-          <template v-if="status == 'pending'">
-            <swiper-slide
-              v-for="idx in slides"
-              :key="idx"
-              class="flex flex-col"
-            >
-              <StoryCard :isLoading="true" />
-            </swiper-slide>
-          </template>
-          <template v-else-if="status == 'success'">
+          <StoryCard :isLoading="true" />
+          <StoryCard :isLoading="true" />
+          <StoryCard :isLoading="true" />
+        </div>
+        <ClientOnly v-else-if="status == 'success'">
+          <swiper-container
+            ref="containerRef"
+            :slides-per-view="3.5"
+            :spaceBetween="24"
+            :slidesOffsetBefore="105"
+            :slidesOffsetAfter="105"
+            :breakpoints="{
+              0: {
+                slidesPerView: 1.15,
+                slidesOffsetBefore: 24,
+                slidesOffsetAfter: 24,
+              },
+              640: {
+                slidesPerView: 2.5,
+                slidesOffsetBefore: 24,
+                slidesOffsetAfter: 24,
+              },
+              1024: { slidesPerView: 3.5 },
+            }"
+          >
             <swiper-slide
               v-for="(story, idx) in data?.data?.stories?.data"
               :key="idx"
@@ -66,9 +65,9 @@
                 showAction="bookmark-only"
               />
             </swiper-slide>
-          </template>
-        </swiper-container>
-      </ClientOnly>
+          </swiper-container>
+        </ClientOnly>
+      </div>
     </div>
   </section>
 </template>
@@ -81,8 +80,6 @@ const { title, params, to } = defineProps({
   params: Object,
   to: String,
 });
-
-const slides = ref(Array.from({ length: 10 }));
 
 const containerRef = ref(null);
 

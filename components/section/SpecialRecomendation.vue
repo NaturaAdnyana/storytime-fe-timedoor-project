@@ -12,10 +12,10 @@
       </NuxtLink>
     </div>
     <div
-      v-if="status == 'pending'"
+      v-if="status == 'idle' || status == 'pending'"
       class="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-6 mx-6 lg:mx-[110px]"
     >
-      <StoryCard :isLoading="true" />
+      <StoryCard class="lg:col-span-2 lg:row-span-2" :isLoading="true" />
       <StoryCard :isLoading="true" />
       <StoryCard :isLoading="true" />
     </div>
