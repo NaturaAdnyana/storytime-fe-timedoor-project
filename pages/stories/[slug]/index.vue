@@ -7,31 +7,22 @@
       },
     ]"
   />
-  <section class="mx-6 lg:mx-[110px] py-20 relative">
-    <button
-      :disabled="isBookmarkLoading"
-      @click.prevent="handleBookmark"
-      class="rounded-full w-12 h-12 p-2 flex justify-center items-center transition fixed bottom-5 right-5 md:absolute md:top-20 md:right-0 z-10"
-      :class="[
-        isBookmarked
-          ? 'bg-white hover:bg-isabelline-sc bookmarked border shadow'
-          : 'bg-gray-asparagus-tr hover:bg-kombu-green',
-      ]"
-    >
-      <div v-if="isBookmarkLoading" class="loader animate-spin"></div>
-      <div v-else>
-        <BookmarkIcon
-          v-if="isBookmarked"
-          class="size-6 fill-gray-asparagus-tr"
-          aria-hidden="true"
-        />
-        <img v-else src="/icons/bookmark.svg" alt="bookmark" />
-      </div>
-    </button>
+  <section class="mx-6 lg:mx-[110px] py-20 relative min-h-screen">
+    <StoryActionButton
+      class="fixed bottom-5 right-5 md:absolute md:top-20 md:right-0 z-10"
+      type="bookmark"
+      :isBookmarked="isBookmarked"
+      :isLoading="isBookmarkLoading"
+      @action="handleBookmark"
+      :title="isBookmarked && ('Bookmarked on ' + lastBookmarked || 0)"
+    />
     <div class="text-center space-y-10 mb-8">
       <p>{{ dateFormatter(data?.data?.created_at) }}</p>
       <h1>{{ data?.data.title }}</h1>
-      <div class="flex items-center gap-3 justify-center">
+      <div
+        v-show="status == 'success'"
+        class="flex items-center gap-3 justify-center"
+      >
         <NuxtImg
           :src="data?.data.user?.avatar || '/images/avatar.png'"
           class="w-8 h-8 rounded-full aspect-square border"
@@ -196,7 +187,6 @@
 
 <script setup>
 import { MagnifyingGlassPlusIcon, XMarkIcon } from "@heroicons/vue/24/outline";
-import { BookmarkIcon } from "@heroicons/vue/24/solid";
 
 const authStore = useAuthStore();
 const storyStore = useStoryStore();
@@ -206,12 +196,15 @@ const { user } = storeToRefs(authStore);
 
 const isPicsOpen = ref(false);
 const isBookmarked = ref(false);
-const isBookmarkLoading = ref(false);
+const isBookmarkLoading = ref(true);
+const lastBookmarked = ref("0");
 
-const { data, status } = await useLazyAsyncData(
+const { data, status, refresh } = await useLazyAsyncData(
   "story-" + route.params.slug,
   () => storyStore.getStoryBySlug(route.params.slug),
-  { server: false }
+  {
+    server: true,
+  }
 );
 
 watch(status, (newValue, oldValue) => {
@@ -231,6 +224,7 @@ const handleBookmark = async () => {
     isBookmarked.value = !isBookmarked.value;
     if (isBookmarked.value) {
       addToast("Successfully added story to bookmarks", "success");
+      lastBookmarked.value = dateFormatter(Date.now());
     } else {
       addToast("Successfully remove story to bookmarks", "success");
     }
@@ -246,10 +240,23 @@ const toggleModal = () => {
 };
 
 const dateFormatter = (rawDate) => {
+  if (!rawDate) {
+    return "";
+  }
   const date = new Date(rawDate);
   const options = { year: "numeric", month: "long", day: "numeric" };
   return date.toLocaleDateString("en-GB", options);
 };
+
+onMounted(() => {
+  setTimeout(async () => {
+    await refresh();
+    isBookmarkLoading.value = false;
+    lastBookmarked.value = dateFormatter(
+      data?.value?.data?.bookmarks[0]?.updated_at || 0
+    );
+  }, 100);
+});
 
 onBeforeUnmount(() => {
   storyStore.clearStories("similarStories");

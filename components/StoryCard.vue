@@ -26,48 +26,18 @@
             class="rounded-full w-12 h-12 bg-slate-300 animate-pulse"
           ></div>
           <template v-else>
-            <button
-              @click.prevent="handleEdit"
-              class="rounded-full w-12 h-12 p-2 bg-gray-asparagus-tr transition hover:bg-kombu-green"
-            >
-              <img src="/icons/edit.svg" alt="edit" />
-            </button>
-            <button
-              :disabled="isActionLoading.bookmarkBtn"
-              @click.prevent="handleBookmark"
-              class="rounded-full w-12 h-12 p-2 flex justify-center items-center transition"
-              :class="[
-                isBookmarked
-                  ? 'bg-white hover:bg-isabelline-sc bookmarked border'
-                  : 'bg-gray-asparagus-tr hover:bg-kombu-green',
-              ]"
-            >
-              <div
-                v-if="isActionLoading.bookmarkBtn"
-                class="loader animate-spin"
-              ></div>
-              <div v-else>
-                <BookmarkIcon
-                  v-if="isBookmarked"
-                  class="size-6 fill-gray-asparagus-tr"
-                  aria-hidden="true"
-                />
-                <img v-else src="/icons/bookmark.svg" alt="bookmark" />
-              </div>
-            </button>
-            <button
-              :disabled="isActionLoading.deleteBtn"
-              @click.prevent="openDeleteModal"
-              class="rounded-full w-12 h-12 p-2 flex justify-center items-center bg-gray-asparagus-tr transition hover:bg-kombu-green"
-            >
-              <div
-                v-if="isActionLoading.deleteBtn"
-                class="loader animate-spin"
-              ></div>
-              <div v-else>
-                <img src="/icons/delete.svg" alt="delete" />
-              </div>
-            </button>
+            <StoryActionButton type="edit" @action="handleEdit" />
+            <StoryActionButton
+              type="bookmark"
+              :isBookmarked="isBookmarked"
+              :isLoading="isActionLoading.bookmarkBtn"
+              @action="handleBookmark"
+            />
+            <StoryActionButton
+              type="delete"
+              :isLoading="isActionLoading.deleteBtn"
+              @action="openDeleteModal"
+            />
           </template>
         </div>
         <div
@@ -78,30 +48,13 @@
             v-if="isLoading"
             class="rounded-full w-12 h-12 bg-slate-300 animate-pulse"
           ></div>
-          <button
+          <StoryActionButton
             v-else
-            :disabled="isActionLoading.bookmarkBtn"
-            @click.prevent="handleBookmark"
-            class="rounded-full w-12 h-12 p-2 flex justify-center items-center transition"
-            :class="[
-              isBookmarked
-                ? 'bg-white hover:bg-isabelline-sc bookmarked border'
-                : 'bg-gray-asparagus-tr hover:bg-kombu-green',
-            ]"
-          >
-            <div
-              v-if="isActionLoading.bookmarkBtn"
-              class="loader animate-spin"
-            ></div>
-            <div v-else>
-              <BookmarkIcon
-                v-if="isBookmarked"
-                class="size-6 fill-gray-asparagus-tr"
-                aria-hidden="true"
-              />
-              <img v-else src="/icons/bookmark.svg" alt="bookmark" />
-            </div>
-          </button>
+            type="bookmark"
+            :isBookmarked="isBookmarked"
+            :isLoading="isActionLoading.bookmarkBtn"
+            @action="handleBookmark"
+          />
         </div>
       </div>
       <div class="flex flex-col gap-3 pb-10 mt-3">
