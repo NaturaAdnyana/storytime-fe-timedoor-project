@@ -34,7 +34,7 @@
         </li>
         <li class="space-x-2" v-show="route.query.keyword">
           <span>/</span>
-          <NuxtLink :to="route.path + '/' + route.keyword"
+          <NuxtLink :to="route.path + '?keyword=' + route.query.keyword"
             ><span class="hover:underline">
               Search: {{ route.query.keyword }}</span
             >

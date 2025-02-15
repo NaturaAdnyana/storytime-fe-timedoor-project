@@ -14,8 +14,9 @@
         <NuxtImg
           v-else
           :src="data?.images?.[0]?.path || '/images/landscape-placeholder.svg'"
-          class="w-full object-cover aspect-square transition-opacity"
+          class="w-full object-cover aspect-square transition-opacity bg-slate-100"
           :class="!isLoading && 'group-hover:opacity-80'"
+          loading="lazy"
         />
         <div
           class="absolute bottom-4 right-4 flex space-x-2"
