@@ -6,7 +6,7 @@
       type="text"
       name="searchQuery"
       id="search"
-      class="block min-w-0 grow h-full pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"
+      class="block min-w-0 grow h-full pr-3 z-10 bg-transparent text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"
       placeholder="Search story"
       :value="modelValue"
       @input="$emit('update:modelValue', $event.target.value)"

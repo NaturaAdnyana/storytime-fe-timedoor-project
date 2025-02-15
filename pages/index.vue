@@ -1,10 +1,10 @@
 <template>
   <section
-    class="text-center min-h-screen flex flex-col justify-center gap-7 mx-20 lg:mx-[110px]"
+    class="text-center min-h-screen flex flex-col justify-center gap-7 mx-6 lg:mx-[110px]"
   >
     <div class="flex flex-col gap-7">
       <h1 class="heading-shadow">Welcome to Storytime</h1>
-      <p class="text-quartz">
+      <p class="text-quartz mx-5">
         The world's most-loved social storytelling platform. Story time connects
         a global community of 90 million readers and writers through the power
         of story.
