@@ -232,11 +232,12 @@ watch(status, (newValue, oldValue) => {
 });
 
 const router = useRouter();
-let countUnknownUserClickedTheBookmarkBtn = 0;
+let countUserClickedBookmark = 0;
 
 const handleBookmark = async () => {
+  countUserClickedBookmark++;
   if (!user.value) {
-    if (countUnknownUserClickedTheBookmarkBtn >= 3) {
+    if (countUserClickedBookmark > 3) {
       router.push("/login");
       addToast(
         "I like your taste in articles! Why not create an account first? 😊",
@@ -245,7 +246,17 @@ const handleBookmark = async () => {
       return;
     }
     addToast("Create an account to save this story.", "warning");
-    countUnknownUserClickedTheBookmarkBtn++;
+    return;
+  }
+  if (countUserClickedBookmark > 6) {
+    addToast(
+      "You have clicked this button too many times. Please wait a few seconds before trying again.",
+      "warning"
+    );
+    setTimeout(() => {
+      countUserClickedBookmark = 0;
+    }, 5000);
+
     return;
   }
   isBookmarkLoading.value = true;

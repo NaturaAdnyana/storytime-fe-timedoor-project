@@ -1,11 +1,11 @@
 <template>
   <div class="fixed top-20 left-1/2 -translate-x-1/2 z-50 space-y-4">
     <div
-      class="toaster rounded-lg shadow-md border-r border-l border-t bg-white overflow-hidden"
+      class="toaster rounded-lg shadow-md border-r border-l border-t bg-white relative"
       v-for="toast in toasts"
       :key="toast.id"
     >
-      <div class="p-4 flex items-center justify-center gap-5 relative">
+      <div class="p-4 flex items-center justify-center gap-5">
         <img
           v-if="toast.type === 'success'"
           src="/icons/check.svg"
