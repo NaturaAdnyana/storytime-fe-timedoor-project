@@ -20,7 +20,7 @@
 }
 
 .bookmarked {
-  animation: bookmarked 0.5s;
+  animation: bookmarked 0.3s;
 }
 
 .loadbar {
@@ -33,6 +33,10 @@
   width: calc(100vw - 30px);
   opacity: 0;
   animation: toast-fade 3100ms linear;
+}
+
+.popup {
+  animation: popup 0.3s;
 }
 
 @media only screen and (min-width: 720px) {
@@ -93,5 +97,17 @@
     opacity: 0;
     transform: translateY(-10px);
     max-height: 0px;
+  }
+}
+
+@keyframes popup {
+  0% {
+    transform: scale(0.5);
+  }
+  50% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
   }
 }

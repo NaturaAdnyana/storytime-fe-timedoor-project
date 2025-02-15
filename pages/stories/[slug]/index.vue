@@ -21,13 +21,26 @@
       <h1>{{ data?.data.title }}</h1>
       <div
         v-show="status == 'success'"
-        class="flex items-center gap-3 justify-center"
+        class="flex items-center gap-3 justify-center group"
       >
         <NuxtImg
           :src="data?.data.user?.avatar || '/images/avatar.png'"
           class="w-8 h-8 rounded-full object-cover aspect-square border"
         />
-        {{ data?.data.user?.name }}
+        <span class="group-hover:text-gray-asparagus-tr">
+          {{ data?.data.user?.name }}
+        </span>
+        <div
+          v-show="data?.data?.user?.bio"
+          :class="[
+            'z-10 opacity-0 md:group-hover:opacity-100 absolute transition-all scale-0 md:group-hover:scale-100 md:group-hover:translate-y-12 min-w-[94px] max-w-[500px] p-1.5 bg-isabelline-sc rounded text-[10px] text-gray-asparagus-tr text-opacity-70 shadow-md',
+            'before:block before:absolute before:-top-3 before:left-1/2 before:border-l-[6px] before:border-r-[6px] before:border-b-[12px] before:border-b-isabelline-sc before:border-l-transparent before:border-r-transparent before:w-0 before:h-0 before:scale-x-150',
+          ]"
+        >
+          "
+          {{ data?.data?.user?.bio }}
+          "
+        </div>
       </div>
     </div>
     <div class="flex flex-wrap">
@@ -57,7 +70,7 @@
               </swiper-container>
               <button
                 @click="toggleModal"
-                class="absolute z-10 bottom-2 right-2 transition rounded-full hover:bg-quartz/50 hover:scale-105 active:bg-kombu-green p-2"
+                class="absolute z-10 bottom-2 right-2 transition rounded-full hover:bg-quartz/50 hover:scale-105 active:bg-quartz active:scale-90 p-2"
               >
                 <MagnifyingGlassPlusIcon class="size-6 stroke-white" />
               </button>
@@ -125,9 +138,9 @@
               <div class="relative">
                 <button
                   @click="toggleModal"
-                  class="absolute z-10 -top-11 md:-top-7 -right-2 md:-right-7 transition rounded-full hover:bg-quartz/50 hover:scale-105 active:bg-kombu-green p-2 group"
+                  class="absolute z-10 -top-11 md:-top-7 -right-2 md:-right-7 transition rounded-full hover:bg-quartz/20 hover:scale-105 active:bg-quartz/40 active:scale-90 p-2 group"
                 >
-                  <XMarkIcon class="size-5 group-active:stroke-white" />
+                  <XMarkIcon class="size-5" />
                 </button>
                 <ClientOnly>
                   <div>

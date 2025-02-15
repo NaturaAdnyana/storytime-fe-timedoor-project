@@ -3,7 +3,7 @@
     <button
       :disabled="isLoading"
       @click.prevent="emit('action')"
-      class="rounded-full w-12 h-12 p-2 flex justify-center items-center transition relative group"
+      class="rounded-full w-12 h-12 p-2 flex justify-center items-center transition relative group active:scale-90"
       :class="[
         isBookmarked
           ? 'bg-white hover:bg-isabelline-sc bookmarked border shadow'
@@ -15,10 +15,10 @@
         <template v-if="type == 'bookmark'">
           <BookmarkIcon
             v-if="isBookmarked"
-            class="size-6 fill-gray-asparagus-tr"
+            class="size-6 fill-gray-asparagus-tr popup"
             aria-hidden="true"
           />
-          <img v-else src="/icons/bookmark.svg" alt="bookmark" />
+          <img v-else class="popup" src="/icons/bookmark.svg" alt="bookmark" />
         </template>
         <template v-else-if="type == 'edit'">
           <img src="/icons/edit.svg" alt="edit" />
@@ -29,7 +29,10 @@
       </div>
       <div
         v-show="title"
-        class="opacity-0 md:group-hover:opacity-100 absolute transition-all -translate-y-8 scale-0 md:group-hover:scale-100 md:group-hover:-translate-y-14 md:group-hover:-translate-x-6 min-w-[94px] p-1 bg-isabelline-sc border rounded text-[10px] text-gray-asparagus-tr text-opacity-70"
+        :class="[
+          'opacity-0 md:group-hover:opacity-100 absolute transition-all -translate-y-8 scale-0 md:group-hover:scale-100 md:group-hover:-translate-y-[60px] md:group-hover:-translate-x-6 min-w-[94px] p-1.5 bg-isabelline-sc rounded text-[10px] text-gray-asparagus-tr text-opacity-70 shadow-[0_-1px_3px_1px_rgba(0,0,0,0.13)]',
+          'before:block before:absolute before:-bottom-3 before:right-[13px] before:border-l-[10px] before:border-r-[10px] before:border-t-[20px] before:border-t-isabelline-sc before:border-l-transparent before:border-r-transparent before:w-0 before:h-0',
+        ]"
       >
         {{ title }}
       </div>
