@@ -25,7 +25,7 @@
       >
         <NuxtImg
           :src="data?.data.user?.avatar || '/images/avatar.png'"
-          class="w-8 h-8 rounded-full aspect-square border"
+          class="w-8 h-8 rounded-full object-cover aspect-square border"
         />
         {{ data?.data.user?.name }}
       </div>
