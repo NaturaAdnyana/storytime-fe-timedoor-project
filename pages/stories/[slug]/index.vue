@@ -236,6 +236,9 @@ let countUserClickedBookmark = 0;
 
 const handleBookmark = async () => {
   countUserClickedBookmark++;
+  setTimeout(() => {
+    countUserClickedBookmark = 0;
+  }, 10000);
   if (!user.value) {
     if (countUserClickedBookmark > 3) {
       router.push("/login");
@@ -253,9 +256,6 @@ const handleBookmark = async () => {
       "You have clicked this button too many times. Please wait a few seconds before trying again.",
       "warning"
     );
-    setTimeout(() => {
-      countUserClickedBookmark = 0;
-    }, 5000);
 
     return;
   }
