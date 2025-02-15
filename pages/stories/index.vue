@@ -27,14 +27,17 @@
         <BaseSelectFilter :items="categories" v-model="selectedCategory" />
       </div>
       <form class="basis-full md:basis-1/3" @submit.prevent="handleSearch">
-        <BaseSearchBar v-model="searchQuery" />
+        <BaseSearchBar
+          v-model="searchQuery"
+          :isLoading="status === 'idle' || status === 'pending' || isLoading"
+        />
       </form>
     </div>
     <div class="px-10 lg:px-[110px] pb-10">
       <div
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-10 pb-10"
       >
-        <template v-if="status === 'pending' || isLoading">
+        <template v-if="status === 'idle' || status === 'pending' || isLoading">
           <div v-for="skeleton in skeletons" :key="skeleton">
             <StoryCard :isLoading="true" />
           </div>

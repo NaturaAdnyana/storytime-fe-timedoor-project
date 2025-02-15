@@ -12,10 +12,18 @@
       @input="$emit('update:modelValue', $event.target.value)"
     />
     <button
+      :disabled="isLoading"
       type="submit"
-      class="h-full aspect-square text-base text-gray-500 sm:text-sm/6 rounded-full outline-gray-asparagus-tr focus:outline-2 active:outline-2 hover:bg-isabelline-sc active:scale-95"
+      :class="[
+        'h-full aspect-square text-base disabled:cursor-not-allowed text-gray-500 sm:text-sm/6 rounded-full outline-gray-asparagus-tr focus:outline-2 active:outline-2 hover:bg-isabelline-sc active:scale-95',
+        isLoading && 'bg-isabelline-sc',
+      ]"
     >
-      <MagnifyingGlassIcon class="size-4 mx-auto" aria-hidden="true" />
+      <div
+        v-if="isLoading"
+        class="loader animate-spin mx-auto opacity-50"
+      ></div>
+      <MagnifyingGlassIcon v-else class="size-4 mx-auto" aria-hidden="true" />
     </button>
     <div
       class="absolute right-16 flex items-center gap-2 text-xs text-quartz/50"
@@ -34,7 +42,11 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/vue/24/outline";
 
-const { modelValue } = defineProps({
+const { isLoading, modelValue } = defineProps({
+  isLoading: {
+    type: Boolean,
+    default: false,
+  },
   modelValue: String,
 });
 </script>
