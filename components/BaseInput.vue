@@ -14,7 +14,7 @@
         :value="modelValue"
         :required="required"
         @input="$emit('update:modelValue', $event.target.value)"
-        class="block min-w-0 min-h-20 grow py-3 px-4 text-base placeholder:text-gray-400 sm:text-sm"
+        class="block min-w-0 min-h-20 grow py-3 px-4 text-base placeholder:text-gray-400 sm:text-sm disabled:cursor-not-allowed disabled:opacity-70"
       />
       <input
         v-else
@@ -24,7 +24,7 @@
         :disabled="disabled"
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
-        class="block min-w-0 grow py-3 px-4 text-base placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm"
+        class="block min-w-0 grow py-3 px-4 text-base placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm disabled:cursor-not-allowed disabled:opacity-70"
       />
       <button
         v-if="type === 'password'"

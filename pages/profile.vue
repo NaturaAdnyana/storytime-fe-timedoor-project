@@ -218,10 +218,6 @@ const isUpdateLoading = ref(false);
 const isAvatarLoading = ref(false);
 const showErrorMessage = ref(false);
 
-const toggleModal = () => {
-  isOpen.value = !isOpen.value;
-};
-
 const authStore = useAuthStore();
 const { addToast } = useAppStore();
 
@@ -237,6 +233,18 @@ const updateUserData = reactive({
   newPassword: "",
   confirmNewPassword: "",
 });
+
+const toggleModal = () => {
+  updateUserData.name = user?.value?.name || "";
+  updateUserData.username = user?.value?.username || "";
+  updateUserData.email = user?.value?.email || "";
+  updateUserData.avatar = user?.value?.avatar || "";
+  updateUserData.bio = user?.value?.bio || "";
+  updateUserData.oldPassword = "";
+  updateUserData.newPassword = "";
+  updateUserData.confirmNewPassword = "";
+  isOpen.value = !isOpen.value;
+};
 
 const errorMessage = reactive({
   message: "",
