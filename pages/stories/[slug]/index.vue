@@ -72,7 +72,7 @@
               </swiper-container>
               <button
                 @click="toggleModal"
-                class="absolute z-10 bottom-2 right-2 transition rounded-full hover:bg-quartz/50 hover:scale-105 active:bg-quartz active:scale-90 p-2"
+                class="absolute z-10 bottom-2 right-2 transition rounded-full bg-quartz/25 hover:bg-quartz/50 hover:scale-105 active:bg-quartz active:scale-90 p-2"
               >
                 <MagnifyingGlassPlusIcon class="size-6 stroke-white" />
               </button>
