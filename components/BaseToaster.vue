@@ -1,7 +1,7 @@
 <template>
   <div class="fixed top-20 left-1/2 -translate-x-1/2 z-50 space-y-4">
     <div
-      class="toaster p-4 rounded-lg shadow-md bg-white flex items-center justify-center gap-5 relative overflow-hidden"
+      class="toaster p-4 rounded-lg shadow-md border-r border-l border-t bg-white flex items-center justify-center gap-5 relative overflow-hidden"
       v-for="toast in toasts"
       :key="toast.id"
     >
@@ -9,7 +9,7 @@
         v-if="toast.type === 'success'"
         src="/icons/check.svg"
         alt="Finished process"
-        class="w-6"
+        class="w-6 popup"
       />
       <span class="text-base font-medium w-4/5">
         {{ toast.message }}
@@ -22,7 +22,7 @@
       </button>
       <div
         :class="[
-          'w-full h-1  absolute bottom-0 loadbar',
+          'w-full h-1 absolute bottom-0 loadbar',
           toast.type === 'success'
             ? 'bg-gray-asparagus-tr'
             : toast.type === 'error'
