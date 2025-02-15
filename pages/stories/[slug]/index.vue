@@ -21,25 +21,27 @@
       <h1>{{ data?.data.title }}</h1>
       <div
         v-show="status == 'success'"
-        class="flex items-center gap-3 justify-center group"
+        class="flex items-center gap-3 justify-center"
       >
         <NuxtImg
           :src="data?.data.user?.avatar || '/images/avatar.png'"
           class="w-8 h-8 rounded-full object-cover aspect-square border"
         />
-        <span class="group-hover:text-gray-asparagus-tr">
-          {{ data?.data.user?.name }}
-        </span>
-        <div
-          v-show="data?.data?.user?.bio"
-          :class="[
-            'z-10 opacity-0 md:group-hover:opacity-100 absolute transition-all scale-0 md:group-hover:scale-100 md:group-hover:translate-y-12 min-w-[94px] max-w-[500px] p-1.5 bg-isabelline-sc rounded text-[10px] text-gray-asparagus-tr text-opacity-70 shadow-md',
-            'before:block before:absolute before:-top-3 before:left-1/2 before:border-l-[6px] before:border-r-[6px] before:border-b-[12px] before:border-b-isabelline-sc before:border-l-transparent before:border-r-transparent before:w-0 before:h-0 before:scale-x-150',
-          ]"
-        >
-          "
-          {{ data?.data?.user?.bio }}
-          "
+        <div class="group flex justify-center">
+          <span class="group-hover:text-gray-asparagus-tr">
+            {{ data?.data.user?.name }}
+          </span>
+          <div
+            v-show="data?.data?.user?.bio"
+            :class="[
+              'z-10 opacity-0 md:group-hover:opacity-100 absolute transition-all scale-0 md:group-hover:scale-100 md:group-hover:translate-y-10 min-w-[94px] max-w-[500px] p-1.5 bg-isabelline-sc rounded text-xs text-gray-asparagus-tr text-opacity-70 shadow-md',
+              'before:block before:absolute before:-top-3 before:left-1/2 before:border-l-[6px] before:border-r-[6px] before:border-b-[12px] before:border-b-isabelline-sc before:border-l-transparent before:border-r-transparent before:w-0 before:h-0 before:scale-x-150',
+            ]"
+          >
+            "
+            {{ data?.data?.user?.bio }}
+            "
+          </div>
         </div>
       </div>
     </div>
