@@ -1,6 +1,6 @@
 <template>
   <AppHeader />
-  <main class="min-h-screen pt-[64px] lg:pt-[74px]">
+  <main class="min-h-screen pt-[65px]">
     <slot />
   </main>
   <AppFooter />

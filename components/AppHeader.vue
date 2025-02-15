@@ -1,7 +1,7 @@
 <template>
   <header
     :class="[
-      'bg-white/80 backdrop-blur-lg fixed inset-x-0 top-0 z-20',
+      'bg-white/80 backdrop-blur-lg fixed inset-x-0 top-0 z-20 transition-shadow duration-1000',
       scroll !== 0 && 'shadow-md',
     ]"
   >
