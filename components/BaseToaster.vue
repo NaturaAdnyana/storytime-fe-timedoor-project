@@ -1,7 +1,7 @@
 <template>
   <div class="fixed top-20 left-1/2 -translate-x-1/2 z-50 space-y-4">
     <div
-      class="toaster rounded-lg shadow-md border-r border-l border-t bg-white relative"
+      class="toaster rounded-lg shadow-md border-r border-l border-t bg-white relative overflow-hidden"
       v-for="toast in toasts"
       :key="toast.id"
     >
