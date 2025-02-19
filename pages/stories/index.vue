@@ -4,6 +4,11 @@
       {{
         status === "idle" || status === "pending"
           ? ""
+          : route.query.keyword
+          ? stories?.public[currentParamsName]?.[currentPage.public]?.total +
+            " result for '" +
+            route.query.keyword +
+            "'"
           : selectedCategory.name == "All"
           ? "All Stories"
           : selectedCategory.name || "Stories"
