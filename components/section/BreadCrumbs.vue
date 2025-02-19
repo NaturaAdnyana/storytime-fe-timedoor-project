@@ -32,22 +32,22 @@
             }}</span>
           </NuxtLink>
         </li>
-        <li class="space-x-2" v-show="route.query.keyword">
+        <!-- <li class="space-x-2" v-show="route.query.keyword">
           <span>/</span>
           <NuxtLink :to="route.path + '?keyword=' + route.query.keyword"
             ><span class="hover:underline">
               Search: {{ route.query.keyword }}</span
             >
           </NuxtLink>
-        </li>
-        <li class="space-x-2" v-show="route.query.page">
+        </li> -->
+        <!-- <li class="space-x-2" v-show="route.query.page">
           <span>/</span>
           <span
             ><span class="capitalize opacity-80"
               >Page: {{ route.query.page }}</span
             >
           </span>
-        </li>
+        </li> -->
         <li class="space-x-2" v-show="route.params.slug">
           <span>/</span>
           <NuxtLink :to="route.href"

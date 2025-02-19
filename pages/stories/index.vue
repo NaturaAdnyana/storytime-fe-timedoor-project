@@ -1,7 +1,13 @@
 <template>
   <div class="py-10 mx-10 lg:mx-[110px]">
-    <h1 class="text-3xl font-semibold">
-      {{ selectedCategory.name + " Stories" || "All Stories" }}
+    <h1 class="text-3xl font-semibold h-8">
+      {{
+        status === "idle" || status === "pending"
+          ? ""
+          : selectedCategory.name == "All"
+          ? "All Stories"
+          : selectedCategory.name || "Stories"
+      }}
     </h1>
   </div>
   <SectionBreadCrumbs
