@@ -24,7 +24,7 @@
         class="flex items-center gap-3 justify-center"
       >
         <NuxtImg
-          :src="data?.data.user?.avatar || '/images/avatar.png'"
+          :src="data?.data.user?.image?.path || '/images/avatar.png'"
           class="w-8 h-8 rounded-full object-cover aspect-square border"
         />
         <div class="group flex justify-center">

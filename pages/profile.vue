@@ -4,7 +4,7 @@
       <div class="flex-1 basis-full md:basis-2/12 aspect-square p-5">
         <NuxtImg
           class="mx-auto w-full h-full object-cover rounded-full bg-gray-100 ring-1 ring-gray-200"
-          :src="user?.avatar || '/images/avatar.png'"
+          :src="user?.image?.path || '/images/avatar.png'"
           alt="My Profile Picture"
           format="webp"
         />
@@ -227,7 +227,7 @@ const updateUserData = reactive({
   name: user?.value?.name || "",
   username: user?.value?.username || "",
   email: user?.value?.email || "",
-  avatar: user?.value?.avatar || "",
+  avatar: user?.value?.image?.path || "",
   bio: user?.value?.bio || "",
   oldPassword: "",
   newPassword: "",
@@ -238,7 +238,7 @@ const toggleModal = () => {
   updateUserData.name = user?.value?.name || "";
   updateUserData.username = user?.value?.username || "";
   updateUserData.email = user?.value?.email || "";
-  updateUserData.avatar = user?.value?.avatar || "";
+  updateUserData.avatar = user?.value?.image?.path || "";
   updateUserData.bio = user?.value?.bio || "";
   updateUserData.oldPassword = "";
   updateUserData.newPassword = "";

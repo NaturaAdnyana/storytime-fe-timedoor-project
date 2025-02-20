@@ -86,7 +86,7 @@
           ></div>
           <NuxtImg
             v-else
-            :src="data?.user?.avatar || '/images/avatar.png'"
+            :src="data?.user?.image?.path || '/images/avatar.png'"
             class="w-8 h-8 rounded-full object-cover aspect-square border"
             format="webp"
           />
@@ -100,8 +100,10 @@
         </div>
         <div
           :class="[
-            'basis-1/2 flex items-center gap-3 text-nowrap pl-3',
-            showAction === 'all' ? 'justify-between' : 'justify-end',
+            'flex items-center gap-3 text-nowrap',
+            showAction === 'all'
+              ? ' justify-between basis-full '
+              : 'pl-3 justify-end',
           ]"
         >
           <div
