@@ -46,7 +46,7 @@
       </div>
     </div>
     <div class="flex flex-wrap">
-      <aside class="w-full md:w-[30%] basis-4/12 mb-10">
+      <aside class="w-full md:w-[30%] md:basis-4/12 mb-10">
         <div class="sticky top-28">
           <ClientOnly>
             <div class="relative">
