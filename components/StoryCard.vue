@@ -77,7 +77,7 @@
       </div>
       <div class="absolute bottom-0 w-full flex justify-between text-sm">
         <div
-          class="basis-3/7 flex items-center gap-2 overflow-hidden"
+          class="basis-1/2 flex items-center gap-2 overflow-hidden"
           v-show="showAction !== 'all'"
         >
           <div
@@ -100,7 +100,7 @@
         </div>
         <div
           :class="[
-            'basis-full flex items-center gap-3',
+            'basis-1/2 flex items-center gap-3 text-nowrap pl-3',
             showAction === 'all' ? 'justify-between' : 'justify-end',
           ]"
         >
